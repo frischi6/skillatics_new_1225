@@ -6,28 +6,33 @@ import 'package:get/get.dart';
 import 'package:skillatics_new_1225/custom_icons_icons.dart';
 import 'package:skillatics_new_1225/menuPage.dart';
 import 'package:skillatics_new_1225/number_zero_to_fifty_icons.dart';
+import 'package:skillatics_new_1225/stroop__english_icons.dart';
+import 'package:skillatics_new_1225/stroop_icons.dart';
 
 class RandomColorPage2 extends StatefulWidget {
-  RandomColorPage2(
-      {Key? key,
-      required this.listSelectedColors,
-      required this.listSelectedArrowsPerColor,
-      required this.listSelectedNumbers,
-      required this.listSelectedShapes,
-      required this.listSelectedAlphabetletters,
-      required this.listSelectedBackgroundcolors,
-      required this.anzColorsOnPage,
-      required this.secChangeColor,
-      required this.secLengthRound,
-      required this.secLengthRest,
-      required this.anzRounds,
-      required this.currentCountry,
-      required this.isElemProSeiteEinmalig,
-      required this.nr_individual,
-      required this.nr_from,
-      required this.nr_to,
-      required this.nr_skip})
-      : super(key: key);
+  RandomColorPage2({
+    Key? key,
+    required this.listSelectedColors,
+    required this.listSelectedArrowsPerColor,
+    required this.listSelectedNumbers,
+    required this.listSelectedShapes,
+    required this.listSelectedAlphabetletters,
+    required this.listSelectedBackgroundcolors,
+    required this.anzColorsOnPage,
+    required this.secChangeColor,
+    required this.secLengthRound,
+    required this.secLengthRest,
+    required this.anzRounds,
+    required this.currentCountry,
+    required this.isElemProSeiteEinmalig,
+    required this.isStroopActive,
+    required this.listStroopText,
+    required this.listStroopTextcolors,
+    required this.nr_individual,
+    required this.nr_from,
+    required this.nr_to,
+    required this.nr_skip,
+  }) : super(key: key);
 
   var listSelectedColors;
   var listSelectedArrowsPerColor;
@@ -35,17 +40,21 @@ class RandomColorPage2 extends StatefulWidget {
   var listSelectedShapes;
   var listSelectedAlphabetletters;
   var listSelectedBackgroundcolors;
+  var listStroopText;
+  var listStroopTextcolors;
   int anzColorsOnPage;
   int secChangeColor;
   int secLengthRound;
   int secLengthRest;
   int anzRounds;
   bool isElemProSeiteEinmalig;
+  bool isStroopActive;
   String currentCountry;
-  String nr_individual,
-      nr_from,
-      nr_to,
-      nr_skip; //wird in trainingpage.dart nicht gebraucht, aber muss wieder an menupage zurückgegeben werden
+  String
+  nr_individual,
+  nr_from,
+  nr_to,
+  nr_skip; //wird in trainingpage.dart nicht gebraucht, aber muss wieder an menupage zurückgegeben werden
 
   @override
   _RandomColorPage2 createState() => _RandomColorPage2();
@@ -72,6 +81,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   var listIconsNumbers = [];
 
+  var listWithStroopText =
+      []; //Array in dem alle 7 Farben, die auch als Backgroundcolor ausgewählt werden können, als ausgeschriebener Text drin sind damit nachher aus ihnen Icons generiert werden können
+  var listWithStroopTextcolors =
+      []; //Array in dem alle 7 Farben, die auch als Backgroundcolor ausgewählt werden können, als Zahlcode drin sind. Die Stroop-Icons werden nachher random mit diesen Farben eingefärbt
+
   //var list4RandomHex = [0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000];
   int anzColorsOnPage2 = 1;
   int secChangeColor2 = 1;
@@ -79,6 +93,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   int secLengthRest2 = 1;
   int anzRounds2 = 1;
 
+  Random random = Random();
   late Timer _timer;
   int anzRoundsDone = 1;
   int secsLengthRoundCD = 1;
@@ -90,6 +105,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var restText = '';
   var paddingTopRestText = 0.0;
   var fontsizeRestText = 0.0;
+
+  double sizeIcon = 0;
+  double sizeIconStroop = 0;
 
   String rundeSg = 'rundeSg'.tr;
   String rundePl = 'rundePl'.tr;
@@ -114,6 +132,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var listToFillContainersIconDuplicate = [];
   var listToFillContainersHexDuplicate = [];
 
+  //Stroop, 4.5.26
+  bool isStroopActive2 = false;
+
   @override
   void initState() {
     _initializeSettinvariables();
@@ -124,11 +145,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     initOptionEinmalig();
     //organizeRound();
     _timer = Timer.periodic(
-        const Duration(seconds: 1),
-        (Timer timer) => setState(() {
-              //timemanagement();
-              timemanagement_new();
-            }));
+      const Duration(seconds: 1),
+      (Timer timer) => setState(() {
+        //timemanagement();
+        timemanagement_new();
+      }),
+    );
 
     super.initState();
     setState(() {});
@@ -145,9 +167,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         body: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height *
-                  (listHeight4Container[
-                      0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
+              height:
+                  MediaQuery.of(context).size.height *
+                  (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color:
@@ -155,9 +177,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     //dann Backgroundcolor wählen
                     //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
                     (listToFillContainersHex[0] == int.parse('0xfffefefe')) &&
-                            (listWithSelectedBackgroundcolorsToFill.length >= 1)
-                        ? Color(listWithSelectedBackgroundcolorsToFill[0])
-                        : Color(listToFillContainersHex[0]),
+                        (listWithSelectedBackgroundcolorsToFill.length >= 1)
+                    ? Color(listWithSelectedBackgroundcolorsToFill[0])
+                    : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
               child: restText == ''
@@ -167,9 +189,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                       child: Text(
                         restText,
                         style: TextStyle(
-                            color: Color(colorRestText),
-                            fontSize: fontsizeRestText,
-                            fontWeight: FontWeight.bold),
+                          color: Color(colorRestText),
+                          fontSize: fontsizeRestText,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
             ),
@@ -177,195 +200,195 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               child: listToFillContainersIcon.length > 1
                   ? listToFillContainersIcon[1]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[1]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  //wenn Icon in Container und Backgroundcolors selektiert
-                  //dann Backgroundcolor wählen
-                  //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                  color: listToFillContainersHex.length > 1
-                      ? (listToFillContainersHex[1] ==
-                                  int.parse('0xfffefefe')) &&
+                //wenn Icon in Container und Backgroundcolors selektiert
+                //dann Backgroundcolor wählen
+                //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                color: listToFillContainersHex.length > 1
+                    ? (listToFillContainersHex[1] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   1)
                           ? Color(listWithSelectedBackgroundcolorsToFill[1])
                           : Color(listToFillContainersHex[1])
-                      : Color(listToFillContainersHex[0]) //fallback
-                  ,
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]), //fallback
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 2
                   ? listToFillContainersIcon[2]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[2]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  //wenn Icon in Container und Backgroundcolors selektiert
-                  //dann Backgroundcolor wählen
-                  //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                  color: listToFillContainersHex.length > 2
-                      ? (listToFillContainersHex[2] ==
-                                  int.parse('0xfffefefe')) &&
+                //wenn Icon in Container und Backgroundcolors selektiert
+                //dann Backgroundcolor wählen
+                //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                color: listToFillContainersHex.length > 2
+                    ? (listToFillContainersHex[2] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   2)
                           ? Color(listWithSelectedBackgroundcolorsToFill[2])
                           : Color(listToFillContainersHex[2])
-                      : Color(listToFillContainersHex[0]) //fallback
-                  ,
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]), //fallback
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 3
                   ? listToFillContainersIcon[3]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[3]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 3
-                      ? (listToFillContainersHex[3] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 3
+                    ? (listToFillContainersHex[3] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   3)
                           ? Color(listWithSelectedBackgroundcolorsToFill[3])
                           : Color(listToFillContainersHex[3])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 4
                   ? listToFillContainersIcon[4]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[4]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 4
-                      ? (listToFillContainersHex[4] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 4
+                    ? (listToFillContainersHex[4] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   4)
                           ? Color(listWithSelectedBackgroundcolorsToFill[4])
                           : Color(listToFillContainersHex[4])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 5
                   ? listToFillContainersIcon[5]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[5]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 5
-                      ? (listToFillContainersHex[5] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 5
+                    ? (listToFillContainersHex[5] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   5)
                           ? Color(listWithSelectedBackgroundcolorsToFill[5])
                           : Color(listToFillContainersHex[5])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 6
                   ? listToFillContainersIcon[6]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[6]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 6
-                      ? (listToFillContainersHex[6] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 6
+                    ? (listToFillContainersHex[6] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   6)
                           ? Color(listWithSelectedBackgroundcolorsToFill[6])
                           : Color(listToFillContainersHex[6])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 7
                   ? listToFillContainersIcon[7]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[7]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 7
-                      ? (listToFillContainersHex[7] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 7
+                    ? (listToFillContainersHex[7] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   7)
                           ? Color(listWithSelectedBackgroundcolorsToFill[7])
                           : Color(listToFillContainersHex[7])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 8
                   ? listToFillContainersIcon[8]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[8]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 8
-                      ? (listToFillContainersHex[8] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 8
+                    ? (listToFillContainersHex[8] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   8)
                           ? Color(listWithSelectedBackgroundcolorsToFill[8])
                           : Color(listToFillContainersHex[8])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 9
                   ? listToFillContainersIcon[9]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[9]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: listToFillContainersHex.length > 9
-                      ? (listToFillContainersHex[9] ==
-                                  int.parse('0xfffefefe')) &&
+                color: listToFillContainersHex.length > 9
+                    ? (listToFillContainersHex[9] == int.parse('0xfffefefe')) &&
                               (listWithSelectedBackgroundcolorsToFill.length >
                                   9)
                           ? Color(listWithSelectedBackgroundcolorsToFill[9])
                           : Color(listToFillContainersHex[9])
-                      : Color(listToFillContainersHex[0]),
-                  border:
-                      const Border(bottom: BorderSide(color: Colors.black))),
+                    : Color(listToFillContainersHex[0]),
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
             ),
             Container(
               child: listToFillContainersIcon.length > 10
                   ? listToFillContainersIcon[10]
                   : listToFillContainersIcon[0],
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[10]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 10
                     ? (listToFillContainersHex[10] ==
-                                int.parse('0xfffefefe')) &&
-                            (listWithSelectedBackgroundcolorsToFill.length > 10)
-                        ? Color(listWithSelectedBackgroundcolorsToFill[10])
-                        : Color(listToFillContainersHex[10])
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  10)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[10])
+                          : Color(listToFillContainersHex[10])
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
@@ -376,11 +399,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   : listToFillContainersIcon[0],
               color: listToFillContainersHex.length > 11
                   ? (listToFillContainersHex[11] == int.parse('0xfffefefe')) &&
-                          (listWithSelectedBackgroundcolorsToFill.length > 11)
-                      ? Color(listWithSelectedBackgroundcolorsToFill[11])
-                      : Color(listToFillContainersHex[11])
+                            (listWithSelectedBackgroundcolorsToFill.length > 11)
+                        ? Color(listWithSelectedBackgroundcolorsToFill[11])
+                        : Color(listToFillContainersHex[11])
                   : Color(listToFillContainersHex[0]),
-              height: MediaQuery.of(context).size.height *
+              height:
+                  MediaQuery.of(context).size.height *
                   (listHeight4Container[11]),
               width: MediaQuery.of(context).size.width,
             ),
@@ -405,7 +429,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-                    width: (MediaQuery.of(context).size.width -
+                    width:
+                        (MediaQuery.of(context).size.width -
                             thicknessVerticalDividerFooter) /
                         4,
                   ),
@@ -418,7 +443,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-                    width: (MediaQuery.of(context).size.width -
+                    width:
+                        (MediaQuery.of(context).size.width -
                             thicknessVerticalDividerFooter) /
                         4,
                   ),
@@ -431,15 +457,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     child: TextButton(
                       child: Text(
                         'hauptmenü'.tr,
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
+                        style: const TextStyle(color: Colors.black),
                       ),
                       autofocus: false,
                       onPressed: changeToPage1,
                       onLongPress: changeToPage1,
                     ),
-                    width: (MediaQuery.of(context).size.width -
+                    width:
+                        (MediaQuery.of(context).size.width -
                             thicknessVerticalDividerFooter) /
                         4,
                   ),
@@ -447,15 +472,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     child: TextButton(
                       child: Text(
                         'neustart'.tr,
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
+                        style: const TextStyle(color: Colors.black),
                       ),
                       autofocus: false,
                       onPressed: neustart,
                       onLongPress: neustart,
                     ),
-                    width: (MediaQuery.of(context).size.width -
+                    width:
+                        (MediaQuery.of(context).size.width -
                             thicknessVerticalDividerFooter) /
                         4,
                   ),
@@ -482,6 +506,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     secsLengthRestCD = secLengthRest2 % 60;
 
     isElemProSeiteEinmalig2 = widget.isElemProSeiteEinmalig;
+
+    isStroopActive2 = widget.isStroopActive;
   }
 
   //füllt listWithSelectedColors ab aus widget.
@@ -494,6 +520,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _initializeListSelectedNumbers();
     _initializeListSelectedShapes();
     _initializeListSelectedAlphabetletters();
+    _initializeStroop();
     _initializeListSelectedIcons();
     _initializeListSelectedBackgroundcolors();
   }
@@ -516,108 +543,159 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     } else if (anzColorsOnPage2 == 1) {
       sizeIcon = 200.0;
     }
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_0, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_1, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_2, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_3, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_4, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_5, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_6, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_7, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_8, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_9, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_10, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_11, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_12, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_13, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_14, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_15, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_16, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_17, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_18, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_19, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_20, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_21, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_22, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_23, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_24, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_25, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_26, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_27, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_28, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_29, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_30, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_31, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_32, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_33, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_34, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_35, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_36, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_37, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_38, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_39, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_40, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_41, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_42, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_43, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_44, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_45, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_46, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_47, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_48, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_49, color: Colors.black, size: sizeIcon - 10));
-    listIconsNumbers
-        .add(Icon(NumberIcons.nr_50, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_0, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_1, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_2, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_3, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_4, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_5, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_6, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_7, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_8, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_9, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_10, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_11, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_12, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_13, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_14, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_15, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_16, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_17, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_18, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_19, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_20, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_21, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_22, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_23, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_24, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_25, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_26, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_27, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_28, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_29, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_30, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_31, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_32, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_33, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_34, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_35, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_36, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_37, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_38, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_39, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_40, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_41, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_42, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_43, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_44, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_45, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_46, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_47, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_48, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_49, color: Colors.black, size: sizeIcon - 10),
+    );
+    listIconsNumbers.add(
+      Icon(NumberIcons.nr_50, color: Colors.black, size: sizeIcon - 10),
+    );
   }
 
   void _initializeListSelectedShapes() {
@@ -629,14 +707,21 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   }
 
   void _initializeListSelectedIcons() {
-    listWithSelectedIcons = listWithSelectedArrowsPerColor +
+    listWithSelectedIcons =
+        listWithSelectedArrowsPerColor +
         listWithSelectedNumbers +
         listWithSelectedShapes +
-        listWithSelectedAlphabetletters;
+        listWithSelectedAlphabetletters +
+        listWithStroopText;
   }
 
   void _initializeListSelectedBackgroundcolors() {
     listWithSelectedBackgroundcolors = widget.listSelectedBackgroundcolors;
+  }
+
+  void _initializeStroop() {
+    listWithStroopText = widget.listStroopText;
+    listWithStroopTextcolors = widget.listStroopTextcolors;
   }
 
   /// füllt listWithSelectedHex mit Hexcodes aus listWithSelectedColors ab
@@ -647,7 +732,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     int theHexCode = 0;
 
     for (String item in listWithSelectedColors) {
-      hexxcode = '0xff' +
+      hexxcode =
+          '0xff' +
           item; //safr background: hier wird die hintergrundfarbe gesetzt
       theHexCode = (int.parse(hexxcode));
       listWithSelectedHex.add(theHexCode);
@@ -690,9 +776,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   int getColorcodeByArrowPerColor(arrowdirection_arrowcolor) {
     //parameter wird nach diesem format übergeben: arrowdirection_arrowcolor
     //returnt wird arrowcolor
-    return int.parse(arrowdirection_arrowcolor.substring(
+    return int.parse(
+      arrowdirection_arrowcolor.substring(
         arrowdirection_arrowcolor.indexOf('_') + 1,
-        arrowdirection_arrowcolor.length));
+        arrowdirection_arrowcolor.length,
+      ),
+    );
   }
 
   /// füllt listToFillContainersIcon mit korrektem icon und farbe inkl ob arrow sichtbar ist oder selbe farbe hat wie hintergrund
@@ -705,24 +794,29 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     //3 = 110
     //2 = 120
     //1 = 150
-    var sizeIcon = 60.0; //grundsätzlich alle icons grösse 60
+    sizeIcon = 60.0; //grundsätzlich alle icons grösse 60
+    sizeIconStroop = 70.00;
 
     if (arrowVisible) {
       //bei nur 1-4 anzeigen aufs mal sollten die icons aber ein wenig grösser sein, damit sie besser erkennbar sind im training
       if (anzColorsOnPage2 == 4) {
         sizeIcon = 90.0;
+        sizeIconStroop = 100;
       } else if (anzColorsOnPage2 == 3) {
         sizeIcon = 110.0;
+        sizeIconStroop = 90;
       } else if (anzColorsOnPage2 == 2) {
         sizeIcon = 160.0;
+        sizeIconStroop = 90;
       } else if (anzColorsOnPage2 == 1) {
         sizeIcon = 200.0;
+        sizeIconStroop = 100;
       }
 
-//idee safr 24.10.24: listSelectedNumbers werdden als zahl in string von menupage übergeben zb '1' oder '23'
-//in ein array wird das icon initialisiert Icon(Icons.north, color: Colors.black, size: sizeIcon);, damit das ganze ausgelagert werden kann und nicht alles
-//  hier in dieser funktion ist
-//hier check if isnumeric(arrowDirection) dann mit index aus array auslesen-> braucht nicht 50 if-statements
+      //idee safr 24.10.24: listSelectedNumbers werdden als zahl in string von menupage übergeben zb '1' oder '23'
+      //in ein array wird das icon initialisiert Icon(Icons.north, color: Colors.black, size: sizeIcon);, damit das ganze ausgelagert werden kann und nicht alles
+      //  hier in dieser funktion ist
+      //hier check if isnumeric(arrowDirection) dann mit index aus array auslesen-> braucht nicht 50 if-statements
       if (isNumeric(arrowDirection)) {
         listToFillContainersIcon[index] =
             listIconsNumbers[int.parse(arrowDirection)];
@@ -730,22 +824,29 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         //arrows werden im format direction_arrowcolor übergeben
         listToFillContainersIcon[index] = Icon(
           Icons.north_east,
-          color: Color(getColorcodeByArrowPerColor(
-              arrowDirection)), //arrowcolor auslesen
+          color: Color(
+            getColorcodeByArrowPerColor(arrowDirection),
+          ), //arrowcolor auslesen
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('northwest_')) {
-        listToFillContainersIcon[index] = Icon(Icons.north_west,
-            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
-            size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          Icons.north_west,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
       } else if (arrowDirection.contains('southeast_')) {
-        listToFillContainersIcon[index] = Icon(Icons.south_east,
-            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
-            size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          Icons.south_east,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
       } else if (arrowDirection.contains('southwest_')) {
-        listToFillContainersIcon[index] = Icon(Icons.south_west,
-            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
-            size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          Icons.south_west,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection.contains('north_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.north,
@@ -753,109 +854,344 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('east_')) {
-        listToFillContainersIcon[index] = Icon(Icons.east,
-            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
-            size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          Icons.east,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
       } else if (arrowDirection.contains('south_')) {
-        listToFillContainersIcon[index] = Icon(Icons.south,
-            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
-            size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          Icons.south,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
       } else if (arrowDirection.contains('west_')) {
-        listToFillContainersIcon[index] = Icon(Icons.west,
-            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
-            size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          Icons.west,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
       } else if (arrowDirection == 'triangle') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.triangle, color: Colors.black, size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.triangle,
+          color: Colors.black,
+          size: sizeIcon,
+        );
       } else if (arrowDirection == 'kreis') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.circle, color: Colors.black, size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.circle,
+          color: Colors.black,
+          size: sizeIcon,
+        );
       } else if (arrowDirection == 'quadrat') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.square, color: Colors.black, size: sizeIcon);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.square,
+          color: Colors.black,
+          size: sizeIcon,
+        );
       } else if (arrowDirection == 'letterA') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.a, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.a,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterB') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.b, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.b,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterC') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.c, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.c,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterD') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.d, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.d,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterE') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.e, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.e,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterF') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.f, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.f,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterG') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.g, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.g,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterH') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.h, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.h,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterI') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.i, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.i,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterJ') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.j, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.j,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterK') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.k, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.k,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterL') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.l, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.l,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterM') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.m, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.m,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterN') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.n, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.n,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterO') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.o, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.o,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterP') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.p, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.p,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterQ') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.q, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.q,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterR') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.r, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.r,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterS') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.s, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.s,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterT') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.t, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.t,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterU') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.u, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.u,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterV') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.v, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.v,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterW') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.w, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.w,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterX') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.x, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.x,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterY') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.y, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.y,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
       } else if (arrowDirection == 'letterZ') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.z, color: Colors.black, size: sizeIcon - 10);
+        listToFillContainersIcon[index] = Icon(
+          CustomIcons.z,
+          color: Colors.black,
+          size: sizeIcon - 10,
+        );
+      } else if (arrowDirection == 'stroop_weiss') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_weiss,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_schwarz') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_schwarz,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop - 30,
+        );
+      } else if (arrowDirection == 'stroop_gelb') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_gelb,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_rot') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_rot,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_violett') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_violett,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop - 10,
+        );
+      } else if (arrowDirection == 'stroop_blau') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_blau,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_gruen') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons.stroop_gruen,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_white') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_white,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_black') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_black,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_yellow') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_yellow,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop - 10,
+        );
+      } else if (arrowDirection == 'stroop_red') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_red,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_violet') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_violet,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop - 5,
+        );
+      } else if (arrowDirection == 'stroop_blue') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_blue,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
+      } else if (arrowDirection == 'stroop_green') {
+        listToFillContainersIcon[index] = Icon(
+          StroopIcons_English.stroop_green,
+          color: Color(
+            listWithStroopTextcolors[random.nextInt(
+              listWithStroopTextcolors.length,
+            )],
+          ),
+          size: sizeIconStroop,
+        );
       }
     } else {
       //arrow should not be visible
-      listToFillContainersIcon[index] =
-          Icon(Icons.north, color: Color(listToFillContainersHex[index]));
+      listToFillContainersIcon[index] = Icon(
+        Icons.north,
+        color: Color(listToFillContainersHex[index]),
+      );
     }
   }
 
@@ -867,17 +1203,19 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       content: Text('trainingEnde'.tr),
       actions: [
         TextButton(
-            onPressed: changeToPage1,
-            child: Text(
-              'hauptmenü'.tr,
-              style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
-            )),
+          onPressed: changeToPage1,
+          child: Text(
+            'hauptmenü'.tr,
+            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
+          ),
+        ),
         TextButton(
-            onPressed: changeToPage2,
-            child: Text(
-              'neustart'.tr,
-              style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
-            )),
+          onPressed: changeToPage2,
+          child: Text(
+            'neustart'.tr,
+            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
+          ),
+        ),
       ],
     );
   }
@@ -910,56 +1248,63 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _timer.cancel();
 
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MyHomePage(
-                  title: 'Skillatics',
-                  currentCountry: widget.currentCountry,
-                  listSelectedColors: widget.listSelectedColors,
-                  listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
-                  listSelectedNumbers: widget.listSelectedNumbers,
-                  listSelectedShapes: widget.listSelectedShapes,
-                  listSelectedAlphabetletters:
-                      widget.listSelectedAlphabetletters,
-                  listSelectedBackgroundcolors:
-                      widget.listSelectedBackgroundcolors,
-                  anzColorsOnPage: widget.anzColorsOnPage,
-                  secChangeColor: widget.secChangeColor,
-                  secLengthRound: widget.secLengthRound,
-                  secLengthRest: widget.secLengthRest,
-                  anzRounds: widget.anzRounds,
-                  isElemProSeiteEinmalig: widget.isElemProSeiteEinmalig,
-                  nr_individual: widget.nr_individual,
-                  nr_from: widget.nr_from,
-                  nr_to: widget.nr_to,
-                  nr_skip: widget.nr_skip,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(
+          title: 'Skillatics',
+          currentCountry: widget.currentCountry,
+          listSelectedColors: widget.listSelectedColors,
+          listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
+          listSelectedNumbers: widget.listSelectedNumbers,
+          listSelectedShapes: widget.listSelectedShapes,
+          listSelectedAlphabetletters: widget.listSelectedAlphabetletters,
+          listSelectedBackgroundcolors: widget.listSelectedBackgroundcolors,
+          anzColorsOnPage: widget.anzColorsOnPage,
+          secChangeColor: widget.secChangeColor,
+          secLengthRound: widget.secLengthRound,
+          secLengthRest: widget.secLengthRest,
+          anzRounds: widget.anzRounds,
+          isElemProSeiteEinmalig: widget.isElemProSeiteEinmalig,
+          isStroopActive: widget.isStroopActive,
+          nr_individual: widget.nr_individual,
+          nr_from: widget.nr_from,
+          nr_to: widget.nr_to,
+          nr_skip: widget.nr_skip,
+        ),
+      ),
+    );
   }
 
   /// neustart der page2
   /// wird nach alertDialogFinish aufgerufen weil neustart() nicht funktioniert
   void changeToPage2() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RandomColorPage2(
-                listSelectedColors: listWithSelectedColors,
-                listSelectedArrowsPerColor: listWithSelectedArrowsPerColor,
-                listSelectedNumbers: listWithSelectedNumbers,
-                listSelectedShapes: listWithSelectedShapes,
-                listSelectedAlphabetletters: listWithSelectedAlphabetletters,
-                listSelectedBackgroundcolors: listWithSelectedBackgroundcolors,
-                anzColorsOnPage: anzColorsOnPage2,
-                secChangeColor: secChangeColor2,
-                secLengthRound: secLengthRound2,
-                secLengthRest: secLengthRest2,
-                anzRounds: anzRounds2,
-                currentCountry: widget.currentCountry,
-                isElemProSeiteEinmalig: isElemProSeiteEinmalig2,
-                nr_individual: widget.nr_individual,
-                nr_from: widget.nr_from,
-                nr_to: widget.nr_to,
-                nr_skip: widget.nr_skip)));
+      context,
+      MaterialPageRoute(
+        builder: (context) => RandomColorPage2(
+          listSelectedColors: listWithSelectedColors,
+          listSelectedArrowsPerColor: listWithSelectedArrowsPerColor,
+          listSelectedNumbers: listWithSelectedNumbers,
+          listSelectedShapes: listWithSelectedShapes,
+          listSelectedAlphabetletters: listWithSelectedAlphabetletters,
+          listSelectedBackgroundcolors: listWithSelectedBackgroundcolors,
+          anzColorsOnPage: anzColorsOnPage2,
+          secChangeColor: secChangeColor2,
+          secLengthRound: secLengthRound2,
+          secLengthRest: secLengthRest2,
+          anzRounds: anzRounds2,
+          currentCountry: widget.currentCountry,
+          isElemProSeiteEinmalig: isElemProSeiteEinmalig2,
+          isStroopActive: isStroopActive2,
+          listStroopText: listWithStroopText,
+          listStroopTextcolors: listWithStroopTextcolors,
+          nr_individual: widget.nr_individual,
+          nr_from: widget.nr_from,
+          nr_to: widget.nr_to,
+          nr_skip: widget.nr_skip,
+        ),
+      ),
+    );
   }
 
   /* NEW FROM 01.12.24 SARAH FRISCHKNECHT */
@@ -1041,9 +1386,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             //programm beenden / messagebox zeigen
             _timer.cancel();
             showDialog(
-                context: context,
-                builder: (_) => alertDialogFinish(),
-                barrierDismissible: false);
+              context: context,
+              builder: (_) => alertDialogFinish(),
+              barrierDismissible: false,
+            );
             //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
           }
 
@@ -1055,9 +1401,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               //programm beenden / messagebox zeigen
               _timer.cancel();
               showDialog(
-                  context: context,
-                  builder: (_) => alertDialogFinish(),
-                  barrierDismissible: false);
+                context: context,
+                builder: (_) => alertDialogFinish(),
+                barrierDismissible: false,
+              );
               //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
             } else if (isRest) {
               //zeit neu setzen für wechsel auf rest
@@ -1083,10 +1430,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       firstItemLastRound = listWithSelectedIcons.length > 1
           ? listWithSelectedIcons[0]
           : listWithSelectedIcons.length == 1 &&
-                  firstHexLastRound == int.parse('0xfffefefe')
-              ? listWithSelectedIcons[0]
-              : ''; //abfangen wenn nur color-items ausgewählt
-
+                firstHexLastRound == int.parse('0xfffefefe')
+          ? listWithSelectedIcons[0]
+          : ''; //abfangen wenn nur color-items ausgewählt
+      //safr hier stroop zu listwithselectedicons hinzufügen?
       //endlosloop in do-while verhindern wenn nur 1 icon/farbe ausgewählt
       if (isElemProSeiteEinmalig2 && listToFillContainersHex.length > 1 ||
           !isElemProSeiteEinmalig2 && listToFillContainersHex.length > 2) {
@@ -1124,6 +1471,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       }
     }
 
+    //Backgroundcolor der Icons setzen
+    if (listWithSelectedBackgroundcolors.length > 0) {
+      prepareBackgroundcolors();
+    }
+
     //wegen diesem loop muss listToFillContainersHex/Icon nicht mehr von anfang an deckungsgleich sein, sondern wird hier deckungsgleich gemacht
     //	für jeden eintrag in listToFillContainersHex der ohne icon dargestellt wird sprich nur farbe, wird icon.north in der entsprechenden farbe hinzugefügt
     //		-> bestehendes icon in listToFillContainersIcon[x] wird nicht umgefärbt weil so nun isElemProSeiteEinmalig = true gehandelt werden kann, mit umfärben wäre einmaligkeit nicht gewährleistet
@@ -1131,10 +1483,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     //icons werden nach jedem seitenwechsel neu gesetzt
     var counter_icons = 0;
     String arrowDirection;
-    Random random;
+
     for (var ll_i = 0; ll_i < listToFillContainersHex.length; ll_i++) {
       if (listToFillContainersHex[ll_i] != int.parse('0xfffefefe')) {
-        //safr background kann hier nocch auf fefefe gegangen werden?
+        //safr background kann hier noch auf fefefe gegangen werden?
         //arrow not visible
         addToListToFillContainersIcon(ll_i, null, false);
       } else {
@@ -1151,8 +1503,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           } else {
             //wenn nicht einmalig pro seite dann random nehmen damit auch möglich dass gleiche icons nacheinander kommen
             random = Random();
-            arrowDirection = listWithSelectedIcons[
-                random.nextInt(listWithSelectedIcons.length)];
+            arrowDirection =
+                listWithSelectedIcons[random.nextInt(
+                  listWithSelectedIcons.length,
+                )];
           }
         }
 
@@ -1164,11 +1518,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             : counter_icons = 0;
       }
     }
-
-    if (listWithSelectedBackgroundcolors.length > 0) {
-      prepareBackgroundcolors();
-    }
-    //safr background todo hier backgroundcolor neu
   }
 
   // wird nur bei wechsel von round zu rest aufgerufen
@@ -1187,8 +1536,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     fontsizeRestText = 80.0;
     for (int i = 0; i < listToFillContainersHex.length; i++) {
       //damit alle pfeile schwarz und somit nicht sichtbar in pause
-      listToFillContainersIcon[i] =
-          const Icon(Icons.north, color: Colors.black);
+      listToFillContainersIcon[i] = const Icon(
+        Icons.north,
+        color: Colors.black,
+      );
     }
   }
 
@@ -1225,7 +1576,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       temp = (anzColorsOnPage2 / listToFillContainersHex.length)
           .ceil(); //ceil = nächst grössere ganzzahl wenn kommazahl gibt
       if (temp > 2) {
-        vergroessern = temp +
+        vergroessern =
+            temp +
             1; //+1 für spezialfall wenn genau 0.5 so viele farben wie anzColorsOnPage2 ausgewählt sind kann es vorkommen dass in den letzten beiden rows die gleiche farbe angezeigt wird, weil nur noch diese 2 zur verfügung stehen
       }
       listToFillContainersIconDuplicate = listToFillContainersIcon;
@@ -1234,11 +1586,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       for (int ll_count = 1; ll_count < vergroessern; ll_count++) {
         listToFillContainersIcon = [
           ...listToFillContainersIcon,
-          ...listToFillContainersIconDuplicate
+          ...listToFillContainersIconDuplicate,
         ];
         listToFillContainersHex = [
           ...listToFillContainersHex,
-          ...listToFillContainersHexDuplicate
+          ...listToFillContainersHexDuplicate,
         ];
       }
     }
@@ -1255,8 +1607,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
     //listWithSelectedBackgroundcolorsToFill muss mind so lang sein wie anzColorsOnPage2
     while (listWithSelectedBackgroundcolorsToFill.length < anzColorsOnPage2) {
-      lastColorBefore = listWithSelectedBackgroundcolorsToFill[
-          listWithSelectedBackgroundcolorsToFill.length - 1];
+      lastColorBefore =
+          listWithSelectedBackgroundcolorsToFill[listWithSelectedBackgroundcolorsToFill
+                  .length -
+              1];
       tempList = listWithSelectedBackgroundcolors;
 
       //es soll nicht mehrmals dieselbe hintergrundfarbe nacheinander kommen
@@ -1269,7 +1623,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       //tempList an listWithSelectedBackgroundcolorsToFill anfügen
       listWithSelectedBackgroundcolorsToFill = [
         ...listWithSelectedBackgroundcolorsToFill,
-        ...tempList
+        ...tempList,
       ];
     }
   }

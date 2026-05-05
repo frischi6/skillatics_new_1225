@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
   int secLengthRest = 90; //=restDisplayedSec+restDisplayedMin in sekunden
   int anzRounds = 5;
   bool isElemProSeiteEinmalig = false;
+  bool isStroopActive = false;
 
   MyApp({Key? key}) : super(key: key);
   @override
@@ -38,34 +39,34 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Skillatics',
       theme: ThemeData(
-          primarySwatch: colorCustom,
-          colorScheme: ColorScheme(
-            brightness: Brightness.light,
-            primary: colorCustom,
-            onPrimary: Colors.black,
-            secondary: Colors.black,
-            onSecondary: Colors.black,
-            background: Colors.white,
-            onBackground: Colors.black,
-            surface: Colors.white, // colorCustom,
-            onSurface: Colors.black,
-            error: Colors.red,
-            onError: Colors.black,
-          )
-          //unselectedWidgetColor: Colors.black, //noch nötig?
-          ),
+        primarySwatch: colorCustom,
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          primary: colorCustom,
+          onPrimary: Colors.black,
+          secondary: Colors.black,
+          onSecondary: Colors.black,
+          background: Colors.white,
+          onBackground: Colors.black,
+          surface: Colors.white, // colorCustom,
+          onSurface: Colors.black,
+          error: Colors.red,
+          onError: Colors.black,
+        ),
+        //unselectedWidgetColor: Colors.black, //noch nötig?
+      ),
       home: MyHomePage(
         title: 'Skillatics',
         currentCountry: "GB", //aktuelle Flagge die oben rechts erscheint
         listSelectedColors: [],
         listSelectedArrowsPerColor: [
-          '_4278190080'
+          '_4278190080',
         ], //per default schwarze arrowcolor selektiert
         listSelectedNumbers: [],
         listSelectedShapes: [],
         listSelectedAlphabetletters: [],
         listSelectedBackgroundcolors: [
-          4294967295
+          4294967295,
         ], //default weiss als Hintergrundfarbe selektiert
         anzColorsOnPage: anzColorsOnPage,
         secChangeColor: secChangeColor,
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
         secLengthRest: secLengthRest,
         anzRounds: anzRounds,
         isElemProSeiteEinmalig: isElemProSeiteEinmalig,
+        isStroopActive: isStroopActive,
         nr_individual: '',
         nr_from: '',
         nr_to: '',

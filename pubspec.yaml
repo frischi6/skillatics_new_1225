@@ -103,6 +103,14 @@ flutter:
     - family: NumberIcons
       fonts:
         - asset: fonts/NumberZeroToFifty.ttf
+
+    - family: StroopIcons
+      fonts:
+        - asset: fonts/Stroop.ttf    
+    
+    - family: StroopIcons_English
+      fonts:
+        - asset: fonts/Stroop_English.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
