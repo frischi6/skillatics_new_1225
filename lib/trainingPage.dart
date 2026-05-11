@@ -171,6 +171,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color:
                     //wenn Icon in Container und Backgroundcolors selektiert
@@ -182,28 +183,35 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-              child: restText == ''
-                  ? listToFillContainersIcon[0]
-                  : Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        restText,
-                        style: TextStyle(
-                          color: Color(colorRestText),
-                          fontSize: fontsizeRestText,
-                          fontWeight: FontWeight.bold,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: restText == ''
+                    ? listToFillContainersIcon[0]
+                    : Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          restText,
+                          style: TextStyle(
+                            color: Color(colorRestText),
+                            fontSize: fontsizeRestText,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
+              ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 1
-                  ? listToFillContainersIcon[1]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 1
+                    ? listToFillContainersIcon[1]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[1]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 //wenn Icon in Container und Backgroundcolors selektiert
                 //dann Backgroundcolor wählen
@@ -219,13 +227,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 2
-                  ? listToFillContainersIcon[2]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 2
+                    ? listToFillContainersIcon[2]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[2]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 //wenn Icon in Container und Backgroundcolors selektiert
                 //dann Backgroundcolor wählen
@@ -241,13 +253,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 3
-                  ? listToFillContainersIcon[3]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 3
+                    ? listToFillContainersIcon[3]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[3]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 3
                     ? (listToFillContainersHex[3] == int.parse('0xfffefefe')) &&
@@ -260,13 +276,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 4
-                  ? listToFillContainersIcon[4]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 4
+                    ? listToFillContainersIcon[4]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[4]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 4
                     ? (listToFillContainersHex[4] == int.parse('0xfffefefe')) &&
@@ -279,13 +299,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 5
-                  ? listToFillContainersIcon[5]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 5
+                    ? listToFillContainersIcon[5]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[5]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 5
                     ? (listToFillContainersHex[5] == int.parse('0xfffefefe')) &&
@@ -298,13 +322,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 6
-                  ? listToFillContainersIcon[6]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 6
+                    ? listToFillContainersIcon[6]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[6]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 6
                     ? (listToFillContainersHex[6] == int.parse('0xfffefefe')) &&
@@ -317,13 +345,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 7
-                  ? listToFillContainersIcon[7]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 7
+                    ? listToFillContainersIcon[7]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[7]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 7
                     ? (listToFillContainersHex[7] == int.parse('0xfffefefe')) &&
@@ -336,13 +368,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 8
-                  ? listToFillContainersIcon[8]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 8
+                    ? listToFillContainersIcon[8]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[8]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 8
                     ? (listToFillContainersHex[8] == int.parse('0xfffefefe')) &&
@@ -355,13 +391,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 9
-                  ? listToFillContainersIcon[9]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 9
+                    ? listToFillContainersIcon[9]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[9]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 9
                     ? (listToFillContainersHex[9] == int.parse('0xfffefefe')) &&
@@ -374,13 +414,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 10
-                  ? listToFillContainersIcon[10]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 10
+                    ? listToFillContainersIcon[10]
+                    : listToFillContainersIcon[0],
+              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[10]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 10
                     ? (listToFillContainersHex[10] ==
@@ -394,9 +438,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: listToFillContainersIcon.length > 11
-                  ? listToFillContainersIcon[11]
-                  : listToFillContainersIcon[0],
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 11
+                    ? listToFillContainersIcon[11]
+                    : listToFillContainersIcon[0],
+              ),
               color: listToFillContainersHex.length > 11
                   ? (listToFillContainersHex[11] == int.parse('0xfffefefe')) &&
                             (listWithSelectedBackgroundcolorsToFill.length > 11)
@@ -407,6 +454,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[11]),
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10.0),
             ),
 
             //footer
@@ -1046,144 +1094,200 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           size: sizeIcon - 10,
         );
       } else if (arrowDirection == 'stroop_weiss') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_weiss,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_weiss,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
           ),
-          size: sizeIconStroop,
+          width: 90,
+          height: 24,
+          //size: sizeIconStroop,
         );
       } else if (arrowDirection == 'stroop_schwarz') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_schwarz,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_schwarz,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop - 30,
           ),
-          size: sizeIconStroop - 30,
+          width: 135,
+          height: 24,
         );
       } else if (arrowDirection == 'stroop_gelb') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_gelb,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_gelb,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 70,
+          //size: sizeIconStroop,
         );
       } else if (arrowDirection == 'stroop_rot') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_rot,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_rot,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 60,
         );
       } else if (arrowDirection == 'stroop_violett') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_violett,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_violett,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop - 10,
           ),
-          size: sizeIconStroop - 10,
+          height: 24,
+          width: 100,
         );
       } else if (arrowDirection == 'stroop_blau') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_blau,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_blau,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 70,
         );
       } else if (arrowDirection == 'stroop_gruen') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons.stroop_gruen,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons.stroop_gruen,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 75,
         );
       } else if (arrowDirection == 'stroop_white') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_white,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_white,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 90,
         );
       } else if (arrowDirection == 'stroop_black') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_black,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_black,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 85,
         );
       } else if (arrowDirection == 'stroop_yellow') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_yellow,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_yellow,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop - 10,
           ),
-          size: sizeIconStroop - 10,
+          height: 24,
+          width: 105,
         );
       } else if (arrowDirection == 'stroop_red') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_red,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_red,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 60,
         );
       } else if (arrowDirection == 'stroop_violet') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_violet,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_violet,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop - 5,
           ),
-          size: sizeIconStroop - 5,
+          height: 24,
+          width: 90,
         );
       } else if (arrowDirection == 'stroop_blue') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_blue,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_blue,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 70,
         );
       } else if (arrowDirection == 'stroop_green') {
-        listToFillContainersIcon[index] = Icon(
-          StroopIcons_English.stroop_green,
-          color: Color(
-            listWithStroopTextcolors[random.nextInt(
-              listWithStroopTextcolors.length,
-            )],
+        listToFillContainersIcon[index] = SizedBox(
+          child: Icon(
+            StroopIcons_English.stroop_green,
+            color: Color(
+              listWithStroopTextcolors[random.nextInt(
+                listWithStroopTextcolors.length,
+              )],
+            ),
+            //size: sizeIconStroop,
           ),
-          size: sizeIconStroop,
+          height: 24,
+          width: 95,
         );
       }
     } else {
