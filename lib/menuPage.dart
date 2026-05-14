@@ -1190,6 +1190,12 @@ class _MyHomePageState extends State<MyHomePage> {
     restDisplayedSec = secLengthRest % 60;
     restDisplayedMin = (secLengthRest / 60).floor();
 
+    //Boolean isGerman anhand von übergebenem Argument currentCountry setzen
+    if (currentCountry == 'GB') {
+      isGerman = true;
+    } else {
+      isGerman = false;
+    }
     super.initState();
     //nach diesem aufruf wird automatisch build() ausgeführt
   }
@@ -1506,7 +1512,7 @@ class _MyHomePageState extends State<MyHomePage> {
               //Checkbox - ob jedes Element pro Seite nur einmal vorkommen darf oder nicht
               //  Bsp.: 1,3,5,7 ausgewählt, 3 Elem pro Mal anzeigen-> Anzeige 1-3-1 nicht erlaubt wenn Checkbox aktiviert
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.85,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: Transform.scale(
                   //Transform damit Grösse Checkbox angepasst werden kann
                   scale: 0.7,

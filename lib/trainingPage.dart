@@ -85,8 +85,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       []; //Array in dem alle 7 Farben, die auch als Backgroundcolor ausgewählt werden können, als ausgeschriebener Text drin sind damit nachher aus ihnen Icons generiert werden können
   var listWithStroopTextcolors =
       []; //Array in dem alle 7 Farben, die auch als Backgroundcolor ausgewählt werden können, als Zahlcode drin sind. Die Stroop-Icons werden nachher random mit diesen Farben eingefärbt
+  //-> Falls für Stroop auch der Hintergrund farbig sein soll, können ganz normal im Menu Farben bei "Hintergrundfarbe Icons" gewählt werden
 
-  //var list4RandomHex = [0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000];
   int anzColorsOnPage2 = 1;
   int secChangeColor2 = 1;
   int secLengthRound2 = 1;
@@ -184,11 +184,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
               child: FittedBox(
+                //FittedBox führt dazu, dass sich die Grösse der Icons dem vorhandenen Platz im parent anpasst
                 fit: BoxFit.contain,
                 child: restText == ''
                     ? listToFillContainersIcon[0]
                     : Align(
                         alignment: Alignment.center,
+                        //Die Anzeige "Pause" wird im ersten Container gemacht
                         child: Text(
                           restText,
                           style: TextStyle(
