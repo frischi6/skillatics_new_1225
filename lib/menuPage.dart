@@ -361,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (stroopTextcolor.contains(4284874913)) {
           stroopTexticons.add('stroop_violett');
         }
-        if (stroopTextcolor.contains(4278190219)) {
+        if (stroopTextcolor.contains(4282685923)) {
           stroopTexticons.add('stroop_blau');
         }
         if (stroopTextcolor.contains(4284661515)) {
@@ -384,7 +384,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (stroopTextcolor.contains(4284874913)) {
           stroopTexticons.add('stroop_violet');
         }
-        if (stroopTextcolor.contains(4278190219)) {
+        if (stroopTextcolor.contains(4282685923)) {
           stroopTexticons.add('stroop_blue');
         }
         if (stroopTextcolor.contains(4284661515)) {
@@ -1131,9 +1131,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         MultiSelectCard(
-          value: 4278190219, //blau
+          value: 4282685923, //blau
           label: '',
-          selected: stroopTextcolor.contains(4278190219),
+          selected: stroopTextcolor.contains(4282685923),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
               color: Colors.lightBlue.withOpacity(0.4),
