@@ -25,7 +25,6 @@ class RandomColorPage2 extends StatefulWidget {
     required this.anzRounds,
     required this.currentCountry,
     required this.isElemProSeiteEinmalig,
-    required this.isStroopActive,
     required this.listStroopText,
     required this.listStroopTextcolors,
     required this.nr_individual,
@@ -48,7 +47,6 @@ class RandomColorPage2 extends StatefulWidget {
   int secLengthRest;
   int anzRounds;
   bool isElemProSeiteEinmalig;
-  bool isStroopActive;
   String currentCountry;
   String
   nr_individual,
@@ -131,9 +129,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var firstItemLastRound;
   var listToFillContainersIconDuplicate = [];
   var listToFillContainersHexDuplicate = [];
-
-  //Stroop, 4.5.26
-  bool isStroopActive2 = false;
 
   @override
   void initState() {
@@ -556,8 +551,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     secsLengthRestCD = secLengthRest2 % 60;
 
     isElemProSeiteEinmalig2 = widget.isElemProSeiteEinmalig;
-
-    isStroopActive2 = widget.isStroopActive;
   }
 
   //füllt listWithSelectedColors ab aus widget.
@@ -1365,13 +1358,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           listSelectedShapes: widget.listSelectedShapes,
           listSelectedAlphabetletters: widget.listSelectedAlphabetletters,
           listSelectedBackgroundcolors: widget.listSelectedBackgroundcolors,
+          listSelectedStroopcolors: widget.listStroopTextcolors,
           anzColorsOnPage: widget.anzColorsOnPage,
           secChangeColor: widget.secChangeColor,
           secLengthRound: widget.secLengthRound,
           secLengthRest: widget.secLengthRest,
           anzRounds: widget.anzRounds,
           isElemProSeiteEinmalig: widget.isElemProSeiteEinmalig,
-          isStroopActive: widget.isStroopActive,
           nr_individual: widget.nr_individual,
           nr_from: widget.nr_from,
           nr_to: widget.nr_to,
@@ -1401,7 +1394,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           anzRounds: anzRounds2,
           currentCountry: widget.currentCountry,
           isElemProSeiteEinmalig: isElemProSeiteEinmalig2,
-          isStroopActive: isStroopActive2,
           listStroopText: listWithStroopText,
           listStroopTextcolors: listWithStroopTextcolors,
           nr_individual: widget.nr_individual,

@@ -21,13 +21,13 @@ class MyHomePage extends StatefulWidget {
     required this.listSelectedShapes,
     required this.listSelectedAlphabetletters,
     required this.listSelectedBackgroundcolors,
+    required this.listSelectedStroopcolors,
     required this.anzColorsOnPage,
     required this.secChangeColor,
     required this.secLengthRound,
     required this.secLengthRest,
     required this.anzRounds,
     required this.isElemProSeiteEinmalig,
-    required this.isStroopActive,
     required this.nr_individual,
     required this.nr_from,
     required this.nr_to,
@@ -42,13 +42,13 @@ class MyHomePage extends StatefulWidget {
   var listSelectedShapes;
   var listSelectedAlphabetletters;
   var listSelectedBackgroundcolors;
+  var listSelectedStroopcolors;
   int anzColorsOnPage;
   int secChangeColor;
   int secLengthRound;
   int secLengthRest;
   int anzRounds;
   bool isElemProSeiteEinmalig;
-  bool isStroopActive;
   String nr_individual, nr_from, nr_to, nr_skip;
 
   @override
@@ -70,7 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String nr_skip = '';
   bool isNrOutOfRange = false;
   bool isElemProSeiteEinmalig = false;
-  bool isStroopActive = false;
 
   //Variabeln für Einstellungen, siehe Skizze, werden an Page2 übergeben
   //werden eingentlich von main.dart übergeben, müssen hier aber einfach auch noch initialisiert werden, Werte werden aber überschrieben
@@ -104,10 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
   //beinhaltet hex-werte von allen selected items: hex-wert der gewählten farbe oder bei zahlen/formen/etc immer hex-wert fefefe-> so wird in trainingpage erkannt dass ein icon angezeigt werden muss
   var selectedItems = [];
 
-  //Array in dem alle 7 Farben, die auch als Backgroundcolor ausgewählt werden können, als Zahlcode drin sind. Die stroopTexticons werden in der trainingPage random mit diesen Farben eingefärbt
-  var stroopTextcolor = [];
-  //Array mit den 7 Farben als ausgeschriebener Text, die in der Trainingspage als Icon hinzugefügt und eingefärbt werden
+  //Array mit den selektierten Farben als ausgeschriebener Text, die in der Trainingspage als Icon hinzugefügt und eingefärbt werden
   var stroopTexticons = [];
+  //Array mit den Schriftfarben für den Stroop-Text. Im Array sind die selben Farben wie in stroopTexticons drin sind (die
+  //beiden Arrays werden in organizeStroop() miteinander abgeglichen). In diesem Array werden die Werte als Farbcodes abgespeichert.
+  //Die stroopTexticons werden in der trainingPage random mit diesen Farben eingefärbt
+  var stroopTextcolor = [];
 
   //Controller für Multiselect Alphabetletter damit alle items aufs mal (ab-)gewählt werden können
   final MultiSelectController<dynamic> _controllerAlphabetLetter =
@@ -144,9 +145,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Wechsel auf Seite 2 mit den angezeigten Farben
   void _changeToPage2() {
+    //Schönheitsanpassung: Damit Fehlermeldung verschwindet, wenn falsche Auswahl
+    // korrigiert wurde und erneut auf Start gedrückt wird
+    setState(() {
+      textFehlermeldung = '';
+    });
+
     organizeElementsColors();
     organizeBackgroundcolor();
-    organizeStroop();
 
     //überprüft, ob Werte gültig sind
     if (isNrOutOfRange) {
@@ -157,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         textFehlermeldung = 'fehlerArrowsNoColor'.tr;
       });
-    } else if (selectedItems.isEmpty && isStroopActive == false) {
+    } else if (selectedItems.isEmpty) {
       setState(() {
         textFehlermeldung = 'fehlerColorsNull'.tr;
       });
@@ -166,9 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         textFehlermeldung = 'fehlerColorsAnzElemEinmal'.tr;
       });
-    } else if (selectedItems.length == 1 &&
-        isStroopActive == false &&
-        anzColorsOnPage > 1) {
+    } else if (selectedItems.length == 1 && anzColorsOnPage > 1) {
       setState(() {
         textFehlermeldung = 'fehlerColorsAnz'.tr;
       });
@@ -206,7 +210,6 @@ class _MyHomePageState extends State<MyHomePage> {
               anzRounds: anzRounds,
               currentCountry: currentCountry,
               isElemProSeiteEinmalig: isElemProSeiteEinmalig,
-              isStroopActive: isStroopActive,
               listStroopText: stroopTexticons,
               listStroopTextcolors: stroopTextcolor,
               nr_individual: nr_individual,
@@ -309,6 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return; //Fehleingabe bei Zahlen (Out of Range)
     }
     organizeArrowcolors();
+    organizeStroop();
 
     selectedItems = []; //Array leeren
     selectedItems =
@@ -316,7 +320,8 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedNumbers +
         selectedArrowsPerColor +
         selectedShapes +
-        selectedAlphabetletters;
+        selectedAlphabetletters +
+        stroopTexticons;
     for (int i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].length != 6) {
         //length 6 sind hexwerte von colors-> restliche itemnamen von zb shapes dürfen nicht einen namen haben der 6 ziffern lang ist!
@@ -337,49 +342,54 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void organizeStroop() {
-    if (isStroopActive) {
-      stroopTextcolor = [
-        //farbcodes übernommen aus buildBackgroundColorselect
-        4294967295, //weiss: hex ffffff mit opacity 100%, berechnung: int.parse('0xffffffff')
-        4283716692, //schwarz/grau
-        4294311680, //gelb
-        3439263744, //rot
-        3435157247, //violett
-        2566959854, //blau
-        1711336960, //grün
-      ];
-
-      stroopTextcolor = [
-        //farbcodes sind nicht die gleichen wie in buildBackgroundColorselect, damit auch die gleichen farben bei schrift und hintergrund in kombination vorkommen können
-        4293192685, //weiss: hex ffe4ebed mit opacity 100%, berechnung: int.parse('0xffe4ebed')
-        4278190080, //schwarz
-        4294631476, //gelb
-        4294901760, //rot
-        4284874913, //violett
-        4278190219, //blau
-        4284661515, //grün
-      ];
+    if (stroopTextcolor.length > 0) {
+      stroopTexticons = []; //reset
 
       if (isGerman) {
-        stroopTexticons = [
-          'stroop_weiss',
-          'stroop_schwarz',
-          'stroop_gelb',
-          'stroop_rot',
-          'stroop_violett',
-          'stroop_blau',
-          'stroop_gruen',
-        ];
+        if (stroopTextcolor.contains(4293192685)) {
+          stroopTexticons.add('stroop_weiss');
+        }
+        if (stroopTextcolor.contains(4278190080)) {
+          stroopTexticons.add('stroop_schwarz');
+        }
+        if (stroopTextcolor.contains(4294631476)) {
+          stroopTexticons.add('stroop_gelb');
+        }
+        if (stroopTextcolor.contains(4294901760)) {
+          stroopTexticons.add('stroop_rot');
+        }
+        if (stroopTextcolor.contains(4284874913)) {
+          stroopTexticons.add('stroop_violett');
+        }
+        if (stroopTextcolor.contains(4278190219)) {
+          stroopTexticons.add('stroop_blau');
+        }
+        if (stroopTextcolor.contains(4284661515)) {
+          stroopTexticons.add('stroop_gruen');
+        }
       } else {
-        stroopTexticons = [
-          'stroop_white',
-          'stroop_black',
-          'stroop_yellow',
-          'stroop_red',
-          'stroop_violet',
-          'stroop_blue',
-          'stroop_green',
-        ];
+        //englisch
+        if (stroopTextcolor.contains(4293192685)) {
+          stroopTexticons.add('stroop_white');
+        }
+        if (stroopTextcolor.contains(4278190080)) {
+          stroopTexticons.add('stroop_black');
+        }
+        if (stroopTextcolor.contains(4294631476)) {
+          stroopTexticons.add('stroop_yellow');
+        }
+        if (stroopTextcolor.contains(4294901760)) {
+          stroopTexticons.add('stroop_red');
+        }
+        if (stroopTextcolor.contains(4284874913)) {
+          stroopTexticons.add('stroop_violet');
+        }
+        if (stroopTextcolor.contains(4278190219)) {
+          stroopTexticons.add('stroop_blue');
+        }
+        if (stroopTextcolor.contains(4284661515)) {
+          stroopTexticons.add('stroop_green');
+        }
       }
 
       //selectedItems darf nicht leer sein, falls nur Stroop selektiert ist, dann hier Default-Wert mitgeben
@@ -1009,6 +1019,154 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  /// returnt ein MultiSelectContainer, in dem Farben für Stroop ausgewählt werden können
+  /// Die gewählten Farben werden für Text und Textfarbe des Stroop benutzt. Die Hintergrundfarbe
+  /// des Schriftzugs läuft über "Hintergrundfarbe Icons" (buildBackgroundColorselect)
+  MultiSelectContainer buildStroopColorselect() {
+    return MultiSelectContainer(
+      key: Key(
+        keyString,
+      ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
+      //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
+      prefix: MultiSelectPrefix(
+        selectedPrefix: const Padding(
+          padding: EdgeInsets.only(right: 5),
+          child: Icon(
+            Icons.check,
+            color: Color.fromRGBO(
+              233,
+              233,
+              233,
+              1,
+            ), //lightgrey damit unterscheidbar bei weiss
+            size: 14,
+          ),
+        ),
+      ),
+      items: [
+        MultiSelectCard(
+          //farbcodes sind nicht die gleichen wie in buildBackgroundColorselect,
+          // damit auch die gleichen farben bei schrift und hintergrund in kombination vorkommen können
+          value:
+              4293192685, //weiss: hex ffe4ebed mit opacity 100%, berechnung: int.parse('0xffe4ebed')
+          label: '',
+          selected: stroopTextcolor.contains(4293192685),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(233, 233, 233, 1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.grey.withOpacity(0.6)),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.grey.withOpacity(0.6)),
+            ),
+          ),
+          textStyles: const MultiSelectItemTextStyles(
+            selectedTextStyle: TextStyle(color: Colors.black),
+          ),
+        ),
+        MultiSelectCard(
+          value: 4278190080, //schwarz
+          label: '',
+          selected: stroopTextcolor.contains(4278190080),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          textStyles: const MultiSelectItemTextStyles(
+            selectedTextStyle: TextStyle(color: Colors.white),
+          ),
+        ),
+        MultiSelectCard(
+          value: 4294631476, //gelb
+          label: '',
+          selected: stroopTextcolor.contains(4294631476),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.yellow.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.yellow,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: 4294901760, //rot
+          label: '',
+          selected: stroopTextcolor.contains(4294901760),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: 4284874913, //violett
+          label: '',
+          selected: stroopTextcolor.contains(4284874913),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: const Color.fromARGB(255, 102, 0, 161),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: 4278190219, //blau
+          label: '',
+          selected: stroopTextcolor.contains(4278190219),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.lightBlue.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.lightBlue,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: 4284661515, //grün
+          label: '',
+          selected: stroopTextcolor.contains(4284661515),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.lightGreen.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.lightGreen,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ],
+      onChange: (allSelectedItems, selectedItem) {
+        stroopTextcolor = allSelectedItems;
+      },
+    );
+  }
+
   /// returnt ein MultiSelectContainer, in dem Hintergrundfarben für die Icons ausgewählt werden können
   MultiSelectContainer buildBackgroundColorselect() {
     return MultiSelectContainer(
@@ -1036,7 +1194,11 @@ class _MyHomePageState extends State<MyHomePage> {
           value:
               4294967295, //hex ffffff mit opacity 100%, weiss, berechnung: int.parse('0xffffffff')
           label: '',
-          selected: selectedBackgroundcolors.contains(4294967295),
+          selected:
+              selectedBackgroundcolors.contains(4294967295) ||
+              selectedBackgroundcolors.length ==
+                  0, //wenn nur weiss ausgewählt ist, wird Array leer an Trainingspage
+          // übergeben und kommmt somit auch leer wieder von Trainingspage zurück (siehe organizeBackgroundcolor)
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
               color: Color.fromRGBO(233, 233, 233, 1),
@@ -1165,13 +1327,14 @@ class _MyHomePageState extends State<MyHomePage> {
     selectedShapes = widget.listSelectedShapes;
     selectedAlphabetletters = widget.listSelectedAlphabetletters;
     selectedBackgroundcolors = widget.listSelectedBackgroundcolors;
+    stroopTextcolor = widget.listSelectedStroopcolors;
+
     anzColorsOnPage = widget.anzColorsOnPage;
     secChangeColor = widget.secChangeColor;
     secLengthRound = widget.secLengthRound;
     secLengthRest = widget.secLengthRest;
     anzRounds = widget.anzRounds;
     isElemProSeiteEinmalig = widget.isElemProSeiteEinmalig;
-    isStroopActive = widget.isStroopActive;
     nr_individual = widget.nr_individual;
     nr_from = widget.nr_from;
     nr_to = widget.nr_to;
@@ -1461,6 +1624,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: buildShapeselect(),
               ),
               SizedBox(height: 25),
+              Text('Stroop', style: TextStyle(fontStyle: FontStyle.italic)),
+              SizedBox(height: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: buildStroopColorselect(),
+              ),
+              SizedBox(height: 25),
               Text(
                 'background'.tr + ' Icons',
                 style: TextStyle(fontStyle: FontStyle.italic),
@@ -1469,23 +1639,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ConstrainedBox(
                 constraints: BoxConstraints(),
                 child: buildBackgroundColorselect(),
-              ),
-              SizedBox(height: 25),
-              Text('Stroop', style: TextStyle(fontStyle: FontStyle.italic)),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Transform.scale(
-                  //Transform damit Grösse Checkbox angepasst werden kann
-                  scale: 0.9,
-                  child: Checkbox(
-                    value: isStroopActive,
-                    onChanged: (value) => setState(
-                      () => isStroopActive =
-                          value ??= //wenn value null dann per default false nehmen
-                              false,
-                    ),
-                  ),
-                ),
               ),
               SizedBox(height: 15),
               Divider(

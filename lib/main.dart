@@ -68,13 +68,13 @@ class MyApp extends StatelessWidget {
         listSelectedBackgroundcolors: [
           4294967295,
         ], //default weiss als Hintergrundfarbe selektiert
+        listSelectedStroopcolors: [], //default stroop nicht aktiv
         anzColorsOnPage: anzColorsOnPage,
         secChangeColor: secChangeColor,
         secLengthRound: secLengthRound,
         secLengthRest: secLengthRest,
         anzRounds: anzRounds,
         isElemProSeiteEinmalig: isElemProSeiteEinmalig,
-        isStroopActive: isStroopActive,
         nr_individual: '',
         nr_from: '',
         nr_to: '',
