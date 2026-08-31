@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           '_4278190080',
         ], //per default schwarze arrowcolor selektiert
         listSelectedNumbers: [],
-        listSelectedShapes: [],
+        listSelectedShapesPerColor: [],
         listSelectedAlphabetletters: [],
         listSelectedBackgroundcolors: [
           4294967295,

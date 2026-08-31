@@ -15,7 +15,7 @@ class RandomColorPage2 extends StatefulWidget {
     required this.listSelectedColors,
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbers,
-    required this.listSelectedShapes,
+    required this.listSelectedShapesPerColor,
     required this.listSelectedAlphabetletters,
     required this.listSelectedBackgroundcolors,
     required this.anzColorsOnPage,
@@ -36,7 +36,7 @@ class RandomColorPage2 extends StatefulWidget {
   var listSelectedColors;
   var listSelectedArrowsPerColor;
   var listSelectedNumbers;
-  var listSelectedShapes;
+  var listSelectedShapesPerColor;
   var listSelectedAlphabetletters;
   var listSelectedBackgroundcolors;
   var listStroopText;
@@ -67,7 +67,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   var listWithSelectedArrowsPerColor = [];
   var listWithSelectedNumbers = [];
-  var listWithSelectedShapes = [];
+  var listWithSelectedShapesPerColor = [];
   var listWithSelectedAlphabetletters = [];
   var listWithSelectedIcons =
       []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes + listWithSelectedAlphabetletters
@@ -560,8 +560,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   void _initializeListSelectedArrows() {
     listWithSelectedArrowsPerColor = widget.listSelectedArrowsPerColor;
+    listWithSelectedShapesPerColor = widget.listSelectedShapesPerColor;
     _initializeListSelectedNumbers();
-    _initializeListSelectedShapes();
     _initializeListSelectedAlphabetletters();
     _initializeStroop();
     _initializeListSelectedIcons();
@@ -741,10 +741,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     );
   }
 
-  void _initializeListSelectedShapes() {
-    listWithSelectedShapes = widget.listSelectedShapes;
-  }
-
   void _initializeListSelectedAlphabetletters() {
     listWithSelectedAlphabetletters = widget.listSelectedAlphabetletters;
   }
@@ -753,7 +749,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     listWithSelectedIcons =
         listWithSelectedArrowsPerColor +
         listWithSelectedNumbers +
-        listWithSelectedShapes +
+        listWithSelectedShapesPerColor +
         listWithSelectedAlphabetletters +
         listWithStroopText;
   }
@@ -827,6 +823,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     );
   }
 
+  int getColorcodeByItemPerColor(item_itemcolor) {
+    //parameter wird nach diesem format übergeben: item_itemcolor
+    //returnt wird itemcolor
+    return int.parse(
+      item_itemcolor.substring(
+        item_itemcolor.indexOf('_') + 1,
+        item_itemcolor.length,
+      ),
+    );
+  }
+
   /// füllt listToFillContainersIcon mit korrektem icon und farbe inkl ob arrow sichtbar ist oder selbe farbe hat wie hintergrund
   void addToListToFillContainersIcon(index, arrowDirection, arrowVisible) {
     if (index >= listToFillContainersIcon.length) {
@@ -868,68 +875,68 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         listToFillContainersIcon[index] = Icon(
           Icons.north_east,
           color: Color(
-            getColorcodeByArrowPerColor(arrowDirection),
+            getColorcodeByItemPerColor(arrowDirection),
           ), //arrowcolor auslesen
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('northwest_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.north_west,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('southeast_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.south_east,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('southwest_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.south_west,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
       } else if (arrowDirection.contains('north_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.north,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('east_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.east,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('south_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.south,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
       } else if (arrowDirection.contains('west_')) {
         listToFillContainersIcon[index] = Icon(
           Icons.west,
-          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
-      } else if (arrowDirection == 'triangle') {
+      } else if (arrowDirection.contains('triangle_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.triangle,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
-      } else if (arrowDirection == 'kreis') {
+      } else if (arrowDirection.contains('kreis_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.circle,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
-      } else if (arrowDirection == 'quadrat') {
+      } else if (arrowDirection.contains('quadrat_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.square,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
       } else if (arrowDirection == 'letterA') {
@@ -1355,7 +1362,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           listSelectedColors: widget.listSelectedColors,
           listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
           listSelectedNumbers: widget.listSelectedNumbers,
-          listSelectedShapes: widget.listSelectedShapes,
+          listSelectedShapesPerColor: widget.listSelectedShapesPerColor,
           listSelectedAlphabetletters: widget.listSelectedAlphabetletters,
           listSelectedBackgroundcolors: widget.listSelectedBackgroundcolors,
           listSelectedStroopcolors: widget.listStroopTextcolors,
@@ -1384,7 +1391,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           listSelectedColors: listWithSelectedColors,
           listSelectedArrowsPerColor: listWithSelectedArrowsPerColor,
           listSelectedNumbers: listWithSelectedNumbers,
-          listSelectedShapes: listWithSelectedShapes,
+          listSelectedShapesPerColor: listWithSelectedShapesPerColor,
           listSelectedAlphabetletters: listWithSelectedAlphabetletters,
           listSelectedBackgroundcolors: listWithSelectedBackgroundcolors,
           anzColorsOnPage: anzColorsOnPage2,
@@ -1531,7 +1538,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 firstHexLastRound == int.parse('0xfffefefe')
           ? listWithSelectedIcons[0]
           : ''; //abfangen wenn nur color-items ausgewählt
-      //safr hier stroop zu listwithselectedicons hinzufügen?
       //endlosloop in do-while verhindern wenn nur 1 icon/farbe ausgewählt
       if (isElemProSeiteEinmalig2 && listToFillContainersHex.length > 1 ||
           !isElemProSeiteEinmalig2 && listToFillContainersHex.length > 2) {
