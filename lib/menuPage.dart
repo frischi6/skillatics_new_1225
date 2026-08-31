@@ -19,7 +19,7 @@ class MyHomePage extends StatefulWidget {
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbers,
     required this.listSelectedShapesPerColor,
-    required this.listSelectedAlphabetletters,
+    required this.listSelectedAlphabetlettersPerColor,
     required this.listSelectedBackgroundcolors,
     required this.listSelectedStroopcolors,
     required this.anzColorsOnPage,
@@ -40,7 +40,7 @@ class MyHomePage extends StatefulWidget {
   var listSelectedArrowsPerColor;
   var listSelectedNumbers;
   var listSelectedShapesPerColor;
-  var listSelectedAlphabetletters;
+  var listSelectedAlphabetlettersPerColor;
   var listSelectedBackgroundcolors;
   var listSelectedStroopcolors;
   int anzColorsOnPage;
@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String currentCountry = "GB"; //flagge die aktuell oben rechts angezeigt wird
   String keyString = '1';
   int keyInt = 1;
+  double fontsizeItemtitle = 17;
 
   String nr_from = '';
   String nr_to = '';
@@ -103,6 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
       []; //wird an trainingspage übergeben mit ein item pro kombination shape & farbe im format shape_shapecolor
 
   var selectedAlphabetletters = [];
+  var selectedAlphabetlettercolors =
+      []; //Buchstaben sollten nicht nur schwarz sondern auch in anderen farben angezeigt werden können, nicht an trainingpage übergeben
+  var selectedAlphabetlettersPerColor =
+      []; //wird an trainingspage übergeben mit ein item pro kombination buchstabe & farbe im format alphabetletter_lettercolor
+
   var selectedBackgroundcolors = [];
 
   //beinhaltet hex-werte von allen selected items: hex-wert der gewählten farbe oder bei zahlen/formen/etc immer hex-wert fefefe-> so wird in trainingpage erkannt dass ein icon angezeigt werden muss
@@ -164,6 +170,11 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         textFehlermeldung = 'fehlerNrOutOfRange'.tr;
       });
+    } else if (selectedAlphabetletters.length > 0 &&
+        selectedAlphabetlettersPerColor.length < 1) {
+      setState(() {
+        textFehlermeldung = 'fehlerAlphabetlettersNoColor'.tr;
+      });
     } else if (selectedArrows.length > 0 && selectedArrowsPerColor.length < 1) {
       setState(() {
         textFehlermeldung = 'fehlerArrowsNoColor'.tr;
@@ -210,7 +221,8 @@ class _MyHomePageState extends State<MyHomePage> {
               listSelectedArrowsPerColor: selectedArrowsPerColor,
               listSelectedNumbers: selectedNumbers,
               listSelectedShapesPerColor: selectedShapesPerColor,
-              listSelectedAlphabetletters: selectedAlphabetletters,
+              listSelectedAlphabetlettersPerColor:
+                  selectedAlphabetlettersPerColor,
               listSelectedBackgroundcolors: selectedBackgroundcolors,
               anzColorsOnPage: anzColorsOnPage,
               secChangeColor: secChangeColor,
@@ -334,6 +346,10 @@ class _MyHomePageState extends State<MyHomePage> {
       selectedShapes,
       selectedShapecolors,
     );
+    selectedAlphabetlettersPerColor = organizeItemPerColor(
+      selectedAlphabetletters,
+      selectedAlphabetlettercolors,
+    );
 
     organizeStroop();
 
@@ -343,7 +359,7 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedNumbers +
         selectedArrowsPerColor +
         selectedShapesPerColor +
-        selectedAlphabetletters +
+        selectedAlphabetlettersPerColor +
         stroopTexticons;
     for (int i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].length != 6) {
@@ -476,6 +492,9 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (item == 'shape') {
       selectedShapes = selectedItems;
       selectedShapecolors = selectedItemcolors;
+    } else if (item == 'alphabetletter') {
+      selectedAlphabetletters = selectedItems;
+      selectedAlphabetlettercolors = selectedItemcolors;
     }
   }
 
@@ -1165,6 +1184,120 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  MultiSelectContainer buildAlphabetColorselect() {
+    return MultiSelectContainer(
+      key: Key(
+        keyString,
+      ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
+      //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
+      prefix: MultiSelectPrefix(
+        selectedPrefix: const Padding(
+          padding: EdgeInsets.only(right: 5),
+          child: Icon(Icons.check, color: Colors.white, size: 14),
+        ),
+      ),
+      items: [
+        MultiSelectCard(
+          value:
+              '4278190080', //hex 000000, schwarz, berechnung: int.parse('0xff000000')
+          label: '',
+          selected: selectedAlphabetlettercolors.contains('4278190080'),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          textStyles: const MultiSelectItemTextStyles(
+            selectedTextStyle: TextStyle(color: Colors.white),
+          ),
+        ),
+        MultiSelectCard(
+          value: '4293444664', //hex e8c438, gelb
+          label: '',
+          selected: selectedAlphabetlettercolors.contains('4293444664'),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.yellow.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.yellow,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: '4294901760', //hex ff0000, red
+          label: '',
+          selected: selectedAlphabetlettercolors.contains('4294901760'),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: '4290795263', //hex c056ff, violett
+          label: '',
+          selected: selectedAlphabetlettercolors.contains('4290795263'),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: const Color.fromARGB(255, 102, 0, 161),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: '4278235886', //hex 00b2ee, blue
+          label: '',
+          selected: selectedAlphabetlettercolors.contains('4278235886'),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.lightBlue.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.lightBlue,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: '4278251008', //hex 00ee00, green
+          label: '',
+          selected: selectedAlphabetlettercolors.contains('4278251008'),
+          decorations: MultiSelectItemDecorations(
+            decoration: BoxDecoration(
+              color: Colors.lightGreen.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.lightGreen,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ],
+      onChange: (allSelectedItems, selectedItem) {
+        selectedAlphabetlettercolors = allSelectedItems;
+      },
+    );
+  }
+
   /// returnt ein MultiSelectContainer, in dem Farben für Stroop ausgewählt werden können
   /// Die gewählten Farben werden für Text und Textfarbe des Stroop benutzt. Die Hintergrundfarbe
   /// des Schriftzugs läuft über "Hintergrundfarbe Icons" (buildBackgroundColorselect)
@@ -1471,7 +1604,8 @@ class _MyHomePageState extends State<MyHomePage> {
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     selectedNumbers = widget.listSelectedNumbers;
     selectedShapesPerColor = widget.listSelectedShapesPerColor;
-    selectedAlphabetletters = widget.listSelectedAlphabetletters;
+    selectedAlphabetlettersPerColor =
+        widget.listSelectedAlphabetlettersPerColor;
     selectedBackgroundcolors = widget.listSelectedBackgroundcolors;
     stroopTextcolor = widget.listSelectedStroopcolors;
 
@@ -1497,6 +1631,10 @@ class _MyHomePageState extends State<MyHomePage> {
       selectedShapesPerColor,
       'shape',
     ); //array mit shape_shapecolor aufteilen in array mit arrowdirections und array mit arrowcolors
+    initializeItemsPerColorToItemAndColor(
+      selectedAlphabetlettersPerColor,
+      'alphabetletter',
+    ); //array mit alphabetletter_alphabetlettercolor aufteilen in array mit alphabetletters und array mit alphabetlettercolors
 
     //dauer durchlauf & pause setzen
     roundDisplayedSec = secLengthRound % 60;
@@ -1576,7 +1714,13 @@ class _MyHomePageState extends State<MyHomePage> {
               //SizedBox(height: 20,),
               Text('selItems'.tr, style: TextStyle(fontSize: 15)),
               SizedBox(height: 18),
-              Text('farben'.tr, style: TextStyle(fontStyle: FontStyle.italic)),
+              Text(
+                'farben'.tr,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: fontsizeItemtitle,
+                ),
+              ),
               SizedBox(height: 10),
               ConstrainedBox(
                 constraints: BoxConstraints(),
@@ -1585,7 +1729,10 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 25),
               Text(
                 'buchstaben'.tr,
-                style: TextStyle(fontStyle: FontStyle.italic),
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: fontsizeItemtitle,
+                ),
               ),
               SizedBox(height: 10),
               Row(
@@ -1631,6 +1778,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildAlphabetselect(),
               ),
+              SizedBox(height: 20),
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: buildAlphabetColorselect(),
+              ),
               SizedBox(height: 25),
 
               Row(
@@ -1638,7 +1790,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text(
                     'zahlen'.tr,
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: fontsizeItemtitle,
+                    ),
                   ),
                   SizedBox(width: 3),
                 ],
@@ -1756,7 +1911,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               SizedBox(height: 25),
-              Text('pfeile'.tr, style: TextStyle(fontStyle: FontStyle.italic)),
+              Text(
+                'pfeile'.tr,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: fontsizeItemtitle,
+                ),
+              ),
               SizedBox(height: 10),
               ConstrainedBox(
                 constraints: BoxConstraints(),
@@ -1768,7 +1929,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: buildArrowColorselect(),
               ),
               SizedBox(height: 25),
-              Text('formen'.tr, style: TextStyle(fontStyle: FontStyle.italic)),
+              Text(
+                'formen'.tr,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: fontsizeItemtitle,
+                ),
+              ),
               SizedBox(height: 10),
               ConstrainedBox(
                 constraints: BoxConstraints(),
@@ -1780,7 +1947,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: buildShapeColorselect(),
               ),
               SizedBox(height: 25),
-              Text('Stroop', style: TextStyle(fontStyle: FontStyle.italic)),
+              Text(
+                'Stroop',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: fontsizeItemtitle,
+                ),
+              ),
               SizedBox(height: 10),
               ConstrainedBox(
                 constraints: BoxConstraints(),
@@ -1789,7 +1962,10 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 25),
               Text(
                 'background'.tr + ' Icons',
-                style: TextStyle(fontStyle: FontStyle.italic),
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: fontsizeItemtitle,
+                ),
               ),
               SizedBox(height: 10),
               ConstrainedBox(

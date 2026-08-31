@@ -13,8 +13,12 @@ class TranslationText extends Translations {
       'fehlerWechselDurchlauf':
           'Der Farbwechsel muss kürzer sein als die Dauer eines Durchlaufs.',
       'fehlerPauseNull': 'Die Pause muss mindestens eine Sekunde dauern.',
-      'fehlerArrowsNoColor': 'Bitte mindestens eine Pfeilfarbe wählen.',
-      'fehlerShapesNoColor': 'Bitte mindestens eine Farbe für Formen wählen.',
+      'fehlerAlphabetlettersNoColor':
+          'Bitte mindestens eine Farbe für die Buchstaben wählen.',
+      'fehlerArrowsNoColor':
+          'Bitte mindestens eine Farbe für die Pfeile wählen.',
+      'fehlerShapesNoColor':
+          'Bitte mindestens eine Farbe für die Formen wählen.',
       'fehlerNrOutOfRange': 'Es sind nur Ganzzahlen von 0 bis 50 erlaubt.',
       'Gelb': 'Gelb',
       'Orange': 'Orange',
@@ -78,6 +82,8 @@ class TranslationText extends Translations {
           'The color change must be shorter than the duration of one pass.',
       'fehlerPauseNull': 'The pause must last at least one second.',
       'fehlerNrOutOfRange': 'Only whole numbers from 0 to 50 are permitted.',
+      'fehlerAlphabetlettersNoColor':
+          'Please select at least one letter color.',
       'fehlerArrowsNoColor': 'Please select at least one arrow color.',
       'fehlerShapesNoColor': 'Please select at least one shape color.',
       'Gelb': 'yellow',

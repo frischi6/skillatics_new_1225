@@ -16,7 +16,7 @@ class RandomColorPage2 extends StatefulWidget {
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbers,
     required this.listSelectedShapesPerColor,
-    required this.listSelectedAlphabetletters,
+    required this.listSelectedAlphabetlettersPerColor,
     required this.listSelectedBackgroundcolors,
     required this.anzColorsOnPage,
     required this.secChangeColor,
@@ -37,7 +37,7 @@ class RandomColorPage2 extends StatefulWidget {
   var listSelectedArrowsPerColor;
   var listSelectedNumbers;
   var listSelectedShapesPerColor;
-  var listSelectedAlphabetletters;
+  var listSelectedAlphabetlettersPerColor;
   var listSelectedBackgroundcolors;
   var listStroopText;
   var listStroopTextcolors;
@@ -68,7 +68,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var listWithSelectedArrowsPerColor = [];
   var listWithSelectedNumbers = [];
   var listWithSelectedShapesPerColor = [];
-  var listWithSelectedAlphabetletters = [];
+  var listWithSelectedAlphabetlettersPerColor = [];
   var listWithSelectedIcons =
       []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes + listWithSelectedAlphabetletters
   var listToFillContainersIcon = [];
@@ -561,8 +561,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   void _initializeListSelectedArrows() {
     listWithSelectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     listWithSelectedShapesPerColor = widget.listSelectedShapesPerColor;
+    listWithSelectedAlphabetlettersPerColor =
+        widget.listSelectedAlphabetlettersPerColor;
     _initializeListSelectedNumbers();
-    _initializeListSelectedAlphabetletters();
     _initializeStroop();
     _initializeListSelectedIcons();
     _initializeListSelectedBackgroundcolors();
@@ -741,16 +742,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     );
   }
 
-  void _initializeListSelectedAlphabetletters() {
-    listWithSelectedAlphabetletters = widget.listSelectedAlphabetletters;
-  }
-
   void _initializeListSelectedIcons() {
     listWithSelectedIcons =
         listWithSelectedArrowsPerColor +
         listWithSelectedNumbers +
         listWithSelectedShapesPerColor +
-        listWithSelectedAlphabetletters +
+        listWithSelectedAlphabetlettersPerColor +
         listWithStroopText;
   }
 
@@ -939,160 +936,160 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );
-      } else if (arrowDirection == 'letterA') {
+      } else if (arrowDirection.contains('letterA_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.a,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterB') {
+      } else if (arrowDirection.contains('letterB_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.b,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterC') {
+      } else if (arrowDirection.contains('letterC_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.c,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterD') {
+      } else if (arrowDirection.contains('letterD_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.d,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterE') {
+      } else if (arrowDirection.contains('letterE_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.e,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterF') {
+      } else if (arrowDirection.contains('letterF_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.f,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterG') {
+      } else if (arrowDirection.contains('letterG_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.g,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterH') {
+      } else if (arrowDirection.contains('letterH_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.h,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterI') {
+      } else if (arrowDirection.contains('letterI_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.i,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterJ') {
+      } else if (arrowDirection.contains('letterJ_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.j,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterK') {
+      } else if (arrowDirection.contains('letterK_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.k,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterL') {
+      } else if (arrowDirection.contains('letterL_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.l,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterM') {
+      } else if (arrowDirection.contains('letterM_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.m,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterN') {
+      } else if (arrowDirection.contains('letterN_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.n,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterO') {
+      } else if (arrowDirection.contains('letterO_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.o,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterP') {
+      } else if (arrowDirection.contains('letterP_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.p,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterQ') {
+      } else if (arrowDirection.contains('letterQ_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.q,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterR') {
+      } else if (arrowDirection.contains('letterR_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.r,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterS') {
+      } else if (arrowDirection.contains('letterS_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.s,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterT') {
+      } else if (arrowDirection.contains('letterT_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.t,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterU') {
+      } else if (arrowDirection.contains('letterU_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.u,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterV') {
+      } else if (arrowDirection.contains('letterV_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.v,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterW') {
+      } else if (arrowDirection.contains('letterW_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.w,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterX') {
+      } else if (arrowDirection.contains('letterX_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.x,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterY') {
+      } else if (arrowDirection.contains('letterY_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.y,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
-      } else if (arrowDirection == 'letterZ') {
+      } else if (arrowDirection.contains('letterZ_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.z,
-          color: Colors.black,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon - 10,
         );
       } else if (arrowDirection == 'stroop_weiss') {
@@ -1363,7 +1360,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
           listSelectedNumbers: widget.listSelectedNumbers,
           listSelectedShapesPerColor: widget.listSelectedShapesPerColor,
-          listSelectedAlphabetletters: widget.listSelectedAlphabetletters,
+          listSelectedAlphabetlettersPerColor:
+              widget.listSelectedAlphabetlettersPerColor,
           listSelectedBackgroundcolors: widget.listSelectedBackgroundcolors,
           listSelectedStroopcolors: widget.listStroopTextcolors,
           anzColorsOnPage: widget.anzColorsOnPage,
@@ -1392,7 +1390,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           listSelectedArrowsPerColor: listWithSelectedArrowsPerColor,
           listSelectedNumbers: listWithSelectedNumbers,
           listSelectedShapesPerColor: listWithSelectedShapesPerColor,
-          listSelectedAlphabetletters: listWithSelectedAlphabetletters,
+          listSelectedAlphabetlettersPerColor:
+              listWithSelectedAlphabetlettersPerColor,
           listSelectedBackgroundcolors: listWithSelectedBackgroundcolors,
           anzColorsOnPage: anzColorsOnPage2,
           secChangeColor: secChangeColor2,
