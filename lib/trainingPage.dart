@@ -912,6 +912,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         );
       } else if (arrowDirection == 'stroop_weiss') {
         listToFillContainersIcon[index] = SizedBox(
+          width: 90,
+          height: 24,
           child: Icon(
             StroopIcons.stroop_weiss,
             color: Color(
@@ -920,12 +922,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               )],
             ),
           ),
-          width: 90,
-          height: 24,
+
           //size: sizeIconStroop,
         );
       } else if (arrowDirection == 'stroop_schwarz') {
         listToFillContainersIcon[index] = SizedBox(
+          width: 135,
+          height: 24,
           child: Icon(
             StroopIcons.stroop_schwarz,
             color: Color(
@@ -935,11 +938,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop - 30,
           ),
-          width: 135,
-          height: 24,
         );
       } else if (arrowDirection == 'stroop_gelb') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 70,
           child: Icon(
             StroopIcons.stroop_gelb,
             color: Color(
@@ -948,12 +951,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               )],
             ),
           ),
-          height: 24,
-          width: 70,
+
           //size: sizeIconStroop,
         );
       } else if (arrowDirection == 'stroop_rot') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 60,
           child: Icon(
             StroopIcons.stroop_rot,
             color: Color(
@@ -963,11 +967,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 60,
         );
       } else if (arrowDirection == 'stroop_violett') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 100,
           child: Icon(
             StroopIcons.stroop_violett,
             color: Color(
@@ -977,11 +981,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop - 10,
           ),
-          height: 24,
-          width: 100,
         );
       } else if (arrowDirection == 'stroop_blau') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 70,
           child: Icon(
             StroopIcons.stroop_blau,
             color: Color(
@@ -991,11 +995,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 70,
         );
       } else if (arrowDirection == 'stroop_gruen') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 75,
           child: Icon(
             StroopIcons.stroop_gruen,
             color: Color(
@@ -1005,11 +1009,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 75,
         );
       } else if (arrowDirection == 'stroop_white') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 90,
           child: Icon(
             StroopIcons_English.stroop_white,
             color: Color(
@@ -1019,11 +1023,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 90,
         );
       } else if (arrowDirection == 'stroop_black') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 85,
           child: Icon(
             StroopIcons_English.stroop_black,
             color: Color(
@@ -1033,11 +1037,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 85,
         );
       } else if (arrowDirection == 'stroop_yellow') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 105,
           child: Icon(
             StroopIcons_English.stroop_yellow,
             color: Color(
@@ -1047,11 +1051,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop - 10,
           ),
-          height: 24,
-          width: 105,
         );
       } else if (arrowDirection == 'stroop_red') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 60,
           child: Icon(
             StroopIcons_English.stroop_red,
             color: Color(
@@ -1061,11 +1065,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 60,
         );
       } else if (arrowDirection == 'stroop_violet') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 90,
           child: Icon(
             StroopIcons_English.stroop_violet,
             color: Color(
@@ -1075,11 +1079,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop - 5,
           ),
-          height: 24,
-          width: 90,
         );
       } else if (arrowDirection == 'stroop_blue') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 70,
           child: Icon(
             StroopIcons_English.stroop_blue,
             color: Color(
@@ -1089,11 +1093,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 70,
         );
       } else if (arrowDirection == 'stroop_green') {
         listToFillContainersIcon[index] = SizedBox(
+          height: 24,
+          width: 95,
           child: Icon(
             StroopIcons_English.stroop_green,
             color: Color(
@@ -1103,8 +1107,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             ),
             //size: sizeIconStroop,
           ),
-          height: 24,
-          width: 95,
         );
       }
     } else {

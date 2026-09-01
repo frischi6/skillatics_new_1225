@@ -63,7 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String currentCountry = "GB"; //flagge die aktuell oben rechts angezeigt wird
   String keyString = '1';
   int keyInt = 1;
-  double fontsizeItemtitle = 17;
+  double fontsizeMenutitle = 19;
+  double fontsizeItemtitle = 18;
+  double paddingNewSectorItems = 40;
 
   String nr_from = '';
   String nr_to = '';
@@ -327,6 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ///Returnt das Array selectedItemsPerColor im Format selectedItem_selectedItemcolor
   /// sodass alle Kombinationen von Item und dazugehörig ausgewählten Farben drin vorkommen
   /// Ersetzt das bisher nur für Arrows existierende organizeArrowcolors()
+  /// Ist das Gegenstück von initializeItemsPerColorToItemAndColor
   /// selectedItems = List mit den selektierten Items pro Itemkategorie (also nur Pfeile, nur Zahlen etc.)
   /// selectedItemcolors = List mit den selektierten Farben für die Items aus selectedItems
   List organizeItemPerColor(List selectedItems, List selectedItemcolors) {
@@ -500,6 +503,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     selectedItems = selectedItems.toSet().toList();
     selectedItemcolors = selectedItemcolors.toSet().toList();
+
+    //Per default schwarze color selektiert aus Benutzerfreundlichkeit
+    if (selectedItemcolors.isEmpty) {
+      selectedItemcolors.add('4278190080');
+    }
 
     if (item == 'number') {
       selectedNumbers = selectedItems;
@@ -1849,7 +1857,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               //Checkbox - Mit welchen Farben trainieren
               //SizedBox(height: 20,),
-              Text('selItems'.tr, style: TextStyle(fontSize: 15)),
+              Text(
+                'selItems'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 18),
               Text(
                 'farben'.tr,
@@ -1863,7 +1875,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildColorselect(),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: paddingNewSectorItems),
               Text(
                 'buchstaben'.tr,
                 style: TextStyle(
@@ -1920,7 +1932,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildAlphabetColorselect(),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: paddingNewSectorItems),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -2051,7 +2063,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildNumberColorselect(),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: paddingNewSectorItems),
 
               Text(
                 'pfeile'.tr,
@@ -2070,7 +2082,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildArrowColorselect(),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: paddingNewSectorItems),
               Text(
                 'formen'.tr,
                 style: TextStyle(
@@ -2088,7 +2100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildShapeColorselect(),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: paddingNewSectorItems),
               Text(
                 'Stroop',
                 style: TextStyle(
@@ -2101,9 +2113,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildStroopColorselect(),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: paddingNewSectorItems),
               Text(
-                'background'.tr + ' Icons',
+                'backgroundIcons'.tr,
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: fontsizeItemtitle,
@@ -2123,7 +2135,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               //Dropdown - wie viele Farben aufs Mal angezeigt werden
               SizedBox(height: 12),
-              Text('selAnzElem'.tr, style: TextStyle(fontSize: 15)),
+              Text(
+                'selAnzElem'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
+
               NumberPicker(
                 value: anzColorsOnPage,
                 minValue: 1,
@@ -2134,15 +2151,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 textStyle: TextStyle(fontSize: 13),
                 onChanged: (value) => setState(() => anzColorsOnPage = value),
               ),
-              SizedBox(height: 10),
 
               //Checkbox - ob jedes Element pro Seite nur einmal vorkommen darf oder nicht
-              //  Bsp.: 1,3,5,7 ausgewählt, 3 Elem pro Mal anzeigen-> Anzeige 1-3-1 nicht erlaubt wenn Checkbox aktiviert
+              //  Bsp.: 1,3,5,7 ausgewählt, 3 Elem pro Mal anzeigen-> Anzeige 1-3-1 nicht erlaubt wenn Checkbox aktiviert weil die 1 zweimal vorkommt
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: Transform.scale(
                   //Transform damit Grösse Checkbox angepasst werden kann
-                  scale: 0.7,
+                  scale: 0.8,
                   child: CheckboxListTile(
                     //Unterschied zu Checkbox(): Mit ..ListTile() kann Text mitgegeben werden
                     value: isElemProSeiteEinmalig,
@@ -2172,7 +2188,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
               //Applescroll - Farbwechsel nach wie vielen Sekunden
               SizedBox(height: 12),
-              Text('selWechselSek'.tr, style: TextStyle(fontSize: 15)),
+              Text(
+                'selWechselSek'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
               NumberPicker(
                 value: secChangeColor,
                 minValue: 1,
@@ -2194,7 +2214,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
               //Applescroll - Dauer eines Durchlaufs
               SizedBox(height: 12),
-              Text('selDurchlauf'.tr, style: TextStyle(fontSize: 15)),
+              Text(
+                'selDurchlauf'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 18), //Für Abstand
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -2250,7 +2274,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
               //Applescroll - Dauer einer Pause
               SizedBox(height: 12),
-              Text('selPause'.tr, style: TextStyle(fontSize: 15)),
+              Text(
+                'selPause'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 18), //Für Abstand
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -2310,7 +2338,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
               //Dropdown - Anzahl Durchgänge
               SizedBox(height: 12),
-              Text('selAnzDurchg'.tr, style: TextStyle(fontSize: 15)),
+              Text(
+                'selAnzDurchg'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
               NumberPicker(
                 value: anzRounds,
                 minValue: 1,
@@ -2343,7 +2375,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               TextButton(
-                child: Text('start'.tr),
+                child: Text('start'.tr, style: TextStyle(fontSize: 15)),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.black,
                   side: BorderSide(color: Colors.grey.shade700),

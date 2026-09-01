@@ -39,7 +39,7 @@ class TranslationText extends Translations {
       'selItems': 'Mit welchen Elementen möchtest du trainieren?',
       'selAnzElem': 'Anzahl Elemente, die aufs Mal angezeigt werden?',
       'selElemEinmalig':
-          'Gleiches Element pro Seite nur einmal anzeigen. (Gilt nicht für Stroop-Modus.)',
+          'Gleiches Element pro Seite nur einmal anzeigen. (Gilt nicht für Stroop-Elemente.)',
       'selWechselSek': 'Elementwechsel nach wie vielen Sekunden?',
       'selDurchlauf': 'Dauer eines Durchlaufs?',
       'farben': 'Farben',
@@ -72,7 +72,7 @@ class TranslationText extends Translations {
       'bis': 'bis',
       'ohne': 'Ohne:',
       'zB': 'z.B.',
-      'background': 'Hintergrundfarbe',
+      'backgroundIcons': 'Hintergrundfarbe Elemente',
     },
     'en_US': {
       'fehlerColorsNull': 'Items still need to be selected.',
@@ -106,7 +106,7 @@ class TranslationText extends Translations {
       'selItems': 'What items do you want to train with?',
       'selAnzElem': 'Number of items displayed at a time?',
       'selElemEinmalig':
-          'No duplicate items per page. (Not applied to Stroop mode.)',
+          'No duplicate items per page. (Not applied to Stroop items.)',
       'selWechselSek': 'Items change after how many seconds?',
       'selDurchlauf': 'Duration of a pass?',
       'farben': 'Colors',
@@ -140,7 +140,7 @@ class TranslationText extends Translations {
       'bis': 'to',
       'ohne': 'Except:',
       'zB': 'e.g.',
-      'background': 'Background-Color',
+      'backgroundIcons': 'Background-Color items',
     },
   };
 }

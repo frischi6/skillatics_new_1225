@@ -46,8 +46,6 @@ class MyApp extends StatelessWidget {
           onPrimary: Colors.black,
           secondary: Colors.black,
           onSecondary: Colors.black,
-          background: Colors.white,
-          onBackground: Colors.black,
           surface: Colors.white, // colorCustom,
           onSurface: Colors.black,
           error: Colors.red,
@@ -61,14 +59,20 @@ class MyApp extends StatelessWidget {
         listSelectedColors: [],
         listSelectedArrowsPerColor: [
           '_4278190080',
-        ], //per default schwarze arrowcolor selektiert
-        listSelectedNumbersPerColor: [],
-        listSelectedShapesPerColor: [],
-        listSelectedAlphabetlettersPerColor: [],
+        ], //per default schwarze arrowcolor selektiert  aus benutzerfreundlichkeit
+        listSelectedNumbersPerColor: [
+          '_4278190080',
+        ], //per default schwarze numbercolor selektiert aus benutzerfreundlichkeit
+        listSelectedShapesPerColor: [
+          '_4278190080',
+        ], //per default schwarze shapecolor selektiert aus benutzerfreundlichkeit
+        listSelectedAlphabetlettersPerColor: [
+          '_4278190080',
+        ], //per default schwarze alphabetlettercolor selektiert aus benutzerfreundlichkeit
         listSelectedBackgroundcolors: [
           4294967295,
-        ], //default weiss als Hintergrundfarbe selektiert
-        listSelectedStroopcolors: [], //default stroop nicht aktiv
+        ], //per default weiss als Hintergrundfarbe selektiert aus Benutzerfreundlichkeit
+        listSelectedStroopcolors: [], //per default stroop nicht aktiv
         anzColorsOnPage: anzColorsOnPage,
         secChangeColor: secChangeColor,
         secLengthRound: secLengthRound,
