@@ -13,6 +13,8 @@ class TranslationText extends Translations {
       'fehlerWechselDurchlauf':
           'Der Farbwechsel muss kürzer sein als die Dauer eines Durchlaufs.',
       'fehlerPauseNull': 'Die Pause muss mindestens eine Sekunde dauern.',
+      'fehlerNumbersNoColor':
+          'Bitte mindestens eine Farbe für die Zahlen wählen.',
       'fehlerAlphabetlettersNoColor':
           'Bitte mindestens eine Farbe für die Buchstaben wählen.',
       'fehlerArrowsNoColor':
@@ -82,6 +84,7 @@ class TranslationText extends Translations {
           'The color change must be shorter than the duration of one pass.',
       'fehlerPauseNull': 'The pause must last at least one second.',
       'fehlerNrOutOfRange': 'Only whole numbers from 0 to 50 are permitted.',
+      'fehlerNumbersNoColor': 'Please select at least one number color.',
       'fehlerAlphabetlettersNoColor':
           'Please select at least one letter color.',
       'fehlerArrowsNoColor': 'Please select at least one arrow color.',
