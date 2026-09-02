@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skillatics_new_1225/TranslationText.dart';
-import 'package:skillatics_new_1225/menuPage.dart';
+import 'TranslationText.dart';
+import 'menuPage.dart';
 
 void main() {
   runApp(MyApp());

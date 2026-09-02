@@ -3,10 +3,10 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
-import 'package:skillatics_new_1225/custom_icons_icons.dart';
-import 'package:skillatics_new_1225/stroop_icons.dart';
+import 'custom_icons_icons.dart';
+import 'stroop_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
-import 'package:skillatics_new_1225/trainingPage.dart';
+import 'trainingPage.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellungen zurücksetzen möglich
 

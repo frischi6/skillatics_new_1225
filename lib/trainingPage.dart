@@ -3,11 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skillatics_new_1225/custom_icons_icons.dart';
-import 'package:skillatics_new_1225/menuPage.dart';
-import 'package:skillatics_new_1225/number_zero_to_fifty_icons.dart';
-import 'package:skillatics_new_1225/stroop__english_icons.dart';
-import 'package:skillatics_new_1225/stroop_icons.dart';
+import 'custom_icons_icons.dart';
+import 'menuPage.dart';
+import 'number_zero_to_fifty_icons.dart';
+import 'stroop__english_icons.dart';
+import 'stroop_icons.dart';
 
 class RandomColorPage2 extends StatefulWidget {
   RandomColorPage2({
