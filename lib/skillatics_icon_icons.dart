@@ -13,6 +13,8 @@
 ///
 ///
 ///
+library;
+
 import 'package:flutter/widgets.dart';
 
 class SkillaticsIcon {
@@ -21,6 +23,9 @@ class SkillaticsIcon {
   static const _kFontFam = 'SkillaticsIcon';
   static const String? _kFontPkg = null;
 
-  static const IconData skillatics_logo_icon =
-      IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData skillatics_logo_icon = IconData(
+    0xe800,
+    fontFamily: _kFontFam,
+    fontPackage: _kFontPkg,
+  );
 }

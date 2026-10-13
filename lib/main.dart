@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   bool isElemProSeiteEinmalig = false;
   bool isStroopActive = false;
 
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

@@ -12,7 +12,7 @@ import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellun
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({
-    Key? key,
+    super.key,
     required this.title,
     required this.currentCountry,
     required this.listSelectedColors,
@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
     required this.nr_from,
     required this.nr_to,
     required this.nr_skip,
-  }) : super(key: key);
+  });
 
   final String title;
   String currentCountry;
@@ -177,21 +177,20 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         textFehlermeldung = 'fehlerNrOutOfRange'.tr;
       });
-    } else if (selectedAlphabetletters.length > 0 &&
-        selectedAlphabetlettersPerColor.length < 1) {
+    } else if (selectedAlphabetletters.isNotEmpty &&
+        selectedAlphabetlettersPerColor.isEmpty) {
       setState(() {
         textFehlermeldung = 'fehlerAlphabetlettersNoColor'.tr;
       });
-    } else if (selectedNumbers.length > 0 &&
-        selectedNumbersPerColor.length < 1) {
+    } else if (selectedNumbers.isNotEmpty && selectedNumbersPerColor.isEmpty) {
       setState(() {
         textFehlermeldung = 'fehlerNumbersNoColor'.tr;
       });
-    } else if (selectedArrows.length > 0 && selectedArrowsPerColor.length < 1) {
+    } else if (selectedArrows.isNotEmpty && selectedArrowsPerColor.isEmpty) {
       setState(() {
         textFehlermeldung = 'fehlerArrowsNoColor'.tr;
       });
-    } else if (selectedShapes.length > 0 && selectedShapesPerColor.length < 1) {
+    } else if (selectedShapes.isNotEmpty && selectedShapesPerColor.isEmpty) {
       setState(() {
         textFehlermeldung = 'fehlerShapesNoColor'.tr;
       });
@@ -257,9 +256,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //Kann der übergebene String in ein int geparst werden?
-  bool isNumeric(String string_value) {
+  bool isNumeric(String stringValue) {
     try {
-      int.parse(string_value);
+      int.parse(stringValue);
     } catch (e) {
       return false;
     }
@@ -269,37 +268,37 @@ class _MyHomePageState extends State<MyHomePage> {
   //Liste mit selektierten Zahlen zusammenstellen anhand der 3 Eingabeoptionen (einzelne Zahlen,
   //  von-bis, ohne einzelne Zahlen), damit diese nachher an Trainingspage übergeben  werden kann
   bool organizeArrayNumbers() {
-    var splitted_individual, splitted_skip = [];
-    int nr_from_int, nr_to_int = 0;
+    var splittedIndividual, splittedSkip = [];
+    int nrFromInt, nrToInt = 0;
     selectedNumbers = []; //Zahlen-Liste leeren
     isNrOutOfRange = false; //Fehlermeldung zurücksetzen
 
     //Zahlen von "von-bis" zur Zahlen-Liste hinzufügen
     if (isNumeric(nr_from) && isNumeric(nr_to)) {
-      nr_from_int = int.parse(nr_from);
-      nr_to_int = int.parse(nr_to);
+      nrFromInt = int.parse(nr_from);
+      nrToInt = int.parse(nr_to);
       //Nur Zahlen von 0-50 erlaubt
-      if (nr_to_int > 50 || nr_from_int < 0) {
+      if (nrToInt > 50 || nrFromInt < 0) {
         isNrOutOfRange = true;
         return false;
       }
-      for (int counter = nr_from_int; counter <= nr_to_int; counter++) {
+      for (int counter = nrFromInt; counter <= nrToInt; counter++) {
         selectedNumbers.add(counter.toString());
       }
     }
 
     //Einzeln notierte Zahlen zur Zahlen-Liste hinzufügen
-    if (nr_individual.length > 0) {
-      splitted_individual = nr_individual.split(',');
-      for (int i = 0; i < splitted_individual.length; i++) {
-        if (isNumeric(splitted_individual[i])) {
+    if (nr_individual.isNotEmpty) {
+      splittedIndividual = nr_individual.split(',');
+      for (int i = 0; i < splittedIndividual.length; i++) {
+        if (isNumeric(splittedIndividual[i])) {
           //Nur Zahlen von 0-50 erlaubt
-          if (int.parse(splitted_individual[i]) > 50 ||
-              int.parse(splitted_individual[i]) < 0) {
+          if (int.parse(splittedIndividual[i]) > 50 ||
+              int.parse(splittedIndividual[i]) < 0) {
             isNrOutOfRange = true;
             return false;
           }
-          selectedNumbers.add(splitted_individual[i]);
+          selectedNumbers.add(splittedIndividual[i]);
         } else {
           isNrOutOfRange = true;
           return false;
@@ -308,12 +307,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     //Zahlen aus Feld "Ohne" aus Zahlen-Liste entfernen
-    if (nr_skip.length > 0) {
-      splitted_skip = nr_skip.split(',');
-      for (int i = 0; i < splitted_skip.length; i++) {
-        if (isNumeric(splitted_skip[i])) {
+    if (nr_skip.isNotEmpty) {
+      splittedSkip = nr_skip.split(',');
+      for (int i = 0; i < splittedSkip.length; i++) {
+        if (isNumeric(splittedSkip[i])) {
           for (int j = 0; j < selectedNumbers.length; j++) {
-            if (selectedNumbers[j] == splitted_skip[i]) {
+            if (selectedNumbers[j] == splittedSkip[i]) {
               selectedNumbers.removeAt(j);
             }
           }
@@ -398,7 +397,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void organizeStroop() {
-    if (stroopTextcolor.length > 0) {
+    if (stroopTextcolor.isNotEmpty) {
       stroopTexticons = []; //reset
 
       if (isGerman) {
@@ -449,7 +448,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       //selectedItems darf nicht leer sein, falls nur Stroop selektiert ist, dann hier Default-Wert mitgeben
-      if (selectedItems.length == 0) {
+      if (selectedItems.isEmpty) {
         selectedItems.add("fefefe");
         selectedItems.add("fefefe");
         selectedItems.add("fefefe");
@@ -538,6 +537,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget skillaticsDialog() {
     return const AlertDialog(
       content: SizedBox(
+        height: 140,
         child: Center(
           child: Column(
             children: [
@@ -548,7 +548,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        height: 140,
       ),
     );
   }
@@ -573,7 +572,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('f5ff00'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -588,7 +587,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('ff931f'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.4),
+              color: Colors.orange.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -603,7 +602,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('ff0000'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -618,7 +617,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('f500ab'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.pink.withOpacity(0.4),
+              color: Colors.pink.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -633,7 +632,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('6600a1'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -648,7 +652,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('00b2ee'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -663,7 +667,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('00008b'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 00, 0, 139).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                00,
+                0,
+                139,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -678,7 +687,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('00ee00'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -693,7 +702,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('006400'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 0, 100, 0).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                0,
+                100,
+                0,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -708,7 +722,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('00868b'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 0, 134, 139).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                0,
+                134,
+                139,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -723,7 +742,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('a8a8a8'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 168, 168, 168).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                168,
+                168,
+                168,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -738,7 +762,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('000000'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -756,7 +780,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedItems.contains('bd9b16'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 189, 155, 22).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                189,
+                155,
+                22,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -774,7 +803,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 203, 203, 203).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                203,
+                203,
+                203,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -891,7 +925,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedArrowcolors.contains('4278190080'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -909,7 +943,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedArrowcolors.contains('4293444664'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -924,7 +958,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedArrowcolors.contains('4294901760'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -939,7 +973,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedArrowcolors.contains('4290795263'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -954,7 +993,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedArrowcolors.contains('4278235886'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -969,7 +1008,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedArrowcolors.contains('4278251008'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1056,7 +1095,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedShapecolors.contains('4278190080'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1074,7 +1113,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedShapecolors.contains('4293444664'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1089,7 +1128,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedShapecolors.contains('4294901760'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1104,7 +1143,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedShapecolors.contains('4290795263'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1119,7 +1163,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedShapecolors.contains('4278235886'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1134,7 +1178,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedShapecolors.contains('4278251008'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1230,7 +1274,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedAlphabetlettercolors.contains('4278190080'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1248,7 +1292,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedAlphabetlettercolors.contains('4293444664'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1263,7 +1307,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedAlphabetlettercolors.contains('4294901760'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1278,7 +1322,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedAlphabetlettercolors.contains('4290795263'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1293,7 +1342,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedAlphabetlettercolors.contains('4278235886'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1308,7 +1357,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedAlphabetlettercolors.contains('4278251008'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1344,7 +1393,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedNumbercolors.contains('4278190080'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1362,7 +1411,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedNumbercolors.contains('4293444664'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1377,7 +1426,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedNumbercolors.contains('4294901760'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1392,7 +1441,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedNumbercolors.contains('4290795263'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1407,7 +1461,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedNumbercolors.contains('4278235886'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1422,7 +1476,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedNumbercolors.contains('4278251008'),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1474,12 +1528,12 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: BoxDecoration(
               color: Color.fromRGBO(233, 233, 233, 1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.grey.withOpacity(0.6)),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.6)),
             ),
             selectedDecoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey.withOpacity(0.6)),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.6)),
             ),
           ),
           textStyles: const MultiSelectItemTextStyles(
@@ -1492,7 +1546,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: stroopTextcolor.contains(4278190080),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1510,7 +1564,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: stroopTextcolor.contains(4294631476),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1525,7 +1579,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: stroopTextcolor.contains(4294901760),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1540,7 +1594,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: stroopTextcolor.contains(4284874913),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1555,7 +1614,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: stroopTextcolor.contains(4282685923),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1570,7 +1629,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: stroopTextcolor.contains(4284661515),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1615,19 +1674,19 @@ class _MyHomePageState extends State<MyHomePage> {
           label: '',
           selected:
               selectedBackgroundcolors.contains(4294967295) ||
-              selectedBackgroundcolors.length ==
-                  0, //wenn nur weiss ausgewählt ist, wird Array leer an Trainingspage
+              selectedBackgroundcolors
+                  .isEmpty, //wenn nur weiss ausgewählt ist, wird Array leer an Trainingspage
           // übergeben und kommmt somit auch leer wieder von Trainingspage zurück (siehe organizeBackgroundcolor)
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
               color: Color.fromRGBO(233, 233, 233, 1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.grey.withOpacity(0.6)),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.6)),
             ),
             selectedDecoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey.withOpacity(0.6)),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.6)),
             ),
           ),
           textStyles: const MultiSelectItemTextStyles(
@@ -1641,7 +1700,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedBackgroundcolors.contains(4283716692),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1660,7 +1719,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedBackgroundcolors.contains(4294311680),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1676,7 +1735,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedBackgroundcolors.contains(3439263744),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1691,7 +1750,12 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedBackgroundcolors.contains(3435157247),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+              color: const Color.fromARGB(
+                255,
+                102,
+                0,
+                161,
+              ).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1706,7 +1770,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedBackgroundcolors.contains(2566959854),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.4),
+              color: Colors.lightBlue.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1721,7 +1785,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selected: selectedBackgroundcolors.contains(1711336960),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
-              color: Colors.lightGreen.withOpacity(0.4),
+              color: Colors.lightGreen.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
             ),
             selectedDecoration: BoxDecoration(
@@ -1826,7 +1890,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(
                 Color.fromRGBO(188, 250, 0, 1),
               ),
             ),
@@ -1834,12 +1898,12 @@ class _MyHomePageState extends State<MyHomePage> {
               if (isGerman) {
                 Get.updateLocale(Locale('en', 'US'));
                 isGerman = false;
-                this.currentCountry = "DE";
+                currentCountry = "DE";
               } else {
                 //is English
                 Get.updateLocale(Locale('de', 'DE'));
                 isGerman = true;
-                this.currentCountry = "GB";
+                currentCountry = "GB";
               }
               changeKey();
             },
@@ -1888,7 +1952,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    child: Text('selectAll'.tr),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                       side: BorderSide(color: Colors.grey.shade700),
@@ -1902,10 +1965,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       selectedAlphabetletters = _controllerAlphabetLetter
                           .selectAll();
                     },
+                    child: Text('selectAll'.tr),
                   ),
                   SizedBox(width: 5),
                   TextButton(
-                    child: Text('deselectAll'.tr),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                       side: BorderSide(color: Colors.grey.shade700),
@@ -1919,6 +1982,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       _controllerAlphabetLetter.deselectAll();
                       selectedAlphabetletters.clear();
                     },
+                    child: Text('deselectAll'.tr),
                   ),
                 ],
               ),
@@ -1963,7 +2027,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'zB'.tr + ' 10,20,30',
+                        hintText: '${'zB'.tr} 10,20,30',
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 4,
@@ -1992,7 +2056,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'zB'.tr + ' 1',
+                        hintText: '${'zB'.tr} 1',
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 4,
@@ -2015,7 +2079,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'zB'.tr + ' 8',
+                        hintText: '${'zB'.tr} 8',
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 4,
@@ -2044,7 +2108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'zB'.tr + ' 2,4',
+                        hintText: '${'zB'.tr} 2,4',
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 4,
@@ -2367,7 +2431,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Center(
                   child: Text(
-                    this.textFehlermeldung + '\n',
+                    '${this.textFehlermeldung}\n',
                     key: Key(keyString), //funktioniert nicht
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.red),
@@ -2375,7 +2439,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               TextButton(
-                child: Text('start'.tr, style: TextStyle(fontSize: 15)),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.black,
                   side: BorderSide(color: Colors.grey.shade700),
@@ -2383,6 +2446,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 autofocus: true,
                 onPressed: _changeToPage2,
                 onLongPress: _changeToPage2,
+                child: Text('start'.tr, style: TextStyle(fontSize: 15)),
               ),
               SizedBox(height: 5),
               RichText(

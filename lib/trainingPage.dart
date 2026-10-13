@@ -11,7 +11,7 @@ import 'stroop_icons.dart';
 
 class RandomColorPage2 extends StatefulWidget {
   RandomColorPage2({
-    Key? key,
+    super.key,
     required this.listSelectedColors,
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbersPerColor,
@@ -31,7 +31,7 @@ class RandomColorPage2 extends StatefulWidget {
     required this.nr_from,
     required this.nr_to,
     required this.nr_skip,
-  }) : super(key: key);
+  });
 
   var listSelectedColors;
   var listSelectedArrowsPerColor;
@@ -176,7 +176,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     //dann Backgroundcolor wählen
                     //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
                     (listToFillContainersHex[0] == int.parse('0xfffefefe')) &&
-                        (listWithSelectedBackgroundcolorsToFill.length >= 1)
+                        (listWithSelectedBackgroundcolorsToFill.isNotEmpty)
                     ? Color(listWithSelectedBackgroundcolorsToFill[0])
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
@@ -201,12 +201,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
             ),
             Container(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 1
-                    ? listToFillContainersIcon[1]
-                    : listToFillContainersIcon[0],
-              ),
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[1]),
@@ -225,14 +219,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]), //fallback
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 2
-                    ? listToFillContainersIcon[2]
+                child: listToFillContainersIcon.length > 1
+                    ? listToFillContainersIcon[1]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[2]),
@@ -251,14 +245,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]), //fallback
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 3
-                    ? listToFillContainersIcon[3]
+                child: listToFillContainersIcon.length > 2
+                    ? listToFillContainersIcon[2]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[3]),
@@ -274,14 +268,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 4
-                    ? listToFillContainersIcon[4]
+                child: listToFillContainersIcon.length > 3
+                    ? listToFillContainersIcon[3]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[4]),
@@ -297,14 +291,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 5
-                    ? listToFillContainersIcon[5]
+                child: listToFillContainersIcon.length > 4
+                    ? listToFillContainersIcon[4]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[5]),
@@ -320,14 +314,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 6
-                    ? listToFillContainersIcon[6]
+                child: listToFillContainersIcon.length > 5
+                    ? listToFillContainersIcon[5]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[6]),
@@ -343,14 +337,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 7
-                    ? listToFillContainersIcon[7]
+                child: listToFillContainersIcon.length > 6
+                    ? listToFillContainersIcon[6]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[7]),
@@ -366,14 +360,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 8
-                    ? listToFillContainersIcon[8]
+                child: listToFillContainersIcon.length > 7
+                    ? listToFillContainersIcon[7]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[8]),
@@ -389,14 +383,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 9
-                    ? listToFillContainersIcon[9]
+                child: listToFillContainersIcon.length > 8
+                    ? listToFillContainersIcon[8]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[9]),
@@ -412,14 +406,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 10
-                    ? listToFillContainersIcon[10]
+                child: listToFillContainersIcon.length > 9
+                    ? listToFillContainersIcon[9]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               height:
                   MediaQuery.of(context).size.height *
                   (listHeight4Container[10]),
@@ -436,14 +430,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-            ),
-            Container(
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 11
-                    ? listToFillContainersIcon[11]
+                child: listToFillContainersIcon.length > 10
+                    ? listToFillContainersIcon[10]
                     : listToFillContainersIcon[0],
               ),
+            ),
+            Container(
               color: listToFillContainersHex.length > 11
                   ? (listToFillContainersHex[11] == int.parse('0xfffefefe')) &&
                             (listWithSelectedBackgroundcolorsToFill.length > 11)
@@ -455,6 +449,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   (listHeight4Container[11]),
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(10.0),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: listToFillContainersIcon.length > 11
+                    ? listToFillContainersIcon[11]
+                    : listToFillContainersIcon[0],
+              ),
             ),
 
             //footer
@@ -466,6 +466,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
+                    width:
+                        (MediaQuery.of(context).size.width -
+                            thicknessVerticalDividerFooter) /
+                        4,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
@@ -477,12 +481,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
+                  ),
+                  SizedBox(
                     width:
                         (MediaQuery.of(context).size.width -
                             thicknessVerticalDividerFooter) /
                         4,
-                  ),
-                  SizedBox(
                     child: Center(
                       child: Text(
                         currentMinsCD.toString().padLeft(2, '0') +
@@ -491,10 +495,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-                    width:
-                        (MediaQuery.of(context).size.width -
-                            thicknessVerticalDividerFooter) /
-                        4,
                   ),
                   const VerticalDivider(
                     color: Colors.black,
@@ -502,6 +502,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     width: 0.5,
                   ),
                   SizedBox(
+                    width:
+                        (MediaQuery.of(context).size.width -
+                            thicknessVerticalDividerFooter) /
+                        4,
                     child: TextButton(
                       child: Text(
                         'hauptmenü'.tr,
@@ -511,12 +515,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                       onPressed: changeToPage1,
                       onLongPress: changeToPage1,
                     ),
+                  ),
+                  SizedBox(
                     width:
                         (MediaQuery.of(context).size.width -
                             thicknessVerticalDividerFooter) /
                         4,
-                  ),
-                  SizedBox(
                     child: TextButton(
                       child: Text(
                         'neustart'.tr,
@@ -526,10 +530,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                       onPressed: neustart,
                       onLongPress: neustart,
                     ),
-                    width:
-                        (MediaQuery.of(context).size.width -
-                            thicknessVerticalDividerFooter) /
-                        4,
                   ),
                 ],
               ),
@@ -599,8 +599,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
     for (String item in listWithSelectedColors) {
       hexxcode =
-          '0xff' +
-          item; //safr background: hier wird die hintergrundfarbe gesetzt
+          '0xff$item'; //safr background: hier wird die hintergrundfarbe gesetzt
       theHexCode = (int.parse(hexxcode));
       listWithSelectedHex.add(theHexCode);
     }
@@ -630,22 +629,22 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     currentMinsCD = 0;
   }
 
-  bool isNumeric(String string_value) {
+  bool isNumeric(String stringValue) {
     try {
-      int.parse(string_value!);
+      int.parse(stringValue);
     } catch (e) {
       return false;
     }
     return true;
   }
 
-  int getColorcodeByItemPerColor(item_itemcolor) {
+  int getColorcodeByItemPerColor(itemItemcolor) {
     //parameter wird nach diesem format übergeben: item_itemcolor
     //returnt wird itemcolor
     return int.parse(
-      item_itemcolor.substring(
-        item_itemcolor.indexOf('_') + 1,
-        item_itemcolor.length,
+      itemItemcolor.substring(
+        itemItemcolor.indexOf('_') + 1,
+        itemItemcolor.length,
       ),
     );
   }
@@ -1122,15 +1121,15 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   /// gebraucht werden unds sonst in addToListToFillContainersIcon unübersichtlich wird
   void addNumberToListToFillContainersIcon(
     int index,
-    String number_numbercolor,
+    String numberNumbercolor,
     double iconsize,
   ) {
     //number aus number_numbercolor auslesen
     iconnumber = int.parse(
-      number_numbercolor.substring(0, number_numbercolor.indexOf('_')),
+      numberNumbercolor.substring(0, numberNumbercolor.indexOf('_')),
     );
     //numbercolor aus number_numbercolor auslesen
-    iconcolor = getColorcodeByItemPerColor(number_numbercolor);
+    iconcolor = getColorcodeByItemPerColor(numberNumbercolor);
 
     switch (iconnumber) {
       case 0:
@@ -1574,8 +1573,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     listWithSelectedIcons.shuffle();
 
     //hex-werte von menupage in list schreiben
-    for (int ll_i = 0; ll_i < listWithSelectedHex.length; ll_i++) {
-      listToFillContainersHex.add(listWithSelectedHex[ll_i]);
+    for (int llI = 0; llI < listWithSelectedHex.length; llI++) {
+      listToFillContainersHex.add(listWithSelectedHex[llI]);
     }
 
     changeRound(true);
@@ -1691,7 +1690,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         } while (listToFillContainersHex[0] != int.parse('0xfffefefe') &&
                 listToFillContainersHex[0] == firstHexLastRound ||
             listToFillContainersHex[0] == int.parse('0xfffefefe') &&
-                (listWithSelectedIcons.length > 0
+                (listWithSelectedIcons.isNotEmpty
                         ? listWithSelectedIcons[0]
                         : '') ==
                     firstItemLastRound);
@@ -1719,7 +1718,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     }
 
     //Backgroundcolor der Icons setzen
-    if (listWithSelectedBackgroundcolors.length > 0) {
+    if (listWithSelectedBackgroundcolors.isNotEmpty) {
       prepareBackgroundcolors();
     }
 
@@ -1728,25 +1727,25 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     //		-> bestehendes icon in listToFillContainersIcon[x] wird nicht umgefärbt weil so nun isElemProSeiteEinmalig = true gehandelt werden kann, mit umfärben wäre einmaligkeit nicht gewährleistet
 
     //icons werden nach jedem seitenwechsel neu gesetzt
-    var counter_icons = 0;
+    var counterIcons = 0;
     String arrowDirection;
 
-    for (var ll_i = 0; ll_i < listToFillContainersHex.length; ll_i++) {
-      if (listToFillContainersHex[ll_i] != int.parse('0xfffefefe')) {
+    for (var llI = 0; llI < listToFillContainersHex.length; llI++) {
+      if (listToFillContainersHex[llI] != int.parse('0xfffefefe')) {
         //safr background kann hier noch auf fefefe gegangen werden?
         //arrow not visible
-        addToListToFillContainersIcon(ll_i, null, false);
+        addToListToFillContainersIcon(llI, null, false);
       } else {
         //arrow visible
 
         //arrowDirection holen
-        if (ll_i == 0) {
+        if (llI == 0) {
           //für ersten container zwingend index 0 nehmen
           arrowDirection = listWithSelectedIcons[0];
         } else {
           if (isElemProSeiteEinmalig2) {
             //wenn element einmalig pro seite dann geordnete reihenfolge von listWithSelectedIcons nehmen via counter_icons
-            arrowDirection = listWithSelectedIcons[counter_icons];
+            arrowDirection = listWithSelectedIcons[counterIcons];
           } else {
             //wenn nicht einmalig pro seite dann random nehmen damit auch möglich dass gleiche icons nacheinander kommen
             random = Random();
@@ -1757,12 +1756,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           }
         }
 
-        addToListToFillContainersIcon(ll_i, arrowDirection, true);
+        addToListToFillContainersIcon(llI, arrowDirection, true);
 
         //counter_icons ausserhalb von if setzen weil bei ll_i==0 unklar ob counter_icons grösser werden muss oder nicht
-        counter_icons < listWithSelectedIcons.length - 1
-            ? counter_icons++
-            : counter_icons = 0;
+        counterIcons < listWithSelectedIcons.length - 1
+            ? counterIcons++
+            : counterIcons = 0;
       }
     }
   }
@@ -1830,7 +1829,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       listToFillContainersIconDuplicate = listToFillContainersIcon;
       listToFillContainersHexDuplicate = listToFillContainersHex;
 
-      for (int ll_count = 1; ll_count < vergroessern; ll_count++) {
+      for (int llCount = 1; llCount < vergroessern; llCount++) {
         listToFillContainersIcon = [
           ...listToFillContainersIcon,
           ...listToFillContainersIconDuplicate,
@@ -1847,7 +1846,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     //listWithSelectedBackgroundcolors: original-Array
     //listWithSelectedBackgroundcolorsToFill: muss entweder mind so lang sein wie anzColorsOnPage2 oder sonst ganz leer
     int lastColorBefore;
-    var tempList;
+    List<dynamic> tempList;
 
     listWithSelectedBackgroundcolorsToFill = listWithSelectedBackgroundcolors;
     listWithSelectedBackgroundcolorsToFill.shuffle();
