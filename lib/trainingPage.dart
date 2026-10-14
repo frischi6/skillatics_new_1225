@@ -473,11 +473,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        anzRoundsDone.toString() +
-                            '/' +
-                            anzRounds2.toString() +
-                            ' ' +
-                            getRundeSgPl(),
+                        '$anzRoundsDone/$anzRounds2 ${getRundeSgPl()}',
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -489,9 +485,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         4,
                     child: Center(
                       child: Text(
-                        currentMinsCD.toString().padLeft(2, '0') +
-                            ':' +
-                            currentSecsCD.toString().padLeft(2, '0'),
+                        '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -507,13 +501,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                             thicknessVerticalDividerFooter) /
                         4,
                     child: TextButton(
+                      autofocus: false,
+                      onPressed: changeToPage1,
+                      onLongPress: changeToPage1,
                       child: Text(
                         'hauptmenü'.tr,
                         style: const TextStyle(color: Colors.black),
                       ),
-                      autofocus: false,
-                      onPressed: changeToPage1,
-                      onLongPress: changeToPage1,
                     ),
                   ),
                   SizedBox(
@@ -522,13 +516,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                             thicknessVerticalDividerFooter) /
                         4,
                     child: TextButton(
+                      autofocus: false,
+                      onPressed: neustart,
+                      onLongPress: neustart,
                       child: Text(
                         'neustart'.tr,
                         style: const TextStyle(color: Colors.black),
                       ),
-                      autofocus: false,
-                      onPressed: neustart,
-                      onLongPress: neustart,
                     ),
                   ),
                 ],
