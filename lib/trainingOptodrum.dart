@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
+import 'package:skillatics/number_zero_to_fifty_icons.dart';
+import 'package:skillatics/stroop__english_icons.dart';
 import 'package:skillatics/stroop_icons.dart';
 import 'start.dart';
 import 'directions_optodrum.dart';
@@ -7,11 +10,16 @@ import 'directions_optodrum.dart';
 class TrainingOptodrum extends StatefulWidget {
   final MovementDirection direction; // Die im Menü gewählte Bewegungsrichtung
   final int speedlevel;
+  final List<dynamic> allItemsByColor;
+  final List<dynamic> listStroopText, listStroopTextcolors;
 
   const TrainingOptodrum({
     super.key,
     required this.direction,
     required this.speedlevel,
+    required this.allItemsByColor,
+    required this.listStroopText,
+    required this.listStroopTextcolors,
   });
 
   @override
@@ -21,32 +29,21 @@ class TrainingOptodrum extends StatefulWidget {
 class _TrainingOptodrumState extends State<TrainingOptodrum>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  Random random = Random();
 
-  static const double iconSize = 60; // Grösse aller Icons
+  static const double iconSize =
+      60; // Einheitliche Grösse (Höhe) aller Standard-Icons
   static const double iconSpacing = 30; // Exakter Abstand zwischen den Icons
-  static const double speed = 200; // Geschwindigkeit in Pixel pro Sekunde
+  static const double speed = 400; // Geschwindigkeit in Pixel pro Sekunde
 
-  final List<IconData> icons = [
-    CustomIcons.a,
-    CustomIcons.b,
-    CustomIcons.c,
-    CustomIcons.d,
-    CustomIcons.e,
-    CustomIcons.f,
-    StroopIcons.stroop_weiss,
-    StroopIcons.stroop_rot,
-    StroopIcons.stroop_gruen,
-    StroopIcons.stroop_blau,
-    StroopIcons.stroop_violett,
-    CustomIcons.triangle,
-    CustomIcons.square,
-    CustomIcons.circle,
-    Icons.north,
-    Icons.north_east,
-    Icons.west,
-    Icons.south,
-    Icons.south_east,
-  ];
+  int speedlevel = 0;
+  List<dynamic> itemsByColor = [];
+
+  List<dynamic> listWithStroopText = [];
+  List<dynamic> listWithStroopTextcolors = [];
+
+  // Speichert konfigurierte Icon-Daten statt Widgets
+  List<_IconConfig> icons = [];
 
   final List<_FlowIcon> _flowIcons = [];
   int _nextIconIndex = 0;
@@ -58,20 +55,55 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   void initState() {
     super.initState();
 
+    speedlevel = widget.speedlevel;
+    itemsByColor = widget.allItemsByColor;
+    listWithStroopText = widget.listStroopText;
+    listWithStroopTextcolors = widget.listStroopTextcolors;
+
     // Initialisiert den Animations-Controller für den Endlos-Loop
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(days: 1),
     )..addListener(_tick);
 
+    generateIconsByColor(itemsByColor);
     icons.shuffle();
     _controller.forward();
   }
 
-  /// Gibt den normalisierten Richtungsvektor (vx, vy) für die aktive Richtung zurück
-  (double, double) _getVelocityVector() {
+  /// Gibt den normalisierten Richtungsvektor (vx, vy) für die aktive Richtung zurück.
+  /// Im Hochformat bleibt das Original erhalten, im Querformat wird exakt von Ecke zu Ecke angepasst.
+  (double, double) _getVelocityVector(double width, double height) {
     const double invSqrt2 =
-        0.70710678118; // 1 / sqrt(2) für diagonale Bewegungen
+        0.70710678118; // 1 / sqrt(2) für diagonale Bewegungen im Hochformat
+
+    // Wenn das Gerät im Querformat ist (Breite > Höhe), berechnen wir den Vektor dynamisch für Ecken-zu-Ecke
+    if (width > height && width > 0 && height > 0) {
+      final double length = sqrt(width * width + height * height);
+      final double dx = width / length;
+      final double dy = height / length;
+
+      switch (widget.direction) {
+        case MovementDirection.topLeftToBottomRight:
+          return (dx, dy);
+        case MovementDirection.bottomRightToTopLeft:
+          return (-dx, -dy);
+        case MovementDirection.topRightToBottomLeft:
+          return (-dx, dy);
+        case MovementDirection.bottomLeftToTopRight:
+          return (dx, -dy);
+        case MovementDirection.topCenterToBottomCenter:
+          return (0.0, 1.0);
+        case MovementDirection.bottomCenterToTopCenter:
+          return (0.0, -1.0);
+        case MovementDirection.leftToRightCenter:
+          return (1.0, 0.0);
+        case MovementDirection.rightToLeftCenter:
+          return (-1.0, 0.0);
+      }
+    }
+
+    // Unveränderter Standard-Hochformat-Modus
     switch (widget.direction) {
       case MovementDirection.topLeftToBottomRight:
         return (invSqrt2, invSqrt2);
@@ -92,19 +124,475 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
   }
 
+  bool isNumeric(String stringValue) {
+    try {
+      int.parse(stringValue);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  int getColorcodeByItemPerColor(itemItemcolor) {
+    return int.parse(
+      itemItemcolor.substring(
+        itemItemcolor.indexOf('_') + 1,
+        itemItemcolor.length,
+      ),
+    );
+  }
+
+  void generateIconsByColor(listWithIconsPerColor) {
+    for (int i = 0; i < listWithIconsPerColor.length - 1; i++) {
+      addIconToList(listWithIconsPerColor[i]);
+    }
+  }
+
+  /// Berechnet die präzise Breite eines Icons (Glyph) im Verhältnis zur gewünschten Höhe
+  double _getIconWidth(IconData iconData, double size) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: String.fromCharCode(iconData.codePoint),
+        style: TextStyle(
+          fontFamily: iconData.fontFamily,
+          package: iconData.fontPackage,
+          fontSize: size,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+    return textPainter.width;
+  }
+
+  /// Hilfsfunktion zum Erstellen und Hinzufügen von Icon-Konfigurationen
+  void _addIconConfig(
+    IconData iconData,
+    Color color,
+    double size, {
+    bool isStroop = false,
+  }) {
+    final width = _getIconWidth(iconData, size);
+    icons.add(
+      _IconConfig(
+        iconData: iconData,
+        color: color,
+        width: width,
+        renderSize: size,
+        isStroop: isStroop,
+      ),
+    );
+  }
+
+  void addIconToList(icon_color) {
+    double sizeIcon = iconSize;
+    int anzColorsOnPage2 = 4;
+    bool arrowVisible = true;
+
+    if (arrowVisible) {
+      if (anzColorsOnPage2 == 4) {
+        sizeIcon = 90.0;
+      } else if (anzColorsOnPage2 == 3) {
+        sizeIcon = 110.0;
+      } else if (anzColorsOnPage2 == 2) {
+        sizeIcon = 160.0;
+      } else if (anzColorsOnPage2 == 1) {
+        sizeIcon = 200.0;
+      }
+
+      if (isNumeric(icon_color.substring(0, icon_color.indexOf('_')))) {
+        addNumberToList(icon_color, sizeIcon);
+      } else if (icon_color.contains('northeast_')) {
+        _addIconConfig(
+          Icons.north_east,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('northwest_')) {
+        _addIconConfig(
+          Icons.north_west,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('southeast_')) {
+        _addIconConfig(
+          Icons.south_east,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('southwest_')) {
+        _addIconConfig(
+          Icons.south_west,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon - 10,
+        );
+      } else if (icon_color.contains('north_')) {
+        _addIconConfig(
+          Icons.north,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('east_')) {
+        _addIconConfig(
+          Icons.east,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('south_')) {
+        _addIconConfig(
+          Icons.south,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('west_')) {
+        _addIconConfig(
+          Icons.west,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('triangle_')) {
+        _addIconConfig(
+          CustomIcons.triangle,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('kreis_')) {
+        _addIconConfig(
+          CustomIcons.circle,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.contains('quadrat_')) {
+        _addIconConfig(
+          CustomIcons.square,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon,
+        );
+      } else if (icon_color.startsWith('letter')) {
+        IconData letterIcon;
+        switch (icon_color.substring(6, 7).toLowerCase()) {
+          case 'a':
+            letterIcon = CustomIcons.a;
+            break;
+          case 'b':
+            letterIcon = CustomIcons.b;
+            break;
+          case 'c':
+            letterIcon = CustomIcons.c;
+            break;
+          case 'd':
+            letterIcon = CustomIcons.d;
+            break;
+          case 'e':
+            letterIcon = CustomIcons.e;
+            break;
+          case 'f':
+            letterIcon = CustomIcons.f;
+            break;
+          case 'g':
+            letterIcon = CustomIcons.g;
+            break;
+          case 'h':
+            letterIcon = CustomIcons.h;
+            break;
+          case 'i':
+            letterIcon = CustomIcons.i;
+            break;
+          case 'j':
+            letterIcon = CustomIcons.j;
+            break;
+          case 'k':
+            letterIcon = CustomIcons.k;
+            break;
+          case 'l':
+            letterIcon = CustomIcons.l;
+            break;
+          case 'm':
+            letterIcon = CustomIcons.m;
+            break;
+          case 'n':
+            letterIcon = CustomIcons.n;
+            break;
+          case 'o':
+            letterIcon = CustomIcons.o;
+            break;
+          case 'p':
+            letterIcon = CustomIcons.p;
+            break;
+          case 'q':
+            letterIcon = CustomIcons.q;
+            break;
+          case 'r':
+            letterIcon = CustomIcons.r;
+            break;
+          case 's':
+            letterIcon = CustomIcons.s;
+            break;
+          case 't':
+            letterIcon = CustomIcons.t;
+            break;
+          case 'u':
+            letterIcon = CustomIcons.u;
+            break;
+          case 'v':
+            letterIcon = CustomIcons.v;
+            break;
+          case 'w':
+            letterIcon = CustomIcons.w;
+            break;
+          case 'x':
+            letterIcon = CustomIcons.x;
+            break;
+          case 'y':
+            letterIcon = CustomIcons.y;
+            break;
+          case 'z':
+            letterIcon = CustomIcons.z;
+            break;
+          default:
+            letterIcon = CustomIcons.a;
+            break;
+        }
+        _addIconConfig(
+          letterIcon,
+          Color(getColorcodeByItemPerColor(icon_color)),
+          sizeIcon - 10,
+        );
+      } else {
+        IconData? stroopIcon;
+        Color randomStroopColor = Color(
+          listWithStroopTextcolors[random.nextInt(
+            listWithStroopTextcolors.length,
+          )],
+        );
+
+        if (icon_color == 'stroop_weiss') {
+          stroopIcon = StroopIcons.stroop_weiss;
+        } else if (icon_color == 'stroop_schwarz') {
+          stroopIcon = StroopIcons.stroop_schwarz;
+        } else if (icon_color == 'stroop_gelb') {
+          stroopIcon = StroopIcons.stroop_gelb;
+        } else if (icon_color == 'stroop_rot') {
+          stroopIcon = StroopIcons.stroop_rot;
+        } else if (icon_color == 'stroop_violett') {
+          stroopIcon = StroopIcons.stroop_violett;
+        } else if (icon_color == 'stroop_blau') {
+          stroopIcon = StroopIcons.stroop_blau;
+        } else if (icon_color == 'stroop_gruen') {
+          stroopIcon = StroopIcons.stroop_gruen;
+        } else if (icon_color == 'stroop_white') {
+          stroopIcon = StroopIcons_English.stroop_white;
+        } else if (icon_color == 'stroop_black') {
+          stroopIcon = StroopIcons_English.stroop_black;
+        } else if (icon_color == 'stroop_yellow') {
+          stroopIcon = StroopIcons_English.stroop_yellow;
+        } else if (icon_color == 'stroop_red') {
+          stroopIcon = StroopIcons_English.stroop_red;
+        } else if (icon_color == 'stroop_violet') {
+          stroopIcon = StroopIcons_English.stroop_violet;
+        } else if (icon_color == 'stroop_blue') {
+          stroopIcon = StroopIcons_English.stroop_blue;
+        } else if (icon_color == 'stroop_green') {
+          stroopIcon = StroopIcons_English.stroop_green;
+        }
+
+        if (stroopIcon != null) {
+          _addIconConfig(
+            stroopIcon,
+            randomStroopColor,
+            sizeIcon,
+            isStroop: true,
+          );
+        }
+      }
+    }
+  }
+
+  void addNumberToList(String numberNumbercolor, double iconsize) {
+    int iconnumber;
+    int iconcolor;
+    iconnumber = int.parse(
+      numberNumbercolor.substring(0, numberNumbercolor.indexOf('_')),
+    );
+    iconcolor = getColorcodeByItemPerColor(numberNumbercolor);
+
+    IconData? numberIcon;
+    switch (iconnumber) {
+      case 0:
+        numberIcon = NumberIcons.nr_0;
+        break;
+      case 1:
+        numberIcon = NumberIcons.nr_1;
+        break;
+      case 2:
+        numberIcon = NumberIcons.nr_2;
+        break;
+      case 3:
+        numberIcon = NumberIcons.nr_3;
+        break;
+      case 4:
+        numberIcon = NumberIcons.nr_4;
+        break;
+      case 5:
+        numberIcon = NumberIcons.nr_5;
+        break;
+      case 6:
+        numberIcon = NumberIcons.nr_6;
+        break;
+      case 7:
+        numberIcon = NumberIcons.nr_7;
+        break;
+      case 8:
+        numberIcon = NumberIcons.nr_8;
+        break;
+      case 9:
+        numberIcon = NumberIcons.nr_9;
+        break;
+      case 10:
+        numberIcon = NumberIcons.nr_10;
+        break;
+      case 11:
+        numberIcon = NumberIcons.nr_11;
+        break;
+      case 12:
+        numberIcon = NumberIcons.nr_12;
+        break;
+      case 13:
+        numberIcon = NumberIcons.nr_13;
+        break;
+      case 14:
+        numberIcon = NumberIcons.nr_14;
+        break;
+      case 15:
+        numberIcon = NumberIcons.nr_15;
+        break;
+      case 16:
+        numberIcon = NumberIcons.nr_16;
+        break;
+      case 17:
+        numberIcon = NumberIcons.nr_17;
+        break;
+      case 18:
+        numberIcon = NumberIcons.nr_18;
+        break;
+      case 19:
+        numberIcon = NumberIcons.nr_19;
+        break;
+      case 20:
+        numberIcon = NumberIcons.nr_20;
+        break;
+      case 21:
+        numberIcon = NumberIcons.nr_21;
+        break;
+      case 22:
+        numberIcon = NumberIcons.nr_22;
+        break;
+      case 23:
+        numberIcon = NumberIcons.nr_23;
+        break;
+      case 24:
+        numberIcon = NumberIcons.nr_24;
+        break;
+      case 25:
+        numberIcon = NumberIcons.nr_25;
+        break;
+      case 26:
+        numberIcon = NumberIcons.nr_26;
+        break;
+      case 27:
+        numberIcon = NumberIcons.nr_27;
+        break;
+      case 28:
+        numberIcon = NumberIcons.nr_28;
+        break;
+      case 29:
+        numberIcon = NumberIcons.nr_29;
+        break;
+      case 30:
+        numberIcon = NumberIcons.nr_30;
+        break;
+      case 31:
+        numberIcon = NumberIcons.nr_31;
+        break;
+      case 32:
+        numberIcon = NumberIcons.nr_32;
+        break;
+      case 33:
+        numberIcon = NumberIcons.nr_33;
+        break;
+      case 34:
+        numberIcon = NumberIcons.nr_34;
+        break;
+      case 35:
+        numberIcon = NumberIcons.nr_35;
+        break;
+      case 36:
+        numberIcon = NumberIcons.nr_36;
+        break;
+      case 37:
+        numberIcon = NumberIcons.nr_37;
+        break;
+      case 38:
+        numberIcon = NumberIcons.nr_38;
+        break;
+      case 39:
+        numberIcon = NumberIcons.nr_39;
+        break;
+      case 40:
+        numberIcon = NumberIcons.nr_40;
+        break;
+      case 41:
+        numberIcon = NumberIcons.nr_41;
+        break;
+      case 42:
+        numberIcon = NumberIcons.nr_42;
+        break;
+      case 43:
+        numberIcon = NumberIcons.nr_43;
+        break;
+      case 44:
+        numberIcon = NumberIcons.nr_44;
+        break;
+      case 45:
+        numberIcon = NumberIcons.nr_45;
+        break;
+      case 46:
+        numberIcon = NumberIcons.nr_46;
+        break;
+      case 47:
+        numberIcon = NumberIcons.nr_47;
+        break;
+      case 48:
+        numberIcon = NumberIcons.nr_48;
+        break;
+      case 49:
+        numberIcon = NumberIcons.nr_49;
+        break;
+      case 50:
+        numberIcon = NumberIcons.nr_50;
+        break;
+    }
+
+    if (numberIcon != null) {
+      _addIconConfig(numberIcon, Color(iconcolor), iconsize);
+    }
+  }
+
   /// Erzeugt ein neues Icon an der korrekten Startposition basierend auf der Richtung
   void _spawnIcon(double width, double height) {
-    final icon = icons[_nextIconIndex];
-    final iconWidth = _getIconWidth(icon);
+    if (icons.isEmpty) return;
+
+    final iconConfig = icons[_nextIconIndex];
+    final iconWidth = iconConfig.width;
 
     double startX = 0;
     double startY = 0;
 
-    // Bestimmt den Startpunkt außerhalb des Sichtbereichs je nach Bewegungsrichtung
     switch (widget.direction) {
       case MovementDirection.topLeftToBottomRight:
         startX = -iconWidth;
-        startY = -iconSize;
+        startY = -iconConfig.renderSize;
         break;
       case MovementDirection.bottomRightToTopLeft:
         startX = width;
@@ -112,7 +600,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         break;
       case MovementDirection.topRightToBottomLeft:
         startX = width;
-        startY = -iconSize;
+        startY = -iconConfig.renderSize;
         break;
       case MovementDirection.bottomLeftToTopRight:
         startX = -iconWidth;
@@ -120,7 +608,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         break;
       case MovementDirection.topCenterToBottomCenter:
         startX = (width - iconWidth) / 2;
-        startY = -iconSize;
+        startY = -iconConfig.renderSize;
         break;
       case MovementDirection.bottomCenterToTopCenter:
         startX = (width - iconWidth) / 2;
@@ -128,28 +616,30 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         break;
       case MovementDirection.leftToRightCenter:
         startX = -iconWidth;
-        startY = (height - iconSize) / 2;
+        startY = (height - iconConfig.renderSize) / 2;
         break;
       case MovementDirection.rightToLeftCenter:
         startX = width;
-        startY = (height - iconSize) / 2;
+        startY = (height - iconConfig.renderSize) / 2;
         break;
     }
 
     final flowIcon = _FlowIcon(
-      icon: icon,
+      iconData: iconConfig.iconData,
+      color: iconConfig.color,
+      renderSize: iconConfig.renderSize,
+      width: iconWidth,
+      isStroop: iconConfig.isStroop,
       x: startX,
       y: startY,
       startX: startX,
       startY: startY,
-      width: iconWidth,
     );
 
     _flowIcons.add(flowIcon);
     _nextIconIndex = (_nextIconIndex + 1) % icons.length;
   }
 
-  /// Prüft, ob das letzte Icon weit genug gewandert ist, um das nächste zu spawnen
   void _checkForNewIcon(double width, double height) {
     if (_flowIcons.isEmpty) {
       _spawnIcon(width, height);
@@ -157,34 +647,54 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
 
     final lastIcon = _flowIcons.last;
-    final (vx, vy) = _getVelocityVector();
+    final (vx, vy) = _getVelocityVector(width, height);
 
-    // Berechnet die exakte Distanz, die das letzte Icon seit dem Start zurückgelegt hat
     final distanceTraveled =
         (lastIcon.x - lastIcon.startX) * vx +
         (lastIcon.y - lastIcon.startY) * vy;
 
-    // Sobald genügend Platz geschaffen wurde, wird das nächste Icon erzeugt
-    if (distanceTraveled >= lastIcon.width + iconSpacing) {
+    final bool isDiagonal =
+        widget.direction == MovementDirection.topLeftToBottomRight ||
+        widget.direction == MovementDirection.bottomRightToTopLeft ||
+        widget.direction == MovementDirection.topRightToBottomLeft ||
+        widget.direction == MovementDirection.bottomLeftToTopRight;
+
+    final bool isLandscape = width > height;
+
+    double requiredDistance;
+    if (isDiagonal) {
+      if (lastIcon.isStroop) {
+        final double spacingMultiplier = isLandscape ? 0.7 : 1.0;
+        requiredDistance = (lastIcon.width + iconSpacing) * spacingMultiplier;
+      } else {
+        final double spacingMultiplier = isLandscape ? 0.7 : 1.0;
+        requiredDistance =
+            (lastIcon.renderSize + iconSpacing) * spacingMultiplier;
+      }
+    } else {
+      requiredDistance = lastIcon.width + iconSpacing;
+    }
+
+    if (distanceTraveled >= requiredDistance) {
       _spawnIcon(width, height);
     }
   }
 
-  /// Prüft, ob ein Icon den sichtbaren Bereich vollständig verlassen hat
   bool _isOutOfBounds(_FlowIcon flowIcon, double width, double height) {
     switch (widget.direction) {
       case MovementDirection.topLeftToBottomRight:
         return flowIcon.x > width || flowIcon.y > height;
       case MovementDirection.bottomRightToTopLeft:
-        return flowIcon.x + flowIcon.width < 0 || flowIcon.y + iconSize < 0;
+        return flowIcon.x + flowIcon.width < 0 ||
+            flowIcon.y + flowIcon.renderSize < 0;
       case MovementDirection.topRightToBottomLeft:
         return flowIcon.x + flowIcon.width < 0 || flowIcon.y > height;
       case MovementDirection.bottomLeftToTopRight:
-        return flowIcon.x > width || flowIcon.y + iconSize < 0;
+        return flowIcon.x > width || flowIcon.y + flowIcon.renderSize < 0;
       case MovementDirection.topCenterToBottomCenter:
         return flowIcon.y > height;
       case MovementDirection.bottomCenterToTopCenter:
-        return flowIcon.y + iconSize < 0;
+        return flowIcon.y + flowIcon.renderSize < 0;
       case MovementDirection.leftToRightCenter:
         return flowIcon.x > width;
       case MovementDirection.rightToLeftCenter:
@@ -192,20 +702,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
   }
 
-  /// Berechnet die präzise Breite einer Glyph-Schriftart
-  double _getIconWidth(IconData icon) {
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: String.fromCharCode(icon.codePoint),
-        style: TextStyle(fontFamily: icon.fontFamily, fontSize: iconSize),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    return textPainter.width;
-  }
-
-  /// Steuert die Animationsschleife pro Frame
   void _tick() {
     final now = DateTime.now();
 
@@ -219,19 +715,20 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
     if (!mounted) return;
 
+    // Verhindert das Spawnen/Berechnen mit ungültigen Dimensionen beim ersten Start
+    if (_animationWidth == 0 || _animationHeight == 0) return;
+
     setState(() {
-      final (vx, vy) = _getVelocityVector();
+      final (vx, vy) = _getVelocityVector(_animationWidth, _animationHeight);
       final movement = speed * deltaTime;
       final deltaX = movement * vx;
       final deltaY = movement * vy;
 
-      // Aktualisiert die Position aller aktiven Icons einheitlich
       for (final flowIcon in _flowIcons) {
         flowIcon.x += deltaX;
         flowIcon.y += deltaY;
       }
 
-      // Entfernt Icons, die ausserhalb des Bildschirms sind
       _flowIcons.removeWhere(
         (flowIcon) =>
             _isOutOfBounds(flowIcon, _animationWidth, _animationHeight),
@@ -241,7 +738,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     });
   }
 
-  /// Entfernt ein angetipptes Icon manuell
   void _removeIcon(_FlowIcon flowIcon) {
     if (!mounted) return;
     setState(() {
@@ -270,14 +766,14 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
                           top: flowIcon.y,
                           child: SizedBox(
                             width: flowIcon.width,
-                            height: iconSize,
+                            height: flowIcon.renderSize,
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: () => _removeIcon(flowIcon),
                               child: Icon(
-                                flowIcon.icon,
-                                size: iconSize,
-                                color: Colors.green,
+                                flowIcon.iconData,
+                                size: flowIcon.renderSize,
+                                color: flowIcon.color,
                               ),
                             ),
                           ),
@@ -315,21 +811,44 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 }
 
-/// Erweitertes Datenmodell zur Speicherung von Start- und aktueller Position
+/// Konfigurationsklasse für Icons vor dem Spawn
+class _IconConfig {
+  final IconData iconData;
+  final Color color;
+  final double width;
+  final double renderSize;
+  final bool isStroop;
+
+  _IconConfig({
+    required this.iconData,
+    required this.color,
+    required this.width,
+    required this.renderSize,
+    this.isStroop = false,
+  });
+}
+
+/// Datenmodell zur Speicherung von Position, Farbe und gelesener Breite im aktiven Flow
 class _FlowIcon {
-  final IconData icon;
+  final IconData iconData;
+  final Color color;
+  final double renderSize;
+  final double width;
+  final bool isStroop;
   double x;
   double y;
   final double startX;
   final double startY;
-  final double width;
 
   _FlowIcon({
-    required this.icon,
+    required this.iconData,
+    required this.color,
+    required this.renderSize,
+    required this.width,
+    required this.isStroop,
     required this.x,
     required this.y,
     required this.startX,
     required this.startY,
-    required this.width,
   });
 }

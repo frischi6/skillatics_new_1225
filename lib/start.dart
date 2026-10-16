@@ -105,7 +105,7 @@ class StartingPage extends StatelessWidget {
                       nr_from: '',
                       nr_to: '',
                       nr_skip: '',
-                      speedlevel: "2",
+                      speedlevel: 5,
                     ),
                   ),
                 );

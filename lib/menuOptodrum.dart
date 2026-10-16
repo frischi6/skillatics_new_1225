@@ -51,7 +51,7 @@ class MenuOptodrum extends StatefulWidget {
   int secLengthRound;
   int secLengthRest;
   int anzRounds;
-  var speedlevel;
+  int speedlevel;
   bool isElemProSeiteEinmalig;
   String nr_individual, nr_from, nr_to, nr_skip;
 
@@ -137,7 +137,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
       MultiSelectController(deSelectPerpetualSelectedItems: true);
 
   /* Optodrumspezifisch */
-  var selectedSpeedlevel = "0";
+  int selectedSpeedlevel = 5;
+  var alleSelectedItems = [];
 
   //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
@@ -168,6 +169,27 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     keyString = keyInt.toString();
   }
 
+  void changeToTrainingspage() {
+    organizeElementsColors();
+    //Wechsel möglich
+    showDialog(context: context, builder: (_) => alertDialogCD());
+
+    Timer(const Duration(seconds: 3), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TrainingOptodrum(
+            direction: MovementDirection.leftToRightCenter,
+            speedlevel: selectedSpeedlevel,
+            allItemsByColor: alleSelectedItems,
+            listStroopText: stroopTexticons,
+            listStroopTextcolors: stroopTextcolor,
+          ),
+        ),
+      );
+    });
+  }
+
   //Wechsel auf Seite 2 mit den angezeigten Farben
   void _changeToPage2() {
     //Schönheitsanpassung: Damit Fehlermeldung verschwindet, wenn falsche Auswahl
@@ -175,7 +197,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     setState(() {
       textFehlermeldung = '';
     });
-    selectedSpeedlevel;
     organizeElementsColors();
     organizeBackgroundcolor();
 
@@ -384,13 +405,14 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
         selectedShapesPerColor +
         selectedAlphabetlettersPerColor +
         stroopTexticons;
+    alleSelectedItems = selectedItems; /*
     for (int i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].length != 6) {
         //length 6 sind hexwerte von colors-> restliche itemnamen von zb shapes dürfen nicht einen namen haben der 6 ziffern lang ist!
         selectedItems[i] =
             'fefefe'; //weisser hintergrund aber nicht ffffff damit später erkennbar dass dort arrows angezeigt werden müssen
       } //else ist bereits ein hexcode in selectedColors und kein arrow
-    }
+    }*/
   }
 
   ///Ordnet das Array selectedBackgroundcolors
@@ -2218,36 +2240,23 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
               SizedBox(height: 18), //Für Abstand
 
               Wrap(
-                spacing: 5,
-                children: [
-                  ChoiceChip(
-                    label: Text("1"),
-                    selected: selectedSpeedlevel == "1",
+                spacing: 8.0,
+                // Werte hier auf 100, 150 und 170 geändert
+                children: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) {
+                  return ChoiceChip(
+                    label: Text(
+                      'Level $level',
+                    ), // oder einfach nur Text('$level')
+                    selected: selectedSpeedlevel == level,
                     onSelected: (bool selected) {
                       setState(() {
-                        // Wenn ausgewählt, setze "1", sonst leer (oder einen Standardwert)
-                        selectedSpeedlevel = selected ? "1" : "";
-
-                        // Optional: Direkt speichern
-                        // _saveSpeedlevel(selectedSpeedlevel);
+                        if (selected) {
+                          selectedSpeedlevel = level;
+                        }
                       });
                     },
-                  ),
-                  ChoiceChip(
-                    label: Text("2"),
-                    selected: selectedSpeedlevel == "2",
-                    onSelected: (bool selected) {
-                      setState(() {
-                        // Wenn ausgewählt, setze "1", sonst leer (oder einen Standardwert)
-                        selectedSpeedlevel = selected ? "2" : "";
-                        print(selectedSpeedlevel);
-
-                        // Optional: Direkt speichern
-                        // _saveSpeedlevel(selectedSpeedlevel);
-                      });
-                    },
-                  ),
-                ],
+                  );
+                }).toList(),
               ),
 
               SizedBox(height: 15),
@@ -2426,18 +2435,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   side: BorderSide(color: Colors.grey.shade700),
                 ),
                 autofocus: true,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TrainingOptodrum(
-                        direction: MovementDirection.rightToLeftCenter,
-                        speedlevel: int.parse(selectedSpeedlevel),
-                      ),
-                    ),
-                  );
-                },
-                onLongPress: _changeToPage2,
+                onPressed: changeToTrainingspage,
+                onLongPress: changeToTrainingspage,
                 child: Text('start'.tr, style: TextStyle(fontSize: 15)),
               ),
               SizedBox(height: 5),

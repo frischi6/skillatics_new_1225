@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:math'; //Für Random-Generator
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
