@@ -35,6 +35,7 @@ class MenuOptodrum extends StatefulWidget {
     required this.nr_to,
     required this.nr_skip,
     required this.speedlevel,
+    required this.moveDirection,
   });
 
   final String title;
@@ -52,6 +53,7 @@ class MenuOptodrum extends StatefulWidget {
   int secLengthRest;
   int anzRounds;
   int speedlevel;
+  String moveDirection;
   bool isElemProSeiteEinmalig;
   String nr_individual, nr_from, nr_to, nr_skip;
 
@@ -139,6 +141,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   /* Optodrumspezifisch */
   int selectedSpeedlevel = 5;
   var alleSelectedItems = [];
+  String selectedMovedirection = 'east'; // Deine String-Variable
 
   //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
@@ -179,7 +182,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
         context,
         MaterialPageRoute(
           builder: (context) => TrainingOptodrum(
-            direction: MovementDirection.leftToRightCenter,
+            movedirection: selectedMovedirection,
             speedlevel: selectedSpeedlevel,
             allItemsByColor: alleSelectedItems,
             listStroopText: stroopTexticons,
@@ -1830,6 +1833,66 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     );
   }
 
+  /// returnt ein MultiSelectContainer, in dem die Richtung, in der sich die Icons bewegen, ausgewählt wird
+  Wrap buildMovementdirectionselect() {
+    // Liste aller 8 Himmelsrichtungen
+    final List<String> directions = [
+      'east',
+      'west',
+      'south',
+      'north',
+      'northwest',
+      'northeast',
+      'southeast',
+      'southwest',
+    ];
+
+    return Wrap(
+      spacing: 8.0,
+      runSpacing:
+          8.0, // Empfohlen bei mehreren Zeilen, da 8 Chips sonst überlaufen
+      children: directions.map((directionString) {
+        // Icon dynamisch basierend auf dem String zuordnen
+        IconData getIcon(String dir) {
+          switch (dir) {
+            case 'north':
+              return Icons.north;
+            case 'northeast':
+              return Icons.north_east;
+            case 'east':
+              return Icons.east;
+            case 'southeast':
+              return Icons.south_east;
+            case 'south':
+              return Icons.south;
+            case 'southwest':
+              return Icons.south_west;
+            case 'west':
+              return Icons.west;
+            case 'northwest':
+              return Icons.north_west;
+            default:
+              return Icons.navigation;
+          }
+        }
+
+        return ChoiceChip(
+          label: Icon(getIcon(directionString)),
+          selectedColor: Color.fromRGBO(188, 250, 0, 0.5),
+          selected: selectedMovedirection == directionString,
+          onSelected: (bool selected) {
+            setState(() {
+              if (selected) {
+                selectedMovedirection =
+                    directionString; // Speichert den exakten String
+              }
+            });
+          },
+        );
+      }).toList(),
+    );
+  }
+
   @override
   void initState() {
     currentCountry = widget.currentCountry;
@@ -1853,6 +1916,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     nr_to = widget.nr_to;
     nr_skip = widget.nr_skip;
     selectedSpeedlevel = widget.speedlevel;
+    selectedMovedirection = widget.moveDirection;
 
     initializeSelectedColors(
       selectedItems,
@@ -2228,25 +2292,22 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                 endIndent: 30,
               ),
 
-              /* HIER TEMPO-STUFEN ALS MENUPUNKT */
-
-              //Applescroll - Speedlevel
+              //Speedlevel
               SizedBox(height: 12),
               Text(
                 'selSpeedlevel'.tr,
                 style: TextStyle(fontSize: fontsizeMenutitle),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 18), //Für Abstand
-
+              SizedBox(height: 18),
               Wrap(
                 spacing: 8.0,
-                // Werte hier auf 100, 150 und 170 geändert
+                runSpacing:
+                    8.0, // Empfohlen bei mehreren Zeilen, da 8 Chips sonst überlaufen
                 children: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) {
                   return ChoiceChip(
-                    label: Text(
-                      'Level $level',
-                    ), // oder einfach nur Text('$level')
+                    label: Text('$level'), // oder einfach nur Text('$level')
+                    selectedColor: Color.fromRGBO(188, 250, 0, 0.5),
                     selected: selectedSpeedlevel == level,
                     onSelected: (bool selected) {
                       setState(() {
@@ -2258,7 +2319,26 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   );
                 }).toList(),
               ),
+              SizedBox(height: 15),
+              Divider(
+                color: Colors.black,
+                height: 15,
+                indent: 30,
+                endIndent: 30,
+              ),
 
+              //Move-Direction
+              SizedBox(height: 12),
+              Text(
+                'selMovedirection'.tr,
+                style: TextStyle(fontSize: fontsizeMenutitle),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 18), //Für Abstand
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: buildMovementdirectionselect(),
+              ),
               SizedBox(height: 15),
               Divider(
                 color: Colors.black,

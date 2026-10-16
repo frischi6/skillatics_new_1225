@@ -106,6 +106,7 @@ class StartingPage extends StatelessWidget {
                       nr_to: '',
                       nr_skip: '',
                       speedlevel: 5,
+                      moveDirection: 'east',
                     ),
                   ),
                 );

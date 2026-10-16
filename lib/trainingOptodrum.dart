@@ -8,14 +8,14 @@ import 'start.dart';
 import 'directions_optodrum.dart';
 
 class TrainingOptodrum extends StatefulWidget {
-  final MovementDirection direction; // Die im Menü gewählte Bewegungsrichtung
+  final String movedirection; // Die im Menü gewählte Bewegungsrichtung
   final int speedlevel;
   final List<dynamic> allItemsByColor;
   final List<dynamic> listStroopText, listStroopTextcolors;
 
   const TrainingOptodrum({
     super.key,
-    required this.direction,
+    required this.movedirection,
     required this.speedlevel,
     required this.allItemsByColor,
     required this.listStroopText,
@@ -34,10 +34,11 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   static const double iconSize =
       60; // Einheitliche Grösse (Höhe) aller Standard-Icons
   static const double iconSpacing = 30; // Exakter Abstand zwischen den Icons
-  static const double speed = 400; // Geschwindigkeit in Pixel pro Sekunde
-
-  int speedlevel = 0;
+  static double speed =
+      75; // Geschwindigkeit in Pixel pro Sekunde, wird anhand des gewählten Speedlevels gesetzt
   List<dynamic> itemsByColor = [];
+  MovementDirection direction = MovementDirection
+      .leftToRightCenter; //Richtung in der sich die Icons bewegen
 
   List<dynamic> listWithStroopText = [];
   List<dynamic> listWithStroopTextcolors = [];
@@ -55,10 +56,11 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   void initState() {
     super.initState();
 
-    speedlevel = widget.speedlevel;
     itemsByColor = widget.allItemsByColor;
     listWithStroopText = widget.listStroopText;
     listWithStroopTextcolors = widget.listStroopTextcolors;
+    setMovedirection();
+    setSpeed();
 
     // Initialisiert den Animations-Controller für den Endlos-Loop
     _controller = AnimationController(
@@ -69,6 +71,54 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     generateIconsByColor(itemsByColor);
     icons.shuffle();
     _controller.forward();
+  }
+
+  //Wandelt den String der Movementdirection in ein enum
+  void setMovedirection() {
+    switch (widget.movedirection) {
+      case 'east':
+        direction = MovementDirection.leftToRightCenter;
+      case 'west':
+        direction = MovementDirection.rightToLeftCenter;
+      case 'north':
+        direction = MovementDirection.bottomCenterToTopCenter;
+      case 'south':
+        direction = MovementDirection.topCenterToBottomCenter;
+      case 'northeast':
+        direction = MovementDirection.bottomLeftToTopRight;
+      case 'northwest':
+        direction = MovementDirection.bottomRightToTopLeft;
+      case 'southeast':
+        direction = MovementDirection.topLeftToBottomRight;
+      case 'southwest':
+        direction = MovementDirection.topRightToBottomLeft;
+    }
+  }
+
+  ///Setzt die Geschwindigkeit in Pixel pro Sekunde anhand vom gewählten Speedlevel
+  void setSpeed() {
+    switch (widget.speedlevel) {
+      case 1:
+        speed = 75;
+      case 2:
+        speed = 200;
+      case 3:
+        speed = 325;
+      case 4:
+        speed = 450;
+      case 5:
+        speed = 575;
+      case 6:
+        speed = 700;
+      case 7:
+        speed = 825;
+      case 8:
+        speed = 950;
+      case 9:
+        speed = 1075;
+      case 10:
+        speed = 1200;
+    }
   }
 
   /// Gibt den normalisierten Richtungsvektor (vx, vy) für die aktive Richtung zurück.
@@ -83,7 +133,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
       final double dx = width / length;
       final double dy = height / length;
 
-      switch (widget.direction) {
+      switch (direction) {
         case MovementDirection.topLeftToBottomRight:
           return (dx, dy);
         case MovementDirection.bottomRightToTopLeft:
@@ -104,7 +154,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
 
     // Unveränderter Standard-Hochformat-Modus
-    switch (widget.direction) {
+    switch (direction) {
       case MovementDirection.topLeftToBottomRight:
         return (invSqrt2, invSqrt2);
       case MovementDirection.bottomRightToTopLeft:
@@ -589,7 +639,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     double startX = 0;
     double startY = 0;
 
-    switch (widget.direction) {
+    switch (direction) {
       case MovementDirection.topLeftToBottomRight:
         startX = -iconWidth;
         startY = -iconConfig.renderSize;
@@ -654,10 +704,10 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         (lastIcon.y - lastIcon.startY) * vy;
 
     final bool isDiagonal =
-        widget.direction == MovementDirection.topLeftToBottomRight ||
-        widget.direction == MovementDirection.bottomRightToTopLeft ||
-        widget.direction == MovementDirection.topRightToBottomLeft ||
-        widget.direction == MovementDirection.bottomLeftToTopRight;
+        direction == MovementDirection.topLeftToBottomRight ||
+        direction == MovementDirection.bottomRightToTopLeft ||
+        direction == MovementDirection.topRightToBottomLeft ||
+        direction == MovementDirection.bottomLeftToTopRight;
 
     final bool isLandscape = width > height;
 
@@ -681,7 +731,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 
   bool _isOutOfBounds(_FlowIcon flowIcon, double width, double height) {
-    switch (widget.direction) {
+    switch (direction) {
       case MovementDirection.topLeftToBottomRight:
         return flowIcon.x > width || flowIcon.y > height;
       case MovementDirection.bottomRightToTopLeft:
@@ -851,4 +901,16 @@ class _FlowIcon {
     required this.startX,
     required this.startY,
   });
+}
+
+//Movementdirections der Icons
+enum MovementDirection {
+  topLeftToBottomRight,
+  bottomRightToTopLeft,
+  topRightToBottomLeft,
+  bottomLeftToTopRight,
+  topCenterToBottomCenter,
+  bottomCenterToTopCenter,
+  leftToRightCenter,
+  rightToLeftCenter,
 }

@@ -73,7 +73,8 @@ class TranslationText extends Translations {
       'ohne': 'Ohne:',
       'zB': 'z.B.',
       'backgroundIcons': 'Hintergrundfarbe Elemente',
-      'selSpeedlevel': 'Speedlevel',
+      'selSpeedlevel': 'Speedlevel der Icons?',
+      'selMovedirection': 'Bewegungs-Richtung der Icons?',
     },
     'en_US': {
       'fehlerColorsNull': 'Items still need to be selected.',
@@ -142,7 +143,8 @@ class TranslationText extends Translations {
       'ohne': 'Except:',
       'zB': 'e.g.',
       'backgroundIcons': 'Background-Color items',
-      'selSpeedlevel': 'Speedlevel',
+      'selSpeedlevel': 'Speedlevel of the icons?',
+      'selMovedirection': 'Movement-direction of the icons?',
     },
   };
 }
