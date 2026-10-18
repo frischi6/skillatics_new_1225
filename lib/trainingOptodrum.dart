@@ -5,21 +5,24 @@ import 'package:skillatics/number_zero_to_fifty_icons.dart';
 import 'package:skillatics/stroop__english_icons.dart';
 import 'package:skillatics/stroop_icons.dart';
 import 'start.dart';
-import 'directions_optodrum.dart';
 
 class TrainingOptodrum extends StatefulWidget {
   final String movedirection; // Die im Menü gewählte Bewegungsrichtung
   final int speedlevel;
+  final int secChangeBackgrcolor;
   final List<dynamic> allItemsByColor;
   final List<dynamic> listStroopText, listStroopTextcolors;
+  final List<dynamic> listBackgroundcolors;
 
   const TrainingOptodrum({
     super.key,
     required this.movedirection,
     required this.speedlevel,
+    required this.secChangeBackgrcolor,
     required this.allItemsByColor,
     required this.listStroopText,
     required this.listStroopTextcolors,
+    required this.listBackgroundcolors,
   });
 
   @override
@@ -36,12 +39,16 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   static const double iconSpacing = 30; // Exakter Abstand zwischen den Icons
   static double speed =
       75; // Geschwindigkeit in Pixel pro Sekunde, wird anhand des gewählten Speedlevels gesetzt
+  int secChangeBackground = 2;
   List<dynamic> itemsByColor = [];
   MovementDirection direction = MovementDirection
       .leftToRightCenter; //Richtung in der sich die Icons bewegen
 
   List<dynamic> listWithStroopText = [];
   List<dynamic> listWithStroopTextcolors = [];
+  List<dynamic> listWithBackgroundcolors = [];
+  int currentBackgroundcolor = 0, newBackgroundcolor = 0;
+  DateTime lastChangeBackground = DateTime.now();
 
   // Speichert konfigurierte Icon-Daten statt Widgets
   List<_IconConfig> icons = [];
@@ -56,9 +63,15 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   void initState() {
     super.initState();
 
+    secChangeBackground = widget.secChangeBackgrcolor;
     itemsByColor = widget.allItemsByColor;
     listWithStroopText = widget.listStroopText;
     listWithStroopTextcolors = widget.listStroopTextcolors;
+    listWithBackgroundcolors = widget.listBackgroundcolors;
+    currentBackgroundcolor =
+        listWithBackgroundcolors[random.nextInt(
+          listWithBackgroundcolors.length,
+        )];
     setMovedirection();
     setSpeed();
 
@@ -785,6 +798,22 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
       );
 
       _checkForNewIcon(_animationWidth, _animationHeight);
+
+      //Überprüfen, ob Hintergrundfarbe geändert werden muss
+      if (listWithBackgroundcolors.length > 1) {
+        if (now.difference(lastChangeBackground).inSeconds >=
+            secChangeBackground) {
+          do {
+            newBackgroundcolor =
+                listWithBackgroundcolors[random.nextInt(
+                  listWithBackgroundcolors.length,
+                )];
+          } while (newBackgroundcolor == currentBackgroundcolor);
+
+          currentBackgroundcolor = newBackgroundcolor;
+          lastChangeBackground = DateTime.now();
+        }
+      }
     });
   }
 
@@ -798,6 +827,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(currentBackgroundcolor),
       appBar: AppBar(title: const Text('Icon Flow Training')),
       body: Column(
         children: [

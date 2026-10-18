@@ -75,6 +75,8 @@ class TranslationText extends Translations {
       'backgroundIcons': 'Hintergrundfarbe Elemente',
       'selSpeedlevel': 'Speedlevel der Icons?',
       'selMovedirection': 'Bewegungs-Richtung der Icons?',
+      'selWechselBackgrSek':
+          'Wechsel Hintergrundfarbe nach wie vielen Sekunden?',
     },
     'en_US': {
       'fehlerColorsNull': 'Items still need to be selected.',
@@ -145,6 +147,7 @@ class TranslationText extends Translations {
       'backgroundIcons': 'Background-Color items',
       'selSpeedlevel': 'Speedlevel of the icons?',
       'selMovedirection': 'Movement-direction of the icons?',
+      'selWechselBackgrSek': 'Background changes after how many seconds?',
     },
   };
 }

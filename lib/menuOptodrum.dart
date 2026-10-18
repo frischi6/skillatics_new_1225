@@ -7,7 +7,6 @@ import 'custom_icons_icons.dart';
 import 'stroop_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
 import 'trainingPage.dart';
-import 'directions_optodrum.dart';
 import 'trainingOptodrum.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellungen zurücksetzen möglich
@@ -36,6 +35,7 @@ class MenuOptodrum extends StatefulWidget {
     required this.nr_skip,
     required this.speedlevel,
     required this.moveDirection,
+    required this.secChangeBackgrcolor,
   });
 
   final String title;
@@ -56,6 +56,7 @@ class MenuOptodrum extends StatefulWidget {
   String moveDirection;
   bool isElemProSeiteEinmalig;
   String nr_individual, nr_from, nr_to, nr_skip;
+  int secChangeBackgrcolor;
 
   @override
   _MenuOptodrumState createState() => _MenuOptodrumState(); //ruft automatisch initState() auf
@@ -142,6 +143,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   int selectedSpeedlevel = 5;
   var alleSelectedItems = [];
   String selectedMovedirection = 'east'; // Deine String-Variable
+  int secChangeBackgrcolor = 2;
 
   //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
@@ -184,9 +186,11 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
           builder: (context) => TrainingOptodrum(
             movedirection: selectedMovedirection,
             speedlevel: selectedSpeedlevel,
+            secChangeBackgrcolor: secChangeBackgrcolor,
             allItemsByColor: alleSelectedItems,
             listStroopText: stroopTexticons,
             listStroopTextcolors: stroopTextcolor,
+            listBackgroundcolors: selectedBackgroundcolors,
           ),
         ),
       );
@@ -1828,7 +1832,11 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
         ),
       ],
       onChange: (allSelectedItems, selectedItem) {
-        selectedBackgroundcolors = allSelectedItems;
+        setState(() {
+          selectedBackgroundcolors = allSelectedItems
+              .toSet()
+              .toList(); //Duplikate entfernen weil wegen setState Werte komisch erfasst
+        });
       },
     );
   }
@@ -1917,6 +1925,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     nr_skip = widget.nr_skip;
     selectedSpeedlevel = widget.speedlevel;
     selectedMovedirection = widget.moveDirection;
+    secChangeBackgrcolor = widget.secChangeBackgrcolor;
 
     initializeSelectedColors(
       selectedItems,
@@ -2300,25 +2309,28 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 18),
-              Wrap(
-                spacing: 8.0,
-                runSpacing:
-                    8.0, // Empfohlen bei mehreren Zeilen, da 8 Chips sonst überlaufen
-                children: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) {
-                  return ChoiceChip(
-                    label: Text('$level'), // oder einfach nur Text('$level')
-                    selectedColor: Color.fromRGBO(188, 250, 0, 0.5),
-                    selected: selectedSpeedlevel == level,
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          selectedSpeedlevel = level;
-                        }
-                      });
-                    },
-                  );
-                }).toList(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      NumberPicker(
+                        value: selectedSpeedlevel,
+                        minValue: 1,
+                        maxValue: 10,
+                        step: 1,
+                        itemHeight: 30,
+                        selectedTextStyle: TextStyle(fontSize: 22),
+                        textStyle: TextStyle(fontSize: 13),
+                        onChanged: (value) => setState(() {
+                          selectedSpeedlevel = value;
+                        }),
+                      ),
+                    ],
+                  ),
+                ],
               ),
+
               SizedBox(height: 15),
               Divider(
                 color: Colors.black,
@@ -2340,6 +2352,50 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                 child: buildMovementdirectionselect(),
               ),
               SizedBox(height: 15),
+              Divider(
+                color: Colors.black,
+                height: 15,
+                indent: 30,
+                endIndent: 30,
+              ),
+
+              //Applescroll - Hintergrundfarbwechsel nach wie vielen Sekunden
+              SizedBox(height: 12),
+              Text(
+                'selWechselBackgrSek'.tr,
+                style: TextStyle(
+                  fontSize: fontsizeMenutitle,
+                  color: selectedBackgroundcolors.length > 1
+                      ? Colors.black
+                      : Colors
+                            .grey, //ausgrauen weil keine relevante Einstellung wenn nur eine Hintergrundfarbe selektiert
+                ),
+                textAlign: TextAlign.center,
+              ),
+              NumberPicker(
+                value: secChangeBackgrcolor,
+                minValue: 1,
+                maxValue: 59,
+                step: 1,
+                itemHeight: 30,
+                selectedTextStyle: TextStyle(
+                  fontSize: 22,
+                  color: selectedBackgroundcolors.length > 1
+                      ? Colors.black
+                      : Colors
+                            .grey, //ausgrauen weil keine relevante Einstellung wenn nur eine Hintergrundfarbe selektiert
+                ),
+                textStyle: TextStyle(
+                  fontSize: 13,
+                  color: selectedBackgroundcolors.length > 1
+                      ? Colors.black
+                      : Colors
+                            .grey, //ausgrauen weil keine relevante Einstellung wenn nur eine Hintergrundfarbe selektiert
+                ),
+                onChanged: (value) =>
+                    setState(() => secChangeBackgrcolor = value),
+              ),
+              SizedBox(height: 12),
               Divider(
                 color: Colors.black,
                 height: 15,
