@@ -1879,600 +1879,604 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });*/
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        centerTitle: true,
-        backgroundColor: Color.fromRGBO(188, 250, 0, 1),
-        actions: [
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(
-                Color.fromRGBO(188, 250, 0, 1),
-              ),
-            ),
-            onPressed: () {
-              if (isGerman) {
-                Get.updateLocale(Locale('en', 'US'));
-                isGerman = false;
-                currentCountry = "DE";
-              } else {
-                //is English
-                Get.updateLocale(Locale('de', 'DE'));
-                isGerman = true;
-                currentCountry = "GB";
-              }
-              changeKey();
-            },
-            child: Text(countryFlag(), style: TextStyle(fontSize: 20)),
+    return PopScope(
+      canPop:
+          false, //damit swipe back(ios) bzw. Back Button (android) deaktiviert
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.title,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
-        ],
-        automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
-      ),
-      body: SingleChildScrollView(
-        child: //damit scrollable wenn content grösser ist als bildschirmgrösses
-        Padding(
-          padding: EdgeInsets.only(left: 5, right: 5, top: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              //Checkbox - Mit welchen Farben trainieren
-              //SizedBox(height: 20,),
-              Text(
-                'selItems'.tr,
-                style: TextStyle(fontSize: fontsizeMenutitle),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 18),
-              Text(
-                'farben'.tr,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: fontsizeItemtitle,
+          centerTitle: true,
+          backgroundColor: Color.fromRGBO(188, 250, 0, 1),
+          actions: [
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                  Color.fromRGBO(188, 250, 0, 1),
                 ),
               ),
-              SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildColorselect(),
-              ),
-              SizedBox(height: paddingNewSectorItems),
-              Text(
-                'buchstaben'.tr,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: fontsizeItemtitle,
+              onPressed: () {
+                if (isGerman) {
+                  Get.updateLocale(Locale('en', 'US'));
+                  isGerman = false;
+                  currentCountry = "DE";
+                } else {
+                  //is English
+                  Get.updateLocale(Locale('de', 'DE'));
+                  isGerman = true;
+                  currentCountry = "GB";
+                }
+                changeKey();
+              },
+              child: Text(countryFlag(), style: TextStyle(fontSize: 20)),
+            ),
+          ],
+          automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
+        ),
+        body: SingleChildScrollView(
+          child: //damit scrollable wenn content grösser ist als bildschirmgrösses
+          Padding(
+            padding: EdgeInsets.only(left: 5, right: 5, top: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                //Checkbox - Mit welchen Farben trainieren
+                //SizedBox(height: 20,),
+                Text(
+                  'selItems'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: BorderSide(color: Colors.grey.shade700),
-                    ),
-                    autofocus: false,
-                    onPressed: () {
-                      selectedAlphabetletters = _controllerAlphabetLetter
-                          .selectAll();
-                    },
-                    onLongPress: () {
-                      selectedAlphabetletters = _controllerAlphabetLetter
-                          .selectAll();
-                    },
-                    child: Text('selectAll'.tr),
-                  ),
-                  SizedBox(width: 5),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: BorderSide(color: Colors.grey.shade700),
-                    ),
-                    autofocus: false,
-                    onPressed: () {
-                      _controllerAlphabetLetter.deselectAll();
-                      selectedAlphabetletters.clear();
-                    },
-                    onLongPress: () {
-                      _controllerAlphabetLetter.deselectAll();
-                      selectedAlphabetletters.clear();
-                    },
-                    child: Text('deselectAll'.tr),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildAlphabetselect(),
-              ),
-              SizedBox(height: 20),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildAlphabetColorselect(),
-              ),
-              SizedBox(height: paddingNewSectorItems),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'zahlen'.tr,
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: fontsizeItemtitle,
-                    ),
-                  ),
-                  SizedBox(width: 3),
-                ],
-              ),
-
-              SizedBox(height: 10),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('einzelneZahlen'.tr),
-                  SizedBox(width: 10),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    //height: 28,
-                    child: TextFormField(
-                      initialValue: nr_individual,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: '${'zB'.tr} 10,20,30',
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 4,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        nr_individual = value;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('von'.tr),
-                  SizedBox(width: 10),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    //height: 28,
-                    child: TextFormField(
-                      initialValue: nr_from,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: '${'zB'.tr} 1',
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 4,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        nr_from = value;
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Text('bis'.tr),
-                  SizedBox(width: 10),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    //height: 28,
-                    child: TextFormField(
-                      initialValue: nr_to,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: '${'zB'.tr} 8',
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 4,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        nr_to = value;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 15),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('ohne'.tr),
-                  SizedBox(width: 10),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    //height: 28,
-                    child: TextFormField(
-                      initialValue: nr_skip,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: '${'zB'.tr} 2,4',
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 4,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        nr_skip = value;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildNumberColorselect(),
-              ),
-              SizedBox(height: paddingNewSectorItems),
-
-              Text(
-                'pfeile'.tr,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: fontsizeItemtitle,
-                ),
-              ),
-              SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildArrowselect(),
-              ),
-              SizedBox(height: 20),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildArrowColorselect(),
-              ),
-              SizedBox(height: paddingNewSectorItems),
-              Text(
-                'formen'.tr,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: fontsizeItemtitle,
-                ),
-              ),
-              SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildShapeselect(),
-              ),
-              SizedBox(height: 20),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildShapeColorselect(),
-              ),
-              SizedBox(height: paddingNewSectorItems),
-              Text(
-                'Stroop',
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: fontsizeItemtitle,
-                ),
-              ),
-              SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildStroopColorselect(),
-              ),
-              SizedBox(height: paddingNewSectorItems),
-              Text(
-                'backgroundIcons'.tr,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: fontsizeItemtitle,
-                ),
-              ),
-              SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildBackgroundColorselect(),
-              ),
-              SizedBox(height: 15),
-              Divider(
-                color: Colors.black,
-                height: 15,
-                indent: 30,
-                endIndent: 30,
-              ),
-              //Dropdown - wie viele Farben aufs Mal angezeigt werden
-              SizedBox(height: 12),
-              Text(
-                'selAnzElem'.tr,
-                style: TextStyle(fontSize: fontsizeMenutitle),
-                textAlign: TextAlign.center,
-              ),
-
-              NumberPicker(
-                value: anzColorsOnPage,
-                minValue: 1,
-                maxValue: 12,
-                step: 1,
-                itemHeight: 30,
-                selectedTextStyle: TextStyle(fontSize: 22),
-                textStyle: TextStyle(fontSize: 13),
-                onChanged: (value) => setState(() => anzColorsOnPage = value),
-              ),
-
-              //Checkbox - ob jedes Element pro Seite nur einmal vorkommen darf oder nicht
-              //  Bsp.: 1,3,5,7 ausgewählt, 3 Elem pro Mal anzeigen-> Anzeige 1-3-1 nicht erlaubt wenn Checkbox aktiviert weil die 1 zweimal vorkommt
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Transform.scale(
-                  //Transform damit Grösse Checkbox angepasst werden kann
-                  scale: 0.8,
-                  child: CheckboxListTile(
-                    //Unterschied zu Checkbox(): Mit ..ListTile() kann Text mitgegeben werden
-                    value: isElemProSeiteEinmalig,
-                    onChanged: (value) => setState(
-                      () => isElemProSeiteEinmalig =
-                          value ??= //wenn value null dann per default false nehmen
-                              false,
-                    ), //setState damit neu geladen wird und Checkbox dann angewählt ist
-                    title: Text(
-                      'selElemEinmalig'.tr,
-                      style: TextStyle(fontSize: 18), //size 18 weil in scale
-                    ),
-                    controlAffinity: ListTileControlAffinity
-                        .leading, //Checkbox links von Text
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 12),
-
-              Divider(
-                color: Colors.black,
-                height: 15,
-                indent: 30,
-                endIndent: 30,
-              ),
-
-              //Applescroll - Farbwechsel nach wie vielen Sekunden
-              SizedBox(height: 12),
-              Text(
-                'selWechselSek'.tr,
-                style: TextStyle(fontSize: fontsizeMenutitle),
-                textAlign: TextAlign.center,
-              ),
-              NumberPicker(
-                value: secChangeColor,
-                minValue: 1,
-                maxValue: 59,
-                step: 1,
-                itemHeight: 30,
-                selectedTextStyle: TextStyle(fontSize: 22),
-                textStyle: TextStyle(fontSize: 13),
-                onChanged: (value) => setState(() => secChangeColor = value),
-              ),
-              SizedBox(height: 12),
-
-              Divider(
-                color: Colors.black,
-                height: 15,
-                indent: 30,
-                endIndent: 30,
-              ),
-
-              //Applescroll - Dauer eines Durchlaufs
-              SizedBox(height: 12),
-              Text(
-                'selDurchlauf'.tr,
-                style: TextStyle(fontSize: fontsizeMenutitle),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 18), //Für Abstand
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      NumberPicker(
-                        value: roundDisplayedMin,
-                        minValue: 0,
-                        maxValue: 59,
-                        step: 1,
-                        itemHeight: 30,
-                        selectedTextStyle: TextStyle(fontSize: 22),
-                        textStyle: TextStyle(fontSize: 13),
-                        onChanged: (value) => setState(() {
-                          roundDisplayedMin = value;
-                          secLengthRound =
-                              roundDisplayedSec + roundDisplayedMin * 60;
-                        }),
-                      ),
-                    ],
-                  ),
-                  Text('min'.tr),
-                  Column(
-                    children: [
-                      NumberPicker(
-                        value: roundDisplayedSec,
-                        minValue: 0,
-                        maxValue: 59,
-                        step: 1,
-                        itemHeight: 30,
-                        selectedTextStyle: TextStyle(fontSize: 22),
-                        textStyle: TextStyle(fontSize: 13),
-                        onChanged: (value) => setState(() {
-                          roundDisplayedSec = value;
-                          secLengthRound =
-                              roundDisplayedSec + roundDisplayedMin * 60;
-                        }),
-                      ),
-                    ],
-                  ),
-                  Text('sek'.tr),
-                ],
-              ),
-              SizedBox(height: 12),
-
-              Divider(
-                color: Colors.black,
-                height: 15,
-                indent: 30,
-                endIndent: 30,
-              ),
-
-              //Applescroll - Dauer einer Pause
-              SizedBox(height: 12),
-              Text(
-                'selPause'.tr,
-                style: TextStyle(fontSize: fontsizeMenutitle),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 18), //Für Abstand
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      NumberPicker(
-                        value: restDisplayedMin,
-                        minValue: 0,
-                        maxValue: 59,
-                        step: 1,
-                        itemHeight: 30,
-                        selectedTextStyle: TextStyle(fontSize: 22),
-                        textStyle: TextStyle(fontSize: 13),
-                        onChanged: (value) => setState(() {
-                          restDisplayedMin = value;
-                          secLengthRest =
-                              restDisplayedSec +
-                              restDisplayedMin *
-                                  60; //als Methode weil 2x vorkommt?
-                        }),
-                      ),
-                    ],
-                  ),
-                  Text('min'.tr),
-                  Column(
-                    children: [
-                      NumberPicker(
-                        value: restDisplayedSec,
-                        minValue: 0,
-                        maxValue: 59,
-                        step: 1,
-                        itemHeight: 30,
-                        selectedTextStyle: TextStyle(fontSize: 22),
-                        textStyle: TextStyle(fontSize: 13),
-                        onChanged: (value) => setState(() {
-                          restDisplayedSec = value;
-                          secLengthRest =
-                              restDisplayedSec +
-                              restDisplayedMin *
-                                  60; //als Methode weil 2x vorkommt?
-                        }),
-                      ),
-                    ],
-                  ),
-                  Text('sek'.tr),
-                ],
-              ),
-              SizedBox(height: 12),
-
-              Divider(
-                color: Colors.black,
-                height: 15,
-                indent: 30,
-                endIndent: 30,
-              ),
-
-              //Dropdown - Anzahl Durchgänge
-              SizedBox(height: 12),
-              Text(
-                'selAnzDurchg'.tr,
-                style: TextStyle(fontSize: fontsizeMenutitle),
-                textAlign: TextAlign.center,
-              ),
-              NumberPicker(
-                value: anzRounds,
-                minValue: 1,
-                maxValue: 99,
-                step: 1,
-                itemHeight: 30,
-                selectedTextStyle: TextStyle(fontSize: 22),
-                textStyle: TextStyle(fontSize: 13),
-                onChanged: (value) => setState(() => anzRounds = value),
-              ),
-              SizedBox(height: 12),
-
-              Divider(
-                color: Colors.black,
-                height: 15,
-                indent: 30,
-                endIndent: 30,
-              ),
-
-              SizedBox(height: 10),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: Center(
-                  child: Text(
-                    '${textFehlermeldung}\n',
-                    key: Key(keyString), //funktioniert nicht
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  side: BorderSide(color: Colors.grey.shade700),
-                ),
-                autofocus: true,
-                onPressed: _changeToPage2,
-                onLongPress: _changeToPage2,
-                child: Text('start'.tr, style: TextStyle(fontSize: 15)),
-              ),
-              SizedBox(height: 5),
-              RichText(
-                text: TextSpan(
-                  text: 'reset'.tr,
+                SizedBox(height: 18),
+                Text(
+                  'farben'.tr,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    decoration: TextDecoration.underline,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => Navigator.popAndPushNamed(context, '/'),
-                ), //Einstellungen MenuPage reseten
-              ),
-              SizedBox(height: 20),
-              SizedBox(
-                height: 47,
-                child: TextButton(
-                  onPressed: _showSkillaticsInfos,
-                  child: Image.asset(
-                    ('assets/skillatics_schwarzWeiss_transparent.png'),
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
                   ),
                 ),
-              ),
-              SizedBox(height: 25),
-            ],
+                SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildColorselect(),
+                ),
+                SizedBox(height: paddingNewSectorItems),
+                Text(
+                  'buchstaben'.tr,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: BorderSide(color: Colors.grey.shade700),
+                      ),
+                      autofocus: false,
+                      onPressed: () {
+                        selectedAlphabetletters = _controllerAlphabetLetter
+                            .selectAll();
+                      },
+                      onLongPress: () {
+                        selectedAlphabetletters = _controllerAlphabetLetter
+                            .selectAll();
+                      },
+                      child: Text('selectAll'.tr),
+                    ),
+                    SizedBox(width: 5),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: BorderSide(color: Colors.grey.shade700),
+                      ),
+                      autofocus: false,
+                      onPressed: () {
+                        _controllerAlphabetLetter.deselectAll();
+                        selectedAlphabetletters.clear();
+                      },
+                      onLongPress: () {
+                        _controllerAlphabetLetter.deselectAll();
+                        selectedAlphabetletters.clear();
+                      },
+                      child: Text('deselectAll'.tr),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildAlphabetselect(),
+                ),
+                SizedBox(height: 20),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildAlphabetColorselect(),
+                ),
+                SizedBox(height: paddingNewSectorItems),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'zahlen'.tr,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: fontsizeItemtitle,
+                      ),
+                    ),
+                    SizedBox(width: 3),
+                  ],
+                ),
+
+                SizedBox(height: 10),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('einzelneZahlen'.tr),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      //height: 28,
+                      child: TextFormField(
+                        initialValue: nr_individual,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '${'zB'.tr} 10,20,30',
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 4,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          nr_individual = value;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('von'.tr),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      //height: 28,
+                      child: TextFormField(
+                        initialValue: nr_from,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '${'zB'.tr} 1',
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 4,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          nr_from = value;
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text('bis'.tr),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      //height: 28,
+                      child: TextFormField(
+                        initialValue: nr_to,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '${'zB'.tr} 8',
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 4,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          nr_to = value;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('ohne'.tr),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      //height: 28,
+                      child: TextFormField(
+                        initialValue: nr_skip,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '${'zB'.tr} 2,4',
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 4,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          nr_skip = value;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildNumberColorselect(),
+                ),
+                SizedBox(height: paddingNewSectorItems),
+
+                Text(
+                  'pfeile'.tr,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
+                  ),
+                ),
+                SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildArrowselect(),
+                ),
+                SizedBox(height: 20),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildArrowColorselect(),
+                ),
+                SizedBox(height: paddingNewSectorItems),
+                Text(
+                  'formen'.tr,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
+                  ),
+                ),
+                SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildShapeselect(),
+                ),
+                SizedBox(height: 20),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildShapeColorselect(),
+                ),
+                SizedBox(height: paddingNewSectorItems),
+                Text(
+                  'Stroop',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
+                  ),
+                ),
+                SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildStroopColorselect(),
+                ),
+                SizedBox(height: paddingNewSectorItems),
+                Text(
+                  'backgroundIcons'.tr,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
+                  ),
+                ),
+                SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(),
+                  child: buildBackgroundColorselect(),
+                ),
+                SizedBox(height: 15),
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+                //Dropdown - wie viele Farben aufs Mal angezeigt werden
+                SizedBox(height: 12),
+                Text(
+                  'selAnzElem'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+
+                NumberPicker(
+                  value: anzColorsOnPage,
+                  minValue: 1,
+                  maxValue: 12,
+                  step: 1,
+                  itemHeight: 30,
+                  selectedTextStyle: TextStyle(fontSize: 22),
+                  textStyle: TextStyle(fontSize: 13),
+                  onChanged: (value) => setState(() => anzColorsOnPage = value),
+                ),
+
+                //Checkbox - ob jedes Element pro Seite nur einmal vorkommen darf oder nicht
+                //  Bsp.: 1,3,5,7 ausgewählt, 3 Elem pro Mal anzeigen-> Anzeige 1-3-1 nicht erlaubt wenn Checkbox aktiviert weil die 1 zweimal vorkommt
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: Transform.scale(
+                    //Transform damit Grösse Checkbox angepasst werden kann
+                    scale: 0.8,
+                    child: CheckboxListTile(
+                      //Unterschied zu Checkbox(): Mit ..ListTile() kann Text mitgegeben werden
+                      value: isElemProSeiteEinmalig,
+                      onChanged: (value) => setState(
+                        () => isElemProSeiteEinmalig =
+                            value ??= //wenn value null dann per default false nehmen
+                                false,
+                      ), //setState damit neu geladen wird und Checkbox dann angewählt ist
+                      title: Text(
+                        'selElemEinmalig'.tr,
+                        style: TextStyle(fontSize: 18), //size 18 weil in scale
+                      ),
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //Checkbox links von Text
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                //Applescroll - Farbwechsel nach wie vielen Sekunden
+                SizedBox(height: 12),
+                Text(
+                  'selWechselSek'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+                NumberPicker(
+                  value: secChangeColor,
+                  minValue: 1,
+                  maxValue: 59,
+                  step: 1,
+                  itemHeight: 30,
+                  selectedTextStyle: TextStyle(fontSize: 22),
+                  textStyle: TextStyle(fontSize: 13),
+                  onChanged: (value) => setState(() => secChangeColor = value),
+                ),
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                //Applescroll - Dauer eines Durchlaufs
+                SizedBox(height: 12),
+                Text(
+                  'selDurchlauf'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 18), //Für Abstand
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        NumberPicker(
+                          value: roundDisplayedMin,
+                          minValue: 0,
+                          maxValue: 59,
+                          step: 1,
+                          itemHeight: 30,
+                          selectedTextStyle: TextStyle(fontSize: 22),
+                          textStyle: TextStyle(fontSize: 13),
+                          onChanged: (value) => setState(() {
+                            roundDisplayedMin = value;
+                            secLengthRound =
+                                roundDisplayedSec + roundDisplayedMin * 60;
+                          }),
+                        ),
+                      ],
+                    ),
+                    Text('min'.tr),
+                    Column(
+                      children: [
+                        NumberPicker(
+                          value: roundDisplayedSec,
+                          minValue: 0,
+                          maxValue: 59,
+                          step: 1,
+                          itemHeight: 30,
+                          selectedTextStyle: TextStyle(fontSize: 22),
+                          textStyle: TextStyle(fontSize: 13),
+                          onChanged: (value) => setState(() {
+                            roundDisplayedSec = value;
+                            secLengthRound =
+                                roundDisplayedSec + roundDisplayedMin * 60;
+                          }),
+                        ),
+                      ],
+                    ),
+                    Text('sek'.tr),
+                  ],
+                ),
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                //Applescroll - Dauer einer Pause
+                SizedBox(height: 12),
+                Text(
+                  'selPause'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 18), //Für Abstand
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        NumberPicker(
+                          value: restDisplayedMin,
+                          minValue: 0,
+                          maxValue: 59,
+                          step: 1,
+                          itemHeight: 30,
+                          selectedTextStyle: TextStyle(fontSize: 22),
+                          textStyle: TextStyle(fontSize: 13),
+                          onChanged: (value) => setState(() {
+                            restDisplayedMin = value;
+                            secLengthRest =
+                                restDisplayedSec +
+                                restDisplayedMin *
+                                    60; //als Methode weil 2x vorkommt?
+                          }),
+                        ),
+                      ],
+                    ),
+                    Text('min'.tr),
+                    Column(
+                      children: [
+                        NumberPicker(
+                          value: restDisplayedSec,
+                          minValue: 0,
+                          maxValue: 59,
+                          step: 1,
+                          itemHeight: 30,
+                          selectedTextStyle: TextStyle(fontSize: 22),
+                          textStyle: TextStyle(fontSize: 13),
+                          onChanged: (value) => setState(() {
+                            restDisplayedSec = value;
+                            secLengthRest =
+                                restDisplayedSec +
+                                restDisplayedMin *
+                                    60; //als Methode weil 2x vorkommt?
+                          }),
+                        ),
+                      ],
+                    ),
+                    Text('sek'.tr),
+                  ],
+                ),
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                //Dropdown - Anzahl Durchgänge
+                SizedBox(height: 12),
+                Text(
+                  'selAnzDurchg'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+                NumberPicker(
+                  value: anzRounds,
+                  minValue: 1,
+                  maxValue: 99,
+                  step: 1,
+                  itemHeight: 30,
+                  selectedTextStyle: TextStyle(fontSize: 22),
+                  textStyle: TextStyle(fontSize: 13),
+                  onChanged: (value) => setState(() => anzRounds = value),
+                ),
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Center(
+                    child: Text(
+                      '${textFehlermeldung}\n',
+                      key: Key(keyString), //funktioniert nicht
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    side: BorderSide(color: Colors.grey.shade700),
+                  ),
+                  autofocus: true,
+                  onPressed: _changeToPage2,
+                  onLongPress: _changeToPage2,
+                  child: Text('start'.tr, style: TextStyle(fontSize: 15)),
+                ),
+                SizedBox(height: 5),
+                RichText(
+                  text: TextSpan(
+                    text: 'reset'.tr,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => Navigator.popAndPushNamed(context, '/'),
+                  ), //Einstellungen MenuPage reseten
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  height: 47,
+                  child: TextButton(
+                    onPressed: _showSkillaticsInfos,
+                    child: Image.asset(
+                      ('assets/skillatics_schwarzWeiss_transparent.png'),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 25),
+              ],
+            ),
           ),
         ),
       ),

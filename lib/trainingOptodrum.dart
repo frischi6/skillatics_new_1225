@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
+import 'package:skillatics/main.dart';
 import 'package:skillatics/number_zero_to_fifty_icons.dart';
 import 'package:skillatics/stroop__english_icons.dart';
 import 'package:skillatics/stroop_icons.dart';
@@ -13,11 +17,15 @@ class TrainingOptodrum extends StatefulWidget {
   final List<dynamic> allItemsByColor;
   final List<dynamic> listStroopText, listStroopTextcolors;
   final List<dynamic> listBackgroundcolors;
+  final int secLengthRound, secLengthRest, anzRounds;
 
   const TrainingOptodrum({
     super.key,
     required this.movedirection,
     required this.speedlevel,
+    required this.secLengthRound,
+    required this.secLengthRest,
+    required this.anzRounds,
     required this.secChangeBackgrcolor,
     required this.allItemsByColor,
     required this.listStroopText,
@@ -48,7 +56,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   List<dynamic> listWithStroopTextcolors = [];
   List<dynamic> listWithBackgroundcolors = [];
   int currentBackgroundcolor = 0, newBackgroundcolor = 0;
-  DateTime lastChangeBackground = DateTime.now();
+  int lastChangeBackground = 0;
+  int currentTimeBackground = 0;
 
   // Speichert konfigurierte Icon-Daten statt Widgets
   List<_IconConfig> icons = [];
@@ -59,9 +68,30 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   double _animationWidth = 0;
   double _animationHeight = 0;
 
+  bool isBreak = false;
+  late Timer _timer;
+  int anzRounds2 = 1;
+  int secLengthRound2 = 1;
+  int secLengthRest2 = 1;
+  int currentSecsCD = 0;
+  int currentMinsCD = 0;
+  int anzRoundsDone = 1;
+  int secsLengthRoundCD = 1;
+  int minsLengthRoundCD = 1;
+  int secsLengthRestCD = 1;
+  int minsLengthRestCD = 1;
+
+  double thicknessVerticalDividerFooter = 0.5;
+  String rundeSg = 'rundeSg'.tr;
+  String rundePl = 'rundePl'.tr;
+
   @override
   void initState() {
     super.initState();
+
+    secLengthRound2 = widget.secLengthRound;
+    secLengthRest2 = widget.secLengthRest;
+    anzRounds2 = widget.anzRounds;
 
     secChangeBackground = widget.secChangeBackgrcolor;
     itemsByColor = widget.allItemsByColor;
@@ -74,16 +104,42 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         )];
     setMovedirection();
     setSpeed();
+    init_timevariables();
 
-    // Initialisiert den Animations-Controller für den Endlos-Loop
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(days: 1),
-    )..addListener(_tick);
+    //Timer für Zeit-Zähler
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer timer) => setState(() {
+        timemanagement();
+      }),
+    );
 
     generateIconsByColor(itemsByColor);
     icons.shuffle();
+
+    //Controller für die Animation
+    // Initialisiert den Animations-Controller für den Endlos-Loop (duration 12h)
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(hours: 12),
+    )..addListener(_tick);
+
     _controller.forward();
+  }
+
+  void init_timevariables() {
+    isBreak = false;
+
+    minsLengthRoundCD = secLengthRound2 ~/ 60;
+    secsLengthRoundCD = secLengthRound2 % 60;
+    minsLengthRestCD = secLengthRest2 ~/ 60;
+    secsLengthRestCD = secLengthRest2 % 60;
+
+    currentSecsCD = secsLengthRoundCD;
+    currentMinsCD = minsLengthRoundCD;
+
+    currentTimeBackground = currentSecsCD + currentMinsCD * 60;
+    lastChangeBackground = currentTimeBackground;
   }
 
   //Wandelt den String der Movementdirection in ein enum
@@ -187,6 +243,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
   }
 
+  ///Checkt ab ob ein String eine Zahl ist
+  ///Return 1: numeric, 0: not numeric
   bool isNumeric(String stringValue) {
     try {
       int.parse(stringValue);
@@ -206,12 +264,12 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 
   void generateIconsByColor(listWithIconsPerColor) {
-    for (int i = 0; i < listWithIconsPerColor.length - 1; i++) {
+    for (int i = 0; i < listWithIconsPerColor.length; i++) {
       addIconToList(listWithIconsPerColor[i]);
     }
   }
 
-  /// Berechnet die präzise Breite eines Icons (Glyph) im Verhältnis zur gewünschten Höhe
+  ///Berechnet die präzise Breite eines Icons (Glyph) im Verhältnis zur gewünschten Höhe
   double _getIconWidth(IconData iconData, double size) {
     final textPainter = TextPainter(
       text: TextSpan(
@@ -229,7 +287,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     return textPainter.width;
   }
 
-  /// Hilfsfunktion zum Erstellen und Hinzufügen von Icon-Konfigurationen
+  ///Hilfsfunktion zum Erstellen und Hinzufügen von Icon-Konfigurationen
   void _addIconConfig(
     IconData iconData,
     Color color,
@@ -248,6 +306,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     );
   }
 
+  ///Erstellt die Liste mit allen zu benutzenden Icons (gemäss Menu-Auswahl des Benutzers)
   void addIconToList(icon_color) {
     double sizeIcon = iconSize;
     int anzColorsOnPage2 = 4;
@@ -743,6 +802,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
   }
 
+  ///Überprüft ob Icon aus Bildschirm raus ist
+  ///Return 1: hat Bildschirm verlassen, 0: befindet sich noch in sichtbarem Bereich
   bool _isOutOfBounds(_FlowIcon flowIcon, double width, double height) {
     switch (direction) {
       case MovementDirection.topLeftToBottomRight:
@@ -765,6 +826,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     }
   }
 
+  ///Wird durch Animation-Controller ca. 60x pro Sekunde aufgerufen
+  ///Alles von der Animation der Icons ist hier drin
   void _tick() {
     final now = DateTime.now();
 
@@ -798,88 +861,262 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
       );
 
       _checkForNewIcon(_animationWidth, _animationHeight);
-
-      //Überprüfen, ob Hintergrundfarbe geändert werden muss
-      if (listWithBackgroundcolors.length > 1) {
-        if (now.difference(lastChangeBackground).inSeconds >=
-            secChangeBackground) {
-          do {
-            newBackgroundcolor =
-                listWithBackgroundcolors[random.nextInt(
-                  listWithBackgroundcolors.length,
-                )];
-          } while (newBackgroundcolor == currentBackgroundcolor);
-
-          currentBackgroundcolor = newBackgroundcolor;
-          lastChangeBackground = DateTime.now();
-        }
-      }
     });
   }
 
+  ///Wird alle 1 Sekunde von timer aufgerufen
+  ///Organisiert Zeitanzeige, Wechsel von Rest & Round, Programmende und Wechsel der Hintergrundfarbe
+  void timemanagement() {
+    /* Darstellung Zeitbalken und Überprüfung Rest/Round */
+
+    //00:01
+    if (currentMinsCD == 0 && currentSecsCD == 1) {
+      if (anzRounds2 == anzRoundsDone && isBreak) {
+        //programm ganz fertig, messagebox zeigen
+        currentSecsCD--;
+        _timer.cancel();
+        //dispose();
+        showDialog(
+          context: context,
+          builder: (_) => alertDialogFinish(),
+          barrierDismissible: false,
+        );
+        return;
+      }
+
+      if (isBreak) {
+        //Wechsel von Rest zu Round
+        isBreak = false;
+        _controller.forward();
+        currentMinsCD = minsLengthRoundCD;
+        currentSecsCD = secsLengthRoundCD;
+        anzRoundsDone++;
+      } else {
+        //Wechsel von Round zu Rest
+        isBreak = true;
+        _controller.stop();
+        currentMinsCD = minsLengthRestCD;
+        currentSecsCD = secsLengthRestCD;
+      }
+    } else {
+      //wenn nicht 00:01 dann einfach runterzählen
+      if (currentSecsCD > 0) {
+        currentSecsCD--;
+      } else {
+        currentMinsCD--;
+        currentSecsCD = 59;
+      }
+    }
+
+    /* Überprüfung, ob Hintergrundfarbe geändert werden muss */
+    currentTimeBackground = currentSecsCD + currentMinsCD * 60;
+    if (listWithBackgroundcolors.length > 1) {
+      if (lastChangeBackground - currentTimeBackground == secChangeBackground) {
+        do {
+          newBackgroundcolor =
+              listWithBackgroundcolors[random.nextInt(
+                listWithBackgroundcolors.length,
+              )];
+        } while (newBackgroundcolor == currentBackgroundcolor);
+
+        currentBackgroundcolor = newBackgroundcolor;
+        lastChangeBackground = currentTimeBackground;
+      }
+    }
+  }
+
+  ///Entfernt Icon
   void _removeIcon(_FlowIcon flowIcon) {
+    //mounted sagt ob Widget aktuell noch zum Tree gehört oder nicht
     if (!mounted) return;
     setState(() {
       _flowIcons.remove(flowIcon);
     });
   }
 
+  //Todo
+  void changeToMenupage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => StartingPage()),
+    );
+  }
+
+  //todo
+  void neustart() {}
+
+  /// Damit Anzeige in Fusszeile korrekt mit 1 Runde bzw >1 Runden
+  String getRundeSgPl() {
+    if (anzRounds2 == 1) {
+      return rundeSg;
+    } else {
+      return rundePl;
+    }
+  }
+
+  /// AlertDialog das am Ende der Übung erscheint
+  Widget alertDialogFinish() {
+    return AlertDialog(
+      //ähnlich wie modalWindow
+      content: Text('trainingEnde'.tr),
+      actions: [
+        TextButton(
+          onPressed: changeToMenupage,
+          child: Text(
+            'hauptmenü'.tr,
+            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
+          ),
+        ),
+        TextButton(
+          onPressed: changeToMenupage,
+          child: Text(
+            'neustart'.tr,
+            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(currentBackgroundcolor),
-      appBar: AppBar(title: const Text('Icon Flow Training')),
-      body: Column(
-        children: [
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                _animationHeight = constraints.maxHeight;
-                _animationWidth = constraints.maxWidth;
+    return PopScope(
+      canPop:
+          false, //damit swipe back(ios) bzw. Back Button (android) deaktiviert
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Color(currentBackgroundcolor),
+          body: Column(
+            children: [
+              if (!isBreak)
+                Expanded(
+                  flex: 95,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      _animationHeight = constraints.maxHeight;
+                      _animationWidth = constraints.maxWidth;
 
-                return ClipRect(
-                  child: Stack(
-                    children: [
-                      for (final flowIcon in _flowIcons)
-                        Positioned(
-                          left: flowIcon.x,
-                          top: flowIcon.y,
-                          child: SizedBox(
-                            width: flowIcon.width,
-                            height: flowIcon.renderSize,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => _removeIcon(flowIcon),
-                              child: Icon(
-                                flowIcon.iconData,
-                                size: flowIcon.renderSize,
-                                color: flowIcon.color,
+                      return ClipRect(
+                        child: Stack(
+                          children: [
+                            for (final flowIcon in _flowIcons)
+                              Positioned(
+                                left: flowIcon.x,
+                                top: flowIcon.y,
+                                child: SizedBox(
+                                  width: flowIcon.width,
+                                  height: flowIcon.renderSize,
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () => _removeIcon(flowIcon),
+                                    child: Icon(
+                                      flowIcon.iconData,
+                                      size: flowIcon.renderSize,
+                                      color: flowIcon.color,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              if (isBreak)
+                Expanded(
+                  flex: 95,
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.black),
+                    alignment: Alignment.center,
+                    //Die Anzeige "Pause" wird im ersten Container gemacht
+                    child: Text(
+                      'pause'.tr,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 80,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              //footer
+              Expanded(
+                flex: 5,
+                child: Container(
+                  //height: MediaQuery.of(context).size.height * (footerPercentage),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.grey.shade700,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '$anzRoundsDone/$anzRounds2 ${getRundeSgPl()}',
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: Center(
+                          child: Text(
+                            '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const VerticalDivider(
+                        color: Colors.black,
+                        thickness: 0.5,
+                        width: 0.5,
+                      ),
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: TextButton(
+                          autofocus: false,
+                          onPressed: changeToMenupage,
+                          onLongPress: changeToMenupage,
+                          child: Text(
+                            'hauptmenü'.tr,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: TextButton(
+                          autofocus: false,
+                          onPressed: neustart,
+                          onLongPress: neustart,
+                          child: Text(
+                            'neustart'.tr,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StartingPage()),
-                  );
-                },
-                child: const Text('Back to Start'),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
