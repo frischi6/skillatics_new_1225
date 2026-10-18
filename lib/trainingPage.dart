@@ -116,9 +116,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   int currentSecsCD = 0;
   int currentMinsCD = 0;
 
-  double footerPercentage = 0.05;
-  double bodyPercentage =
-      0.95; //1-footerPercentage-> dieser Platz muss aufgeteilt werden um Farben anzuzeigen
+  int footerPercentage = 5;
+  int bodyPercentage =
+      95; //Gegenstück zu footerPercentage-> dieser Platz muss aufgeteilt werden um Farben anzuzeigen
   double thicknessVerticalDividerFooter = 0.5;
 
   int lastRoundFirstColor =
@@ -156,379 +156,168 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      //todo updaten
-      onWillPop: (() async =>
-          false), //damit swipe back(ios) bzw. Back Button (android) deaktiviert
-      child: Scaffold(
-        backgroundColor: const Color(0xff000000),
-        body: Column(
-          children: [
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color:
-                    //wenn Icon in Container und Backgroundcolors selektiert
-                    //dann Backgroundcolor wählen
-                    //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                    (listToFillContainersHex[0] == int.parse('0xfffefefe')) &&
-                        (listWithSelectedBackgroundcolorsToFill.isNotEmpty)
-                    ? Color(listWithSelectedBackgroundcolorsToFill[0])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
+    return PopScope(
+      canPop:
+          false, //damit swipe back(ios) bzw. Back Button (android) deaktiviert
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: const Color(0xff000000),
+          body: Column(
+            children: [
+              Expanded(
+                flex: listHeight4Container[0],
+                child: Container(
+                  //height: MediaQuery.of(context).size.height * (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color:
+                        //wenn Icon in Container und Backgroundcolors selektiert
+                        //dann Backgroundcolor wählen
+                        //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                        (listToFillContainersHex[0] ==
+                                int.parse('0xfffefefe')) &&
+                            (listWithSelectedBackgroundcolorsToFill.isNotEmpty)
+                        ? Color(listWithSelectedBackgroundcolorsToFill[0])
+                        : Color(listToFillContainersHex[0]),
+                    border: const Border(
+                      bottom: BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  child: FittedBox(
+                    //FittedBox führt dazu, dass sich die Grösse der Icons dem vorhandenen Platz im parent anpasst
+                    fit: BoxFit.contain,
+                    child: restText == ''
+                        ? listToFillContainersIcon[0]
+                        : Align(
+                            alignment: Alignment.center,
+                            //Die Anzeige "Pause" wird im ersten Container gemacht
+                            child: Text(
+                              restText,
+                              style: TextStyle(
+                                color: Color(colorRestText),
+                                fontSize: fontsizeRestText,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                  ),
+                ),
               ),
-              child: FittedBox(
-                //FittedBox führt dazu, dass sich die Grösse der Icons dem vorhandenen Platz im parent anpasst
-                fit: BoxFit.contain,
-                child: restText == ''
-                    ? listToFillContainersIcon[0]
-                    : Align(
-                        alignment: Alignment.center,
-                        //Die Anzeige "Pause" wird im ersten Container gemacht
-                        child: Text(
-                          restText,
-                          style: TextStyle(
-                            color: Color(colorRestText),
-                            fontSize: fontsizeRestText,
-                            fontWeight: FontWeight.bold,
+
+              //1. Container nicht in loop weil dort noch Text angezeigt wird in Pause
+              for (int i = 1; i < 11; i++) //11 hardcodiert weil 12 das maximum
+                if (listHeight4Container[i] > 0)
+                  Expanded(
+                    flex: listHeight4Container[i],
+                    child: Container(
+                      //height: MediaQuery.of(context).size.height * (listHeight4Container[1]),
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        //wenn Icon in Container und Backgroundcolors selektiert
+                        //dann Backgroundcolor wählen
+                        //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                        color: listToFillContainersHex.length > i
+                            ? (listToFillContainersHex[i] ==
+                                          int.parse('0xfffefefe')) &&
+                                      (listWithSelectedBackgroundcolorsToFill
+                                              .length >
+                                          i)
+                                  ? Color(
+                                      listWithSelectedBackgroundcolorsToFill[i],
+                                    )
+                                  : Color(listToFillContainersHex[i])
+                            : Color(listToFillContainersHex[0]), //fallback
+                        border: const Border(
+                          bottom: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: listToFillContainersIcon.length > i
+                            ? listToFillContainersIcon[i]
+                            : listToFillContainersIcon[0],
+                      ),
+                    ),
+                  ),
+
+              //footer
+              Expanded(
+                flex: footerPercentage,
+                child: Container(
+                  //height: MediaQuery.of(context).size.height * (footerPercentage),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.grey.shade700,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '$anzRoundsDone/$anzRounds2 ${getRundeSgPl()}',
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[1]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                //wenn Icon in Container und Backgroundcolors selektiert
-                //dann Backgroundcolor wählen
-                //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                color: listToFillContainersHex.length > 1
-                    ? (listToFillContainersHex[1] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  1)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[1])
-                          : Color(listToFillContainersHex[1])
-                    : Color(listToFillContainersHex[0]), //fallback
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 1
-                    ? listToFillContainersIcon[1]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[2]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                //wenn Icon in Container und Backgroundcolors selektiert
-                //dann Backgroundcolor wählen
-                //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                color: listToFillContainersHex.length > 2
-                    ? (listToFillContainersHex[2] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  2)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[2])
-                          : Color(listToFillContainersHex[2])
-                    : Color(listToFillContainersHex[0]), //fallback
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 2
-                    ? listToFillContainersIcon[2]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[3]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 3
-                    ? (listToFillContainersHex[3] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  3)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[3])
-                          : Color(listToFillContainersHex[3])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 3
-                    ? listToFillContainersIcon[3]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[4]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 4
-                    ? (listToFillContainersHex[4] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  4)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[4])
-                          : Color(listToFillContainersHex[4])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 4
-                    ? listToFillContainersIcon[4]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[5]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 5
-                    ? (listToFillContainersHex[5] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  5)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[5])
-                          : Color(listToFillContainersHex[5])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 5
-                    ? listToFillContainersIcon[5]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[6]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 6
-                    ? (listToFillContainersHex[6] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  6)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[6])
-                          : Color(listToFillContainersHex[6])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 6
-                    ? listToFillContainersIcon[6]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[7]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 7
-                    ? (listToFillContainersHex[7] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  7)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[7])
-                          : Color(listToFillContainersHex[7])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 7
-                    ? listToFillContainersIcon[7]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[8]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 8
-                    ? (listToFillContainersHex[8] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  8)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[8])
-                          : Color(listToFillContainersHex[8])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 8
-                    ? listToFillContainersIcon[8]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[9]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 9
-                    ? (listToFillContainersHex[9] == int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  9)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[9])
-                          : Color(listToFillContainersHex[9])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 9
-                    ? listToFillContainersIcon[9]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[10]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: listToFillContainersHex.length > 10
-                    ? (listToFillContainersHex[10] ==
-                                  int.parse('0xfffefefe')) &&
-                              (listWithSelectedBackgroundcolorsToFill.length >
-                                  10)
-                          ? Color(listWithSelectedBackgroundcolorsToFill[10])
-                          : Color(listToFillContainersHex[10])
-                    : Color(listToFillContainersHex[0]),
-                border: const Border(bottom: BorderSide(color: Colors.black)),
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 10
-                    ? listToFillContainersIcon[10]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-            Container(
-              color: listToFillContainersHex.length > 11
-                  ? (listToFillContainersHex[11] == int.parse('0xfffefefe')) &&
-                            (listWithSelectedBackgroundcolorsToFill.length > 11)
-                        ? Color(listWithSelectedBackgroundcolorsToFill[11])
-                        : Color(listToFillContainersHex[11])
-                  : Color(listToFillContainersHex[0]),
-              height:
-                  MediaQuery.of(context).size.height *
-                  (listHeight4Container[11]),
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10.0),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: listToFillContainersIcon.length > 11
-                    ? listToFillContainersIcon[11]
-                    : listToFillContainersIcon[0],
-              ),
-            ),
-
-            //footer
-            Container(
-              height: MediaQuery.of(context).size.height * (footerPercentage),
-              width: MediaQuery.of(context).size.width,
-              color: Colors.grey.shade700,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    width:
-                        (MediaQuery.of(context).size.width -
-                            thicknessVerticalDividerFooter) /
-                        4,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        '$anzRoundsDone/$anzRounds2 ${getRundeSgPl()}',
-                        style: const TextStyle(color: Colors.white),
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: Center(
+                          child: Text(
+                            '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width:
-                        (MediaQuery.of(context).size.width -
-                            thicknessVerticalDividerFooter) /
-                        4,
-                    child: Center(
-                      child: Text(
-                        '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
-                        style: const TextStyle(color: Colors.white),
+                      const VerticalDivider(
+                        color: Colors.black,
+                        thickness: 0.5,
+                        width: 0.5,
                       ),
-                    ),
-                  ),
-                  const VerticalDivider(
-                    color: Colors.black,
-                    thickness: 0.5,
-                    width: 0.5,
-                  ),
-                  SizedBox(
-                    width:
-                        (MediaQuery.of(context).size.width -
-                            thicknessVerticalDividerFooter) /
-                        4,
-                    child: TextButton(
-                      autofocus: false,
-                      onPressed: changeToPage1,
-                      onLongPress: changeToPage1,
-                      child: Text(
-                        'hauptmenü'.tr,
-                        style: const TextStyle(color: Colors.black),
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: TextButton(
+                          autofocus: false,
+                          onPressed: changeToPage1,
+                          onLongPress: changeToPage1,
+                          child: Text(
+                            'hauptmenü'.tr,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width:
-                        (MediaQuery.of(context).size.width -
-                            thicknessVerticalDividerFooter) /
-                        4,
-                    child: TextButton(
-                      autofocus: false,
-                      onPressed: neustart,
-                      onLongPress: neustart,
-                      child: Text(
-                        'neustart'.tr,
-                        style: const TextStyle(color: Colors.black),
+                      SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width -
+                                thicknessVerticalDividerFooter) /
+                            4,
+                        child: TextButton(
+                          autofocus: false,
+                          onPressed: neustart,
+                          onLongPress: neustart,
+                          child: Text(
+                            'neustart'.tr,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -607,7 +396,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     listHeight4Container.clear();
     for (int i = 0; i < 12; i++) {
       if (i < anzColorsOnPage2) {
-        listHeight4Container.add(bodyPercentage / anzColorsOnPage2);
+        listHeight4Container.add((bodyPercentage / anzColorsOnPage2).floor());
       } else {
         listHeight4Container.add(0);
       }
