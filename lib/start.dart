@@ -77,7 +77,6 @@ class StartingPage extends StatelessWidget {
                       title: 'Optodrum',
                       currentCountry:
                           "GB", //aktuelle Flagge die oben rechts erscheint
-                      listSelectedColors: [],
                       listSelectedArrowsPerColor: [
                         '_4278190080',
                       ], //per default schwarze arrowcolor selektiert  aus benutzerfreundlichkeit
@@ -95,12 +94,9 @@ class StartingPage extends StatelessWidget {
                       ], //per default weiss als Hintergrundfarbe selektiert aus Benutzerfreundlichkeit
                       listSelectedStroopcolors:
                           [], //per default stroop nicht aktiv
-                      anzColorsOnPage: anzColorsOnPage,
-                      secChangeColor: secChangeColor,
                       secLengthRound: secLengthRound,
                       secLengthRest: secLengthRest,
                       anzRounds: anzRounds,
-                      isElemProSeiteEinmalig: isElemProSeiteEinmalig,
                       nr_individual: '',
                       nr_from: '',
                       nr_to: '',

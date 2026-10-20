@@ -2434,7 +2434,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Center(
                     child: Text(
-                      '${textFehlermeldung}\n',
+                      '$textFehlermeldung\n',
                       key: Key(keyString), //funktioniert nicht
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.red),

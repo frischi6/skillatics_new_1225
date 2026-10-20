@@ -5,32 +5,48 @@ import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
 import 'package:skillatics/main.dart';
+import 'package:skillatics/menuOptodrum.dart';
 import 'package:skillatics/number_zero_to_fifty_icons.dart';
 import 'package:skillatics/stroop__english_icons.dart';
 import 'package:skillatics/stroop_icons.dart';
 import 'start.dart';
 
 class TrainingOptodrum extends StatefulWidget {
-  final String movedirection; // Die im Menü gewählte Bewegungsrichtung
-  final int speedlevel;
+  final List<dynamic> listSelectedArrowsPerColor, listSelectedNumbersPerColor;
+  final List<dynamic> listSelectedShapesPerColor,
+      listSelectedAlphabetlettersPerColor;
+
   final int secChangeBackgrcolor;
   final List<dynamic> allItemsByColor;
   final List<dynamic> listStroopText, listStroopTextcolors;
-  final List<dynamic> listBackgroundcolors;
+  final List<dynamic> listSelectedBackgroundcolors;
   final int secLengthRound, secLengthRest, anzRounds;
+  final String currentCountry;
+  final String nr_individual, nr_from, nr_to, nr_skip;
+  final String movedirection; // Die im Menü gewählte Bewegungsrichtung
+  final int speedlevel;
 
   const TrainingOptodrum({
     super.key,
-    required this.movedirection,
-    required this.speedlevel,
+    required this.listSelectedArrowsPerColor,
+    required this.listSelectedNumbersPerColor,
+    required this.listSelectedShapesPerColor,
+    required this.listSelectedAlphabetlettersPerColor,
+    required this.listSelectedBackgroundcolors,
     required this.secLengthRound,
     required this.secLengthRest,
     required this.anzRounds,
-    required this.secChangeBackgrcolor,
-    required this.allItemsByColor,
+    required this.currentCountry,
     required this.listStroopText,
     required this.listStroopTextcolors,
-    required this.listBackgroundcolors,
+    required this.nr_individual,
+    required this.nr_from,
+    required this.nr_to,
+    required this.nr_skip,
+    required this.movedirection,
+    required this.speedlevel,
+    required this.secChangeBackgrcolor,
+    required this.allItemsByColor,
   });
 
   @override
@@ -97,7 +113,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     itemsByColor = widget.allItemsByColor;
     listWithStroopText = widget.listStroopText;
     listWithStroopTextcolors = widget.listStroopTextcolors;
-    listWithBackgroundcolors = widget.listBackgroundcolors;
+    listWithBackgroundcolors = widget.listSelectedBackgroundcolors;
     currentBackgroundcolor =
         listWithBackgroundcolors[random.nextInt(
           listWithBackgroundcolors.length,
@@ -938,7 +954,30 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   void changeToMenupage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => StartingPage()),
+      MaterialPageRoute(
+        builder: (context) => MenuOptodrum(
+          title: 'Optodrum',
+          currentCountry: widget.currentCountry,
+          //listSelectedColors: widget.listSelectedColors,
+          listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
+          listSelectedNumbersPerColor: widget.listSelectedNumbersPerColor,
+          listSelectedShapesPerColor: widget.listSelectedShapesPerColor,
+          listSelectedAlphabetlettersPerColor:
+              widget.listSelectedAlphabetlettersPerColor,
+          listSelectedBackgroundcolors: widget.listSelectedBackgroundcolors,
+          listSelectedStroopcolors: widget.listStroopTextcolors,
+          secLengthRound: widget.secLengthRound,
+          secLengthRest: widget.secLengthRest,
+          anzRounds: widget.anzRounds,
+          nr_individual: widget.nr_individual,
+          nr_from: widget.nr_from,
+          nr_to: widget.nr_to,
+          nr_skip: widget.nr_skip,
+          speedlevel: widget.speedlevel,
+          secChangeBackgrcolor: secChangeBackground,
+          moveDirection: widget.movedirection,
+        ),
+      ),
     );
   }
 

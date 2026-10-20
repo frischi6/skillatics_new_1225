@@ -15,46 +15,38 @@ class MenuOptodrum extends StatefulWidget {
   MenuOptodrum({
     super.key,
     required this.title,
-    required this.currentCountry,
-    required this.listSelectedColors,
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbersPerColor,
     required this.listSelectedShapesPerColor,
     required this.listSelectedAlphabetlettersPerColor,
     required this.listSelectedBackgroundcolors,
     required this.listSelectedStroopcolors,
-    required this.anzColorsOnPage,
-    required this.secChangeColor,
     required this.secLengthRound,
     required this.secLengthRest,
     required this.anzRounds,
-    required this.isElemProSeiteEinmalig,
+    required this.currentCountry,
     required this.nr_individual,
     required this.nr_from,
     required this.nr_to,
     required this.nr_skip,
-    required this.speedlevel,
     required this.moveDirection,
+    required this.speedlevel,
     required this.secChangeBackgrcolor,
   });
 
   final String title;
   String currentCountry;
-  var listSelectedColors; //hier ist entweder der hex-code einer farbe drin, die ausgewählt wurde, oder wenn ein item (pfeil, zahl etc.) ausgewählt wurde für jedes item pro farbe der hex-code fefefe damit in trainingspage klar dass da ein item kommt und dieses sichtbar sein muss
   var listSelectedArrowsPerColor;
   var listSelectedNumbersPerColor;
   var listSelectedShapesPerColor;
   var listSelectedAlphabetlettersPerColor;
   var listSelectedBackgroundcolors;
   var listSelectedStroopcolors;
-  int anzColorsOnPage;
-  int secChangeColor;
   int secLengthRound;
   int secLengthRest;
   int anzRounds;
   int speedlevel;
   String moveDirection;
-  bool isElemProSeiteEinmalig;
   String nr_individual, nr_from, nr_to, nr_skip;
   int secChangeBackgrcolor;
 
@@ -184,16 +176,26 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
         context,
         MaterialPageRoute(
           builder: (context) => TrainingOptodrum(
-            movedirection: selectedMovedirection,
-            speedlevel: selectedSpeedlevel,
+            listSelectedArrowsPerColor: selectedArrowsPerColor,
+            listSelectedNumbersPerColor: selectedNumbersPerColor,
+            listSelectedShapesPerColor: selectedShapesPerColor,
+            listSelectedAlphabetlettersPerColor:
+                selectedAlphabetlettersPerColor,
+            listSelectedBackgroundcolors: selectedBackgroundcolors,
             secLengthRound: secLengthRound,
             secLengthRest: secLengthRest,
             anzRounds: anzRounds,
-            secChangeBackgrcolor: secChangeBackgrcolor,
-            allItemsByColor: alleSelectedItems,
+            currentCountry: currentCountry,
             listStroopText: stroopTexticons,
             listStroopTextcolors: stroopTextcolor,
-            listBackgroundcolors: selectedBackgroundcolors,
+            nr_individual: nr_individual,
+            nr_from: nr_from,
+            nr_to: nr_to,
+            nr_skip: nr_skip,
+            movedirection: selectedMovedirection,
+            speedlevel: selectedSpeedlevel,
+            secChangeBackgrcolor: secChangeBackgrcolor,
+            allItemsByColor: alleSelectedItems,
           ),
         ),
       );
@@ -588,285 +590,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
           ),
         ),
       ),
-    );
-  }
-
-  /// returnt ein MultiSelectContainer, in dem alle Farben ausgewählt werden können
-  MultiSelectContainer buildColorselect() {
-    return MultiSelectContainer(
-      key: Key(
-        keyString,
-      ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
-      //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
-      prefix: MultiSelectPrefix(
-        selectedPrefix: const Padding(
-          padding: EdgeInsets.only(right: 5),
-          child: Icon(Icons.check, color: Colors.white, size: 14),
-        ),
-      ),
-      items: [
-        MultiSelectCard(
-          value: 'f5ff00', //HEX-Code der Farbe, muss zwingend 6-stellig sein
-          label: 'Gelb'.tr,
-          selected: selectedItems.contains('f5ff00'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.yellow.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.yellow,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: 'ff931f',
-          label: 'Orange'.tr,
-          selected: selectedItems.contains('ff931f'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.orange.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: 'ff0000',
-          label: 'Rot'.tr,
-          selected: selectedItems.contains('ff0000'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: 'f500ab',
-          label: 'Pink'.tr,
-          selected: selectedItems.contains('f500ab'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.pink.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.pink,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '6600a1',
-          label: 'Violett'.tr,
-          selected: selectedItems.contains('6600a1'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                102,
-                0,
-                161,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: const Color.fromARGB(255, 102, 0, 161),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '00b2ee',
-          label: 'Hellblau'.tr,
-          selected: selectedItems.contains('00b2ee'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.lightBlue.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.lightBlue,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '00008b',
-          label: 'Dunkelblau'.tr,
-          selected: selectedItems.contains('00008b'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                00,
-                0,
-                139,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: const Color.fromARGB(255, 00, 0, 139),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '00ee00',
-          label: 'Hellgrün'.tr,
-          selected: selectedItems.contains('00ee00'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.lightGreen.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.lightGreen,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '006400',
-          label: 'Dunkelgrün'.tr,
-          selected: selectedItems.contains('006400'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                0,
-                100,
-                0,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: const Color.fromARGB(255, 0, 100, 0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '00868b',
-          label: 'Türkis'.tr,
-          selected: selectedItems.contains('00868b'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                0,
-                134,
-                139,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: const Color.fromARGB(255, 0, 134, 139),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: 'a8a8a8',
-          label: 'Grau'.tr,
-          selected: selectedItems.contains('a8a8a8'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                168,
-                168,
-                168,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: const Color.fromARGB(255, 168, 168, 168),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: '000000',
-          label: 'Schwarz'.tr,
-          selected: selectedItems.contains('000000'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          textStyles: const MultiSelectItemTextStyles(
-            selectedTextStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-        MultiSelectCard(
-          value: 'bd9b16',
-          label: 'Gold'.tr,
-          selected: selectedItems.contains('bd9b16'),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                189,
-                155,
-                22,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: const Color.fromARGB(255, 189, 155, 22),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        MultiSelectCard(
-          value: 'ffffff',
-          label: 'Weiss'.tr,
-          selected: selectedItems.contains('ffffff'),
-          textStyles: const MultiSelectItemTextStyles(
-            selectedTextStyle: TextStyle(color: Colors.black),
-          ),
-          decorations: MultiSelectItemDecorations(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                203,
-                203,
-                203,
-              ).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(),
-            ),
-          ),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(Icons.check, color: Colors.black, size: 14),
-            ),
-          ),
-        ),
-      ],
-      onChange: (allSelectedItems, selectedItem) {
-        selectedColors = allSelectedItems;
-      },
     );
   }
 
@@ -1907,7 +1630,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   @override
   void initState() {
     currentCountry = widget.currentCountry;
-    selectedItems = widget.listSelectedColors;
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     selectedNumbersPerColor = widget.listSelectedNumbersPerColor;
     selectedShapesPerColor = widget.listSelectedShapesPerColor;
@@ -1916,12 +1638,9 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     selectedBackgroundcolors = widget.listSelectedBackgroundcolors;
     stroopTextcolor = widget.listSelectedStroopcolors;
 
-    anzColorsOnPage = widget.anzColorsOnPage;
-    secChangeColor = widget.secChangeColor;
     secLengthRound = widget.secLengthRound;
     secLengthRest = widget.secLengthRest;
     anzRounds = widget.anzRounds;
-    isElemProSeiteEinmalig = widget.isElemProSeiteEinmalig;
     nr_individual = widget.nr_individual;
     nr_from = widget.nr_from;
     nr_to = widget.nr_to;
@@ -2036,19 +1755,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 18),
-                Text(
-                  'farben'.tr,
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: fontsizeItemtitle,
-                  ),
-                ),
-                SizedBox(height: 10),
-                ConstrainedBox(
-                  constraints: BoxConstraints(),
-                  child: buildColorselect(),
-                ),
-                SizedBox(height: paddingNewSectorItems),
+
                 Text(
                   'buchstaben'.tr,
                   style: TextStyle(
@@ -2564,7 +2271,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Center(
                     child: Text(
-                      '${this.textFehlermeldung}\n',
+                      '${textFehlermeldung}\n',
                       key: Key(keyString), //funktioniert nicht
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.red),
