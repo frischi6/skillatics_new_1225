@@ -60,7 +60,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   String textFehlermeldung = '';
   bool isGerman = true;
   String currentCountry = "GB"; //flagge die aktuell oben rechts angezeigt wird
-  String keyString = '1';
   int keyInt = 1;
   double fontsizeMenutitle = 19;
   double fontsizeItemtitle = 18;
@@ -130,6 +129,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   //Controller für Multiselect Alphabetletter damit alle items aufs mal (ab-)gewählt werden können
   final MultiSelectController<dynamic> _controllerAlphabetLetter =
       MultiSelectController(deSelectPerpetualSelectedItems: true);
+  //Damit nach Zurücksetzen der Einstellungen direkt wieder nach oben gescrollt werden kann
+  final ScrollController _scrollController = ScrollController();
 
   /* Optodrumspezifisch */
   int selectedSpeedlevel = 5;
@@ -161,9 +162,10 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     return emoji;
   }
 
+  ///Ändert Key damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
+  ///Default-Values werden so auch automatisch wieder gesetzt
   void changeKey() {
     keyInt++;
-    keyString = keyInt.toString();
   }
 
   void changeToTrainingspage() {
@@ -596,8 +598,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   /// returnt ein MultiSelectContainer, in dem alle Pfeile ausgewählt werden können
   MultiSelectContainer buildArrowselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -669,8 +671,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   MultiSelectContainer buildArrowColorselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -789,8 +791,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   /// returnt ein MultiSelectContainer, in dem alle Formen ausgewählt werden können
   MultiSelectContainer buildShapeselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -839,8 +841,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   MultiSelectContainer buildShapeColorselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -966,8 +968,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
     return MultiSelectContainer(
       controller: _controllerAlphabetLetter,
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -1018,8 +1020,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   MultiSelectContainer buildAlphabetColorselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -1137,8 +1139,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   MultiSelectContainer buildNumberColorselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -1259,8 +1261,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   /// des Schriftzugs läuft über "Hintergrundfarbe Icons" (buildBackgroundColorselect)
   MultiSelectContainer buildStroopColorselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -1410,8 +1412,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   /// returnt ein MultiSelectContainer, in dem Hintergrundfarben für die Icons ausgewählt werden können
   MultiSelectContainer buildBackgroundColorselect() {
     return MultiSelectContainer(
-      key: Key(
-        keyString,
+      key: ValueKey(
+        keyInt,
       ), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
@@ -1629,6 +1631,12 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   @override
   void initState() {
+    super.initState(); //nach diesem aufruf wird automatisch build() ausgeführt
+    initPage();
+  }
+
+  ///Übergabeparameter übernehmen und Einstellungen initialisieren
+  void initPage() {
     currentCountry = widget.currentCountry;
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     selectedNumbersPerColor = widget.listSelectedNumbersPerColor;
@@ -1682,13 +1690,32 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     } else {
       isGerman = false;
     }
-    super.initState();
-    //nach diesem aufruf wird automatisch build() ausgeführt
+  }
+
+  ///Einstellungen zurücksetzen
+  void reset() {
+    setState(() {
+      changeKey();
+      initPage();
+
+      //Zurück nach ganz oben scrollen
+      _scrollController.animateTo(
+        0.0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   // This method is rerun every time setState is called
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context2) {
     /*rateMyApp.init().then((_) {
       if (rateMyApp.shouldOpenDialog) {
         rateMyApp.showRateDialog(
@@ -1741,6 +1768,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
           automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
         ),
         body: SingleChildScrollView(
+          controller: _scrollController,
           child: //damit scrollable wenn content grösser ist als bildschirmgrösses
           Padding(
             padding: EdgeInsets.only(left: 5, right: 5, top: 20),
@@ -1839,6 +1867,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       width: MediaQuery.of(context).size.width * 0.4,
                       //height: 28,
                       child: TextFormField(
+                        key: ValueKey(keyInt),
                         initialValue: nr_individual,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -1868,6 +1897,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       width: MediaQuery.of(context).size.width * 0.15,
                       //height: 28,
                       child: TextFormField(
+                        key: ValueKey(keyInt),
                         initialValue: nr_from,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -1891,6 +1921,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       width: MediaQuery.of(context).size.width * 0.15,
                       //height: 28,
                       child: TextFormField(
+                        key: ValueKey(keyInt),
                         initialValue: nr_to,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -1920,6 +1951,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       width: MediaQuery.of(context).size.width * 0.4,
                       //height: 28,
                       child: TextFormField(
+                        key: ValueKey(keyInt),
                         initialValue: nr_skip,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -2272,7 +2304,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   child: Center(
                     child: Text(
                       '${textFehlermeldung}\n',
-                      key: Key(keyString), //funktioniert nicht
+                      key: ValueKey(keyInt), //funktioniert nicht
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.red),
                     ),
@@ -2297,8 +2329,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       fontSize: 12,
                       decoration: TextDecoration.underline,
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.popAndPushNamed(context, '/'),
+                    recognizer: TapGestureRecognizer()..onTap = () => reset(),
                   ), //Einstellungen MenuPage reseten
                 ),
                 SizedBox(height: 20),
