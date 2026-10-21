@@ -104,7 +104,27 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   @override
   void initState() {
     super.initState();
+    initPage();
 
+    //Timer für Zeit-Zähler
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer timer) => setState(() {
+        timemanagement();
+      }),
+    );
+
+    //Controller für die Animation
+    // Initialisiert den Animations-Controller für den Endlos-Loop (duration 12h)
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(hours: 12),
+    )..addListener(_tick);
+
+    _controller.forward(); //Controller starten
+  }
+
+  void initPage() {
     secLengthRound2 = widget.secLengthRound;
     secLengthRest2 = widget.secLengthRest;
     anzRounds2 = widget.anzRounds;
@@ -122,25 +142,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     setSpeed();
     init_timevariables();
 
-    //Timer für Zeit-Zähler
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer timer) => setState(() {
-        timemanagement();
-      }),
-    );
-
     generateIconsByColor(itemsByColor);
     icons.shuffle();
-
-    //Controller für die Animation
-    // Initialisiert den Animations-Controller für den Endlos-Loop (duration 12h)
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(hours: 12),
-    )..addListener(_tick);
-
-    _controller.forward();
   }
 
   void init_timevariables() {
@@ -881,7 +884,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 
   ///Wird alle 1 Sekunde von timer aufgerufen
-  ///Organisiert Zeitanzeige, Wechsel von Rest & Round, Programmende und Wechsel der Hintergrundfarbe
+  ///Organisiert Zeitanzeige, Wechsel von Rest & Round, Programmende und Wechsel
+  ///der Hintergrundfarbe
   void timemanagement() {
     /* Darstellung Zeitbalken und Überprüfung Rest/Round */
 
@@ -982,7 +986,15 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 
   //todo
-  void neustart() {}
+  void neustart() {
+    initPage();
+    //Animation stoppen und auf Startposition (0.0) zurücksetzen
+    _controller.reset();
+    //Liste der Icons leeren (löscht alle aktuell sichtbaren Icons)
+    _flowIcons.clear();
+    //Animation erneut starten
+    _controller.forward();
+  }
 
   /// Damit Anzeige in Fusszeile korrekt mit 1 Runde bzw >1 Runden
   String getRundeSgPl() {
