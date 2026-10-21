@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
+import 'package:skillatics/start.dart';
 import 'custom_icons_icons.dart';
 import 'stroop_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
@@ -1911,6 +1912,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           centerTitle: true,
           backgroundColor: Color.fromRGBO(188, 250, 0, 1),
+          leading: IconButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all(
+                Color.fromRGBO(188, 250, 0, 1),
+              ),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StartingPage()),
+              );
+            },
+            icon: Icon(Icons.arrow_back_sharp),
+          ),
           actions: [
             ElevatedButton(
               style: ButtonStyle(
