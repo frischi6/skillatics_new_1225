@@ -544,7 +544,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             children: [
-              Text('\nSkillatics Neuroathletik\n'),
+              Text('\nSkillatics GmbH\n'),
               Text('+41 79 663 48 52'),
               Text('info@skillatics.ch'),
               Text('www.skillatics.ch'),

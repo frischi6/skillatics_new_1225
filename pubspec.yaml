@@ -74,6 +74,7 @@ flutter:
     - assets/southwest.png
     - assets/check.png
     - assets/skillatics_schwarzWeiss_transparent.png
+    - assets/skillatics_neon_ausgeschnitten.png
     - assets/launcher/
 
   # An image asset can refer to one or more resolution-specific "variants", see
