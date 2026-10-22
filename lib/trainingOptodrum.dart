@@ -25,6 +25,7 @@ class TrainingOptodrum extends StatefulWidget {
   final String nr_individual, nr_from, nr_to, nr_skip;
   final String movedirection; // Die im Menü gewählte Bewegungsrichtung
   final int speedlevel;
+  final bool gleicheItemsNacheinanderOk;
 
   const TrainingOptodrum({
     super.key,
@@ -47,6 +48,7 @@ class TrainingOptodrum extends StatefulWidget {
     required this.speedlevel,
     required this.secChangeBackgrcolor,
     required this.allItemsByColor,
+    required this.gleicheItemsNacheinanderOk,
   });
 
   @override
@@ -79,10 +81,11 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   List<_IconConfig> icons = [];
 
   final List<_FlowIcon> _flowIcons = [];
-  int _nextIconIndex = 0;
+  int _nextIconIndex = 0, lastIconIndex = 0;
   DateTime? _lastTime;
   double _animationWidth = 0;
   double _animationHeight = 0;
+  bool gleicheIconsNacheinanderOk = true;
 
   bool isBreak = false;
   late Timer _timer;
@@ -138,6 +141,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         listWithBackgroundcolors[random.nextInt(
           listWithBackgroundcolors.length,
         )];
+    gleicheIconsNacheinanderOk = widget.gleicheItemsNacheinanderOk;
     setMovedirection();
     setSpeed();
     init_timevariables();
@@ -778,7 +782,18 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     );
 
     _flowIcons.add(flowIcon);
-    _nextIconIndex = (_nextIconIndex + 1) % icons.length;
+
+    //Nächsten Index random generieren
+    _nextIconIndex = random.nextInt(icons.length);
+
+    //Option dass nicht dieselben Icons nacheinander angzeiget werden
+    if (!gleicheIconsNacheinanderOk) {
+      while (lastIconIndex == _nextIconIndex) {
+        _nextIconIndex = random.nextInt(icons.length);
+      }
+    }
+
+    lastIconIndex = _nextIconIndex;
   }
 
   void _checkForNewIcon(double width, double height) {
@@ -980,6 +995,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
           speedlevel: widget.speedlevel,
           secChangeBackgrcolor: secChangeBackground,
           moveDirection: widget.movedirection,
+          gleicheNacheinanderOk: widget.gleicheItemsNacheinanderOk,
         ),
       ),
     );

@@ -33,6 +33,7 @@ class MenuOptodrum extends StatefulWidget {
     required this.moveDirection,
     required this.speedlevel,
     required this.secChangeBackgrcolor,
+    required this.gleicheNacheinanderOk,
   });
 
   final String title;
@@ -50,6 +51,7 @@ class MenuOptodrum extends StatefulWidget {
   String moveDirection;
   String nr_individual, nr_from, nr_to, nr_skip;
   int secChangeBackgrcolor;
+  bool gleicheNacheinanderOk;
 
   @override
   _MenuOptodrumState createState() => _MenuOptodrumState(); //ruft automatisch initState() auf
@@ -138,6 +140,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   var alleSelectedItems = [];
   String selectedMovedirection = 'east'; // Deine String-Variable
   int secChangeBackgrcolor = 2;
+  bool gleichesItemNacheinander = false;
 
   //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
@@ -199,6 +202,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
             speedlevel: selectedSpeedlevel,
             secChangeBackgrcolor: secChangeBackgrcolor,
             allItemsByColor: alleSelectedItems,
+            gleicheItemsNacheinanderOk: gleichesItemNacheinander,
           ),
         ),
       );
@@ -1657,6 +1661,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     selectedSpeedlevel = widget.speedlevel;
     selectedMovedirection = widget.moveDirection;
     secChangeBackgrcolor = widget.secChangeBackgrcolor;
+    gleichesItemNacheinander = widget.gleicheNacheinanderOk;
 
     initializeSelectedColors(
       selectedItems,
@@ -2039,6 +2044,42 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                 ConstrainedBox(
                   constraints: BoxConstraints(),
                   child: buildStroopColorselect(),
+                ),
+
+                SizedBox(height: paddingNewSectorItems),
+                Text(
+                  'gleicheNacheinander'.tr,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: fontsizeItemtitle,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ChoiceChip(
+                      selectedColor: Color.fromRGBO(188, 250, 0, 0.5),
+                      label: Text('Ja'.tr),
+                      selected: gleichesItemNacheinander,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          gleichesItemNacheinander = true;
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 12), // Abstand zwischen den Chips
+                    ChoiceChip(
+                      selectedColor: Color.fromRGBO(188, 250, 0, 0.5),
+                      label: Text('Nein'.tr),
+                      selected: !gleichesItemNacheinander,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          gleichesItemNacheinander = false;
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(height: paddingNewSectorItems),
                 Text(

@@ -157,6 +157,7 @@ class StartingPage extends StatelessWidget {
                       speedlevel: 5,
                       secChangeBackgrcolor: 2,
                       moveDirection: 'east',
+                      gleicheNacheinanderOk: true,
                     ),
                   ),
                 );

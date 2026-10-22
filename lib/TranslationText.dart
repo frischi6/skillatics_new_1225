@@ -77,6 +77,9 @@ class TranslationText extends Translations {
       'selMovedirection': 'Bewegungs-Richtung der Icons?',
       'selWechselBackgrSek':
           'Wechsel Hintergrundfarbe nach wie vielen Sekunden?',
+      'gleicheNacheinander': 'Gleiche Elemente nacheinader möglich',
+      'Ja': 'Ja',
+      'Nein': 'Nein',
     },
     'en_US': {
       'fehlerColorsNull': 'Items still need to be selected.',
@@ -148,6 +151,9 @@ class TranslationText extends Translations {
       'selSpeedlevel': 'Speedlevel of the icons?',
       'selMovedirection': 'Movement-direction of the icons?',
       'selWechselBackgrSek': 'Background changes after how many seconds?',
+      'gleicheNacheinander': 'Same elements can appear consecutively',
+      'Ja': 'Yes',
+      'Nein': 'No',
     },
   };
 }
