@@ -81,7 +81,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   List<_IconConfig> icons = [];
 
   final List<_FlowIcon> _flowIcons = [];
-  int _nextIconIndex = 0, lastIconIndex = 0;
+  int _nextIconIndex = 0, currentIconIndex = 0;
   DateTime? _lastTime;
   double _animationWidth = 0;
   double _animationHeight = 0;
@@ -788,12 +788,12 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
     //Option dass nicht dieselben Icons nacheinander angzeiget werden
     if (!gleicheIconsNacheinanderOk) {
-      while (lastIconIndex == _nextIconIndex) {
+      while (currentIconIndex == _nextIconIndex) {
         _nextIconIndex = random.nextInt(icons.length);
       }
     }
 
-    lastIconIndex = _nextIconIndex;
+    currentIconIndex = _nextIconIndex;
   }
 
   void _checkForNewIcon(double width, double height) {
@@ -947,6 +947,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     currentTimeBackground = currentSecsCD + currentMinsCD * 60;
     if (listWithBackgroundcolors.length > 1) {
       if (lastChangeBackground - currentTimeBackground == secChangeBackground) {
+        //Nie dieselbe Hintergrundfarbe nacheinander
         do {
           newBackgroundcolor =
               listWithBackgroundcolors[random.nextInt(

@@ -173,40 +173,83 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   }
 
   void changeToTrainingspage() {
-    organizeElementsColors();
-    //Wechsel möglich
-    showDialog(context: context, builder: (_) => alertDialogCD());
-
-    Timer(const Duration(seconds: 3), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TrainingOptodrum(
-            listSelectedArrowsPerColor: selectedArrowsPerColor,
-            listSelectedNumbersPerColor: selectedNumbersPerColor,
-            listSelectedShapesPerColor: selectedShapesPerColor,
-            listSelectedAlphabetlettersPerColor:
-                selectedAlphabetlettersPerColor,
-            listSelectedBackgroundcolors: selectedBackgroundcolors,
-            secLengthRound: secLengthRound,
-            secLengthRest: secLengthRest,
-            anzRounds: anzRounds,
-            currentCountry: currentCountry,
-            listStroopText: stroopTexticons,
-            listStroopTextcolors: stroopTextcolor,
-            nr_individual: nr_individual,
-            nr_from: nr_from,
-            nr_to: nr_to,
-            nr_skip: nr_skip,
-            movedirection: selectedMovedirection,
-            speedlevel: selectedSpeedlevel,
-            secChangeBackgrcolor: secChangeBackgrcolor,
-            allItemsByColor: alleSelectedItems,
-            gleicheItemsNacheinanderOk: gleichesItemNacheinander,
-          ),
-        ),
-      );
+    //Schönheitsanpassung: Damit Fehlermeldung verschwindet, wenn falsche Auswahl
+    // korrigiert wurde und erneut auf Start gedrückt wird
+    setState(() {
+      textFehlermeldung = '';
     });
+
+    organizeElementsColors();
+
+    //Werte überprüfen
+    if (isNrOutOfRange) {
+      setState(() {
+        textFehlermeldung = 'fehlerNrOutOfRange'.tr;
+      });
+    } else if (selectedAlphabetletters.isNotEmpty &&
+        selectedAlphabetlettersPerColor.isEmpty) {
+      setState(() {
+        textFehlermeldung = 'fehlerAlphabetlettersNoColor'.tr;
+      });
+    } else if (selectedNumbers.isNotEmpty && selectedNumbersPerColor.isEmpty) {
+      setState(() {
+        textFehlermeldung = 'fehlerNumbersNoColor'.tr;
+      });
+    } else if (selectedArrows.isNotEmpty && selectedArrowsPerColor.isEmpty) {
+      setState(() {
+        textFehlermeldung = 'fehlerArrowsNoColor'.tr;
+      });
+    } else if (selectedShapes.isNotEmpty && selectedShapesPerColor.isEmpty) {
+      setState(() {
+        textFehlermeldung = 'fehlerShapesNoColor'.tr;
+      });
+    } else if (alleSelectedItems.length < 2) {
+      setState(() {
+        textFehlermeldung = 'fehlerColorsAnz'.tr;
+      });
+    } else if (secLengthRound <= 0) {
+      setState(() {
+        textFehlermeldung = 'fehlerDurchgangNull'.tr;
+      });
+    } else if (secLengthRest <= 0) {
+      setState(() {
+        textFehlermeldung = 'fehlerPauseNull'.tr;
+      });
+    } else {
+      //Wechsel möglich
+      showDialog(context: context, builder: (_) => alertDialogCD());
+
+      Timer(const Duration(seconds: 3), () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TrainingOptodrum(
+              listSelectedArrowsPerColor: selectedArrowsPerColor,
+              listSelectedNumbersPerColor: selectedNumbersPerColor,
+              listSelectedShapesPerColor: selectedShapesPerColor,
+              listSelectedAlphabetlettersPerColor:
+                  selectedAlphabetlettersPerColor,
+              listSelectedBackgroundcolors: selectedBackgroundcolors,
+              secLengthRound: secLengthRound,
+              secLengthRest: secLengthRest,
+              anzRounds: anzRounds,
+              currentCountry: currentCountry,
+              listStroopText: stroopTexticons,
+              listStroopTextcolors: stroopTextcolor,
+              nr_individual: nr_individual,
+              nr_from: nr_from,
+              nr_to: nr_to,
+              nr_skip: nr_skip,
+              movedirection: selectedMovedirection,
+              speedlevel: selectedSpeedlevel,
+              secChangeBackgrcolor: secChangeBackgrcolor,
+              allItemsByColor: alleSelectedItems,
+              gleicheItemsNacheinanderOk: gleichesItemNacheinander,
+            ),
+          ),
+        );
+      });
+    }
   }
 
   //Wechsel auf Seite 2 mit den angezeigten Farben
