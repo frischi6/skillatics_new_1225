@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
-import 'package:skillatics/main.dart';
 import 'package:skillatics/menuOptodrum.dart';
 import 'package:skillatics/number_zero_to_fifty_icons.dart';
 import 'package:skillatics/stroop__english_icons.dart';
 import 'package:skillatics/stroop_icons.dart';
-import 'start.dart';
 
 class TrainingOptodrum extends StatefulWidget {
   final List<dynamic> listSelectedArrowsPerColor, listSelectedNumbersPerColor;
@@ -152,6 +150,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
   void init_timevariables() {
     isBreak = false;
+    anzRoundsDone = 1;
 
     minsLengthRoundCD = secLengthRound2 ~/ 60;
     secsLengthRoundCD = secLengthRound2 % 60;
@@ -332,228 +331,210 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   ///Erstellt die Liste mit allen zu benutzenden Icons (gemäss Menu-Auswahl des Benutzers)
   void addIconToList(icon_color) {
     double sizeIcon = iconSize;
-    int anzColorsOnPage2 = 4;
-    bool arrowVisible = true;
 
-    if (arrowVisible) {
-      if (anzColorsOnPage2 == 4) {
-        sizeIcon = 90.0;
-      } else if (anzColorsOnPage2 == 3) {
-        sizeIcon = 110.0;
-      } else if (anzColorsOnPage2 == 2) {
-        sizeIcon = 160.0;
-      } else if (anzColorsOnPage2 == 1) {
-        sizeIcon = 200.0;
+    if (isNumeric(icon_color.substring(0, icon_color.indexOf('_')))) {
+      addNumberToList(icon_color, sizeIcon);
+    } else if (icon_color.contains('northeast_')) {
+      _addIconConfig(
+        Icons.north_east,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('northwest_')) {
+      _addIconConfig(
+        Icons.north_west,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('southeast_')) {
+      _addIconConfig(
+        Icons.south_east,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('southwest_')) {
+      _addIconConfig(
+        Icons.south_west,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon - 10,
+      );
+    } else if (icon_color.contains('north_')) {
+      _addIconConfig(
+        Icons.north,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('east_')) {
+      _addIconConfig(
+        Icons.east,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('south_')) {
+      _addIconConfig(
+        Icons.south,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('west_')) {
+      _addIconConfig(
+        Icons.west,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('triangle_')) {
+      _addIconConfig(
+        CustomIcons.triangle,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('kreis_')) {
+      _addIconConfig(
+        CustomIcons.circle,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('quadrat_')) {
+      _addIconConfig(
+        CustomIcons.square,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.startsWith('letter')) {
+      IconData letterIcon;
+      switch (icon_color.substring(6, 7).toLowerCase()) {
+        case 'a':
+          letterIcon = CustomIcons.a;
+          break;
+        case 'b':
+          letterIcon = CustomIcons.b;
+          break;
+        case 'c':
+          letterIcon = CustomIcons.c;
+          break;
+        case 'd':
+          letterIcon = CustomIcons.d;
+          break;
+        case 'e':
+          letterIcon = CustomIcons.e;
+          break;
+        case 'f':
+          letterIcon = CustomIcons.f;
+          break;
+        case 'g':
+          letterIcon = CustomIcons.g;
+          break;
+        case 'h':
+          letterIcon = CustomIcons.h;
+          break;
+        case 'i':
+          letterIcon = CustomIcons.i;
+          break;
+        case 'j':
+          letterIcon = CustomIcons.j;
+          break;
+        case 'k':
+          letterIcon = CustomIcons.k;
+          break;
+        case 'l':
+          letterIcon = CustomIcons.l;
+          break;
+        case 'm':
+          letterIcon = CustomIcons.m;
+          break;
+        case 'n':
+          letterIcon = CustomIcons.n;
+          break;
+        case 'o':
+          letterIcon = CustomIcons.o;
+          break;
+        case 'p':
+          letterIcon = CustomIcons.p;
+          break;
+        case 'q':
+          letterIcon = CustomIcons.q;
+          break;
+        case 'r':
+          letterIcon = CustomIcons.r;
+          break;
+        case 's':
+          letterIcon = CustomIcons.s;
+          break;
+        case 't':
+          letterIcon = CustomIcons.t;
+          break;
+        case 'u':
+          letterIcon = CustomIcons.u;
+          break;
+        case 'v':
+          letterIcon = CustomIcons.v;
+          break;
+        case 'w':
+          letterIcon = CustomIcons.w;
+          break;
+        case 'x':
+          letterIcon = CustomIcons.x;
+          break;
+        case 'y':
+          letterIcon = CustomIcons.y;
+          break;
+        case 'z':
+          letterIcon = CustomIcons.z;
+          break;
+        default:
+          letterIcon = CustomIcons.a;
+          break;
+      }
+      _addIconConfig(
+        letterIcon,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon - 10,
+      );
+    } else {
+      IconData? stroopIcon;
+      Color randomStroopColor = Color(
+        listWithStroopTextcolors[random.nextInt(
+          listWithStroopTextcolors.length,
+        )],
+      );
+
+      if (icon_color == 'stroop_weiss') {
+        stroopIcon = StroopIcons.stroop_weiss;
+      } else if (icon_color == 'stroop_schwarz') {
+        stroopIcon = StroopIcons.stroop_schwarz;
+      } else if (icon_color == 'stroop_gelb') {
+        stroopIcon = StroopIcons.stroop_gelb;
+      } else if (icon_color == 'stroop_rot') {
+        stroopIcon = StroopIcons.stroop_rot;
+      } else if (icon_color == 'stroop_violett') {
+        stroopIcon = StroopIcons.stroop_violett;
+      } else if (icon_color == 'stroop_blau') {
+        stroopIcon = StroopIcons.stroop_blau;
+      } else if (icon_color == 'stroop_gruen') {
+        stroopIcon = StroopIcons.stroop_gruen;
+      } else if (icon_color == 'stroop_white') {
+        stroopIcon = StroopIcons_English.stroop_white;
+      } else if (icon_color == 'stroop_black') {
+        stroopIcon = StroopIcons_English.stroop_black;
+      } else if (icon_color == 'stroop_yellow') {
+        stroopIcon = StroopIcons_English.stroop_yellow;
+      } else if (icon_color == 'stroop_red') {
+        stroopIcon = StroopIcons_English.stroop_red;
+      } else if (icon_color == 'stroop_violet') {
+        stroopIcon = StroopIcons_English.stroop_violet;
+      } else if (icon_color == 'stroop_blue') {
+        stroopIcon = StroopIcons_English.stroop_blue;
+      } else if (icon_color == 'stroop_green') {
+        stroopIcon = StroopIcons_English.stroop_green;
       }
 
-      if (isNumeric(icon_color.substring(0, icon_color.indexOf('_')))) {
-        addNumberToList(icon_color, sizeIcon);
-      } else if (icon_color.contains('northeast_')) {
-        _addIconConfig(
-          Icons.north_east,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('northwest_')) {
-        _addIconConfig(
-          Icons.north_west,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('southeast_')) {
-        _addIconConfig(
-          Icons.south_east,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('southwest_')) {
-        _addIconConfig(
-          Icons.south_west,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon - 10,
-        );
-      } else if (icon_color.contains('north_')) {
-        _addIconConfig(
-          Icons.north,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('east_')) {
-        _addIconConfig(
-          Icons.east,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('south_')) {
-        _addIconConfig(
-          Icons.south,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('west_')) {
-        _addIconConfig(
-          Icons.west,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('triangle_')) {
-        _addIconConfig(
-          CustomIcons.triangle,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('kreis_')) {
-        _addIconConfig(
-          CustomIcons.circle,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.contains('quadrat_')) {
-        _addIconConfig(
-          CustomIcons.square,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon,
-        );
-      } else if (icon_color.startsWith('letter')) {
-        IconData letterIcon;
-        switch (icon_color.substring(6, 7).toLowerCase()) {
-          case 'a':
-            letterIcon = CustomIcons.a;
-            break;
-          case 'b':
-            letterIcon = CustomIcons.b;
-            break;
-          case 'c':
-            letterIcon = CustomIcons.c;
-            break;
-          case 'd':
-            letterIcon = CustomIcons.d;
-            break;
-          case 'e':
-            letterIcon = CustomIcons.e;
-            break;
-          case 'f':
-            letterIcon = CustomIcons.f;
-            break;
-          case 'g':
-            letterIcon = CustomIcons.g;
-            break;
-          case 'h':
-            letterIcon = CustomIcons.h;
-            break;
-          case 'i':
-            letterIcon = CustomIcons.i;
-            break;
-          case 'j':
-            letterIcon = CustomIcons.j;
-            break;
-          case 'k':
-            letterIcon = CustomIcons.k;
-            break;
-          case 'l':
-            letterIcon = CustomIcons.l;
-            break;
-          case 'm':
-            letterIcon = CustomIcons.m;
-            break;
-          case 'n':
-            letterIcon = CustomIcons.n;
-            break;
-          case 'o':
-            letterIcon = CustomIcons.o;
-            break;
-          case 'p':
-            letterIcon = CustomIcons.p;
-            break;
-          case 'q':
-            letterIcon = CustomIcons.q;
-            break;
-          case 'r':
-            letterIcon = CustomIcons.r;
-            break;
-          case 's':
-            letterIcon = CustomIcons.s;
-            break;
-          case 't':
-            letterIcon = CustomIcons.t;
-            break;
-          case 'u':
-            letterIcon = CustomIcons.u;
-            break;
-          case 'v':
-            letterIcon = CustomIcons.v;
-            break;
-          case 'w':
-            letterIcon = CustomIcons.w;
-            break;
-          case 'x':
-            letterIcon = CustomIcons.x;
-            break;
-          case 'y':
-            letterIcon = CustomIcons.y;
-            break;
-          case 'z':
-            letterIcon = CustomIcons.z;
-            break;
-          default:
-            letterIcon = CustomIcons.a;
-            break;
-        }
-        _addIconConfig(
-          letterIcon,
-          Color(getColorcodeByItemPerColor(icon_color)),
-          sizeIcon - 10,
-        );
-      } else {
-        IconData? stroopIcon;
-        Color randomStroopColor = Color(
-          listWithStroopTextcolors[random.nextInt(
-            listWithStroopTextcolors.length,
-          )],
-        );
-
-        if (icon_color == 'stroop_weiss') {
-          stroopIcon = StroopIcons.stroop_weiss;
-        } else if (icon_color == 'stroop_schwarz') {
-          stroopIcon = StroopIcons.stroop_schwarz;
-        } else if (icon_color == 'stroop_gelb') {
-          stroopIcon = StroopIcons.stroop_gelb;
-        } else if (icon_color == 'stroop_rot') {
-          stroopIcon = StroopIcons.stroop_rot;
-        } else if (icon_color == 'stroop_violett') {
-          stroopIcon = StroopIcons.stroop_violett;
-        } else if (icon_color == 'stroop_blau') {
-          stroopIcon = StroopIcons.stroop_blau;
-        } else if (icon_color == 'stroop_gruen') {
-          stroopIcon = StroopIcons.stroop_gruen;
-        } else if (icon_color == 'stroop_white') {
-          stroopIcon = StroopIcons_English.stroop_white;
-        } else if (icon_color == 'stroop_black') {
-          stroopIcon = StroopIcons_English.stroop_black;
-        } else if (icon_color == 'stroop_yellow') {
-          stroopIcon = StroopIcons_English.stroop_yellow;
-        } else if (icon_color == 'stroop_red') {
-          stroopIcon = StroopIcons_English.stroop_red;
-        } else if (icon_color == 'stroop_violet') {
-          stroopIcon = StroopIcons_English.stroop_violet;
-        } else if (icon_color == 'stroop_blue') {
-          stroopIcon = StroopIcons_English.stroop_blue;
-        } else if (icon_color == 'stroop_green') {
-          stroopIcon = StroopIcons_English.stroop_green;
-        }
-
-        if (stroopIcon != null) {
-          _addIconConfig(
-            stroopIcon,
-            randomStroopColor,
-            sizeIcon,
-            isStroop: true,
-          );
-        }
+      if (stroopIcon != null) {
+        _addIconConfig(stroopIcon, randomStroopColor, sizeIcon, isStroop: true);
       }
     }
   }
 
+  ///Hilfsfunktion für addIconToList, ausgelagert damit nicht 50 Cases in der Funktion gemacht werden müssen
   void addNumberToList(String numberNumbercolor, double iconsize) {
     int iconnumber;
     int iconcolor;
@@ -796,6 +777,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     currentIconIndex = _nextIconIndex;
   }
 
+  ///Überprüfen ob letztes Icon schon genügend weit Weg ist, damit das nächste Icon erstellt werden kann
   void _checkForNewIcon(double width, double height) {
     if (_flowIcons.isEmpty) {
       _spawnIcon(width, height);
@@ -900,7 +882,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
   ///Wird alle 1 Sekunde von timer aufgerufen
   ///Organisiert Zeitanzeige, Wechsel von Rest & Round, Programmende und Wechsel
-  ///der Hintergrundfarbe
+  /// der Hintergrundfarbe
   void timemanagement() {
     /* Darstellung Zeitbalken und Überprüfung Rest/Round */
 
@@ -970,8 +952,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     });
   }
 
-  //Todo
   void changeToMenupage() {
+    dispose();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -1002,9 +984,18 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     );
   }
 
-  //todo
   void neustart() {
     initPage();
+
+    //Timer killen
+    _timer.cancel();
+    //Timer wieder initialisieren
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer timer) => setState(() {
+        timemanagement();
+      }),
+    );
     //Animation stoppen und auf Startposition (0.0) zurücksetzen
     _controller.reset();
     //Liste der Icons leeren (löscht alle aktuell sichtbaren Icons)
@@ -1036,7 +1027,10 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
           ),
         ),
         TextButton(
-          onPressed: changeToMenupage,
+          onPressed: () {
+            Navigator.of(context).pop(); // Schließt den Dialog
+            neustart(); // Startet neu
+          },
           child: Text(
             'neustart'.tr,
             style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
@@ -1191,6 +1185,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
   @override
   void dispose() {
+    _timer.cancel(); // Stoppt den Timer
     _controller.dispose();
     super.dispose();
   }

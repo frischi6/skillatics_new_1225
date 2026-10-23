@@ -1,13 +1,10 @@
 import 'dart:async'; //damit Timer gebraucht werden kann
-import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; //für FilteringTextInputFormatter
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart'; //Für Translation
 import 'package:skillatics/start.dart';
 import 'custom_icons_icons.dart';
-import 'stroop_icons.dart';
-//import 'package:rate_my_app/rate_my_app.dart';
-import 'trainingPage.dart';
 import 'trainingOptodrum.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellungen zurücksetzen möglich
@@ -73,11 +70,9 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   String nr_individual = '';
   String nr_skip = '';
   bool isNrOutOfRange = false;
-  bool isElemProSeiteEinmalig = false;
 
   //Variabeln für Einstellungen, siehe Skizze, werden an Page2 übergeben
-  //werden eingentlich von main.dart übergeben, müssen hier aber einfach auch noch initialisiert werden, Werte werden aber überschrieben
-  int anzColorsOnPage = 2;
+  //werden eingentlich von start.dart übergeben, müssen hier aber einfach auch noch initialisiert werden, Werte werden aber überschrieben
   int secChangeColor = 5;
   int secLengthRound = 210; //=roundDisplayedSec+roundDisplayedMin in sekunden
   int secLengthRest = 90; //=restDisplayedSec+restDisplayedMin in sekunden
@@ -119,9 +114,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   var selectedBackgroundcolors = [];
 
-  //beinhaltet hex-werte von allen selected items: hex-wert der gewählten farbe oder bei zahlen/formen/etc immer hex-wert fefefe-> so wird in trainingpage erkannt dass ein icon angezeigt werden muss
-  var selectedItems = [];
-
   //Array mit den selektierten Farben als ausgeschriebener Text, die in der Trainingspage als Icon hinzugefügt und eingefärbt werden
   var stroopTexticons = [];
   //Array mit den Schriftfarben für den Stroop-Text. Im Array sind die selben Farben wie in stroopTexticons drin sind (die
@@ -142,17 +134,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   int secChangeBackgrcolor = 2;
   bool gleichesItemNacheinander = false;
 
-  //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
-  /* final RateMyApp rateMyApp = RateMyApp(
-    minDays: 0,
-    minLaunches: 0,
-    remindDays: 9,
-    remindLaunches: 4,
-    //googlePlayIdentifier: https://www.youtube.com/watch?v=aoq5VDku2Bc
-    //appStoreIdentifier: diese hat man noch nicht wenn noch nicht in store
-  );*/
-
-  /// erzeugt Emoji mit Flagge mit entsprechendem Wert currentCountry
+  /// Erzeugt Emoji mit Flagge mit entsprechendem Wert currentCountry
   String countryFlag() {
     //https://stackoverflow.com/questions/56999448/display-country-flag-character-in-flutter
     int flagOffset = 0x1F1E6;
@@ -245,99 +227,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
               secChangeBackgrcolor: secChangeBackgrcolor,
               allItemsByColor: alleSelectedItems,
               gleicheItemsNacheinanderOk: gleichesItemNacheinander,
-            ),
-          ),
-        );
-      });
-    }
-  }
-
-  //Wechsel auf Seite 2 mit den angezeigten Farben
-  void _changeToPage2() {
-    //Schönheitsanpassung: Damit Fehlermeldung verschwindet, wenn falsche Auswahl
-    // korrigiert wurde und erneut auf Start gedrückt wird
-    setState(() {
-      textFehlermeldung = '';
-    });
-    organizeElementsColors();
-    organizeBackgroundcolor();
-
-    //überprüft, ob Werte gültig sind
-    if (isNrOutOfRange) {
-      setState(() {
-        textFehlermeldung = 'fehlerNrOutOfRange'.tr;
-      });
-    } else if (selectedAlphabetletters.isNotEmpty &&
-        selectedAlphabetlettersPerColor.isEmpty) {
-      setState(() {
-        textFehlermeldung = 'fehlerAlphabetlettersNoColor'.tr;
-      });
-    } else if (selectedNumbers.isNotEmpty && selectedNumbersPerColor.isEmpty) {
-      setState(() {
-        textFehlermeldung = 'fehlerNumbersNoColor'.tr;
-      });
-    } else if (selectedArrows.isNotEmpty && selectedArrowsPerColor.isEmpty) {
-      setState(() {
-        textFehlermeldung = 'fehlerArrowsNoColor'.tr;
-      });
-    } else if (selectedShapes.isNotEmpty && selectedShapesPerColor.isEmpty) {
-      setState(() {
-        textFehlermeldung = 'fehlerShapesNoColor'.tr;
-      });
-    } else if (selectedItems.isEmpty) {
-      setState(() {
-        textFehlermeldung = 'fehlerColorsNull'.tr;
-      });
-    } else if (isElemProSeiteEinmalig &&
-        selectedItems.length + stroopTexticons.length < anzColorsOnPage) {
-      setState(() {
-        textFehlermeldung = 'fehlerColorsAnzElemEinmal'.tr;
-      });
-    } else if (selectedItems.length == 1 && anzColorsOnPage > 1) {
-      setState(() {
-        textFehlermeldung = 'fehlerColorsAnz'.tr;
-      });
-    } else if (secLengthRound <= 0) {
-      setState(() {
-        textFehlermeldung = 'fehlerDurchgangNull'.tr;
-      });
-    } else if (secChangeColor > secLengthRound) {
-      setState(() {
-        textFehlermeldung = 'fehlerWechselDurchlauf'.tr;
-      });
-    } else if (secLengthRest <= 0) {
-      setState(() {
-        textFehlermeldung = 'fehlerPauseNull'.tr;
-      });
-    } else {
-      //Wechsel möglich
-      showDialog(context: context, builder: (_) => alertDialogCD());
-
-      Timer(const Duration(seconds: 3), () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RandomColorPage2(
-              listSelectedColors: selectedItems,
-              listSelectedArrowsPerColor: selectedArrowsPerColor,
-              listSelectedNumbersPerColor: selectedNumbersPerColor,
-              listSelectedShapesPerColor: selectedShapesPerColor,
-              listSelectedAlphabetlettersPerColor:
-                  selectedAlphabetlettersPerColor,
-              listSelectedBackgroundcolors: selectedBackgroundcolors,
-              anzColorsOnPage: anzColorsOnPage,
-              secChangeColor: secChangeColor,
-              secLengthRound: secLengthRound,
-              secLengthRest: secLengthRest,
-              anzRounds: anzRounds,
-              currentCountry: currentCountry,
-              isElemProSeiteEinmalig: isElemProSeiteEinmalig,
-              listStroopText: stroopTexticons,
-              listStroopTextcolors: stroopTextcolor,
-              nr_individual: nr_individual,
-              nr_from: nr_from,
-              nr_to: nr_to,
-              nr_skip: nr_skip,
             ),
           ),
         );
@@ -459,34 +348,17 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
     organizeStroop();
 
-    selectedItems = []; //Array leeren
-    selectedItems =
+    alleSelectedItems = []; //Array leeren
+    alleSelectedItems =
         selectedColors +
         selectedNumbersPerColor +
         selectedArrowsPerColor +
         selectedShapesPerColor +
         selectedAlphabetlettersPerColor +
         stroopTexticons;
-    alleSelectedItems = selectedItems; /*
-    for (int i = 0; i < selectedItems.length; i++) {
-      if (selectedItems[i].length != 6) {
-        //length 6 sind hexwerte von colors-> restliche itemnamen von zb shapes dürfen nicht einen namen haben der 6 ziffern lang ist!
-        selectedItems[i] =
-            'fefefe'; //weisser hintergrund aber nicht ffffff damit später erkennbar dass dort arrows angezeigt werden müssen
-      } //else ist bereits ein hexcode in selectedColors und kein arrow
-    }*/
   }
 
-  ///Ordnet das Array selectedBackgroundcolors
-  void organizeBackgroundcolor() {
-    //wenn nur Weiss ausgewählt ist, soll das Array geleert werden, somit wird auf der Trainingpage
-    //  das Backgroundcolor-Array ignoriert, denn der Hintergrund von Icons ist per Default sowieso weiss (fefefe)
-    if ((selectedBackgroundcolors.length == 1) &&
-        (selectedBackgroundcolors[0] == int.parse('0xffffffff'))) {
-      selectedBackgroundcolors = [];
-    }
-  }
-
+  //Muss separat abgefangen werden wegen Sprache (andere Icons je nachdem ob Deutsch oder Englisch)
   void organizeStroop() {
     if (stroopTextcolor.isNotEmpty) {
       stroopTexticons = []; //reset
@@ -537,17 +409,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
           stroopTexticons.add('stroop_green');
         }
       }
-
-      //selectedItems darf nicht leer sein, falls nur Stroop selektiert ist, dann hier Default-Wert mitgeben
-      if (selectedItems.isEmpty) {
-        selectedItems.add("fefefe");
-        selectedItems.add("fefefe");
-        selectedItems.add("fefefe");
-        selectedItems.add("fefefe");
-        selectedItems.add("fefefe");
-        selectedItems.add("fefefe");
-        selectedItems.add("fefefe");
-      }
     } else {
       //else auch abfangen damit Arrays leer wenn Stroop-Häkchen im Nachhinein abgewählt wird
       stroopTextcolor = [];
@@ -555,19 +416,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     }
   }
 
-  //Funktion wird nur benötigt wenn von Trainingpage zurück auf Menupage kommt
-  //Es wird kein Array mit nur den Farben an die Menupage übergeben sondern nur selectedItems, das alle Farben + für jedes Icon ein fefefe enthält
-  //Um auf der Trainingpage wieder ein sauberes Array selectedColors zu haben, müssen aus selectedItems alle fefefe-Werte entfernt werden.
-  void initializeSelectedColors(attrSelectedItems) {
-    selectedColors = []; //Array leeren
-    for (int i = 0; i < attrSelectedItems.length; i++) {
-      if (attrSelectedItems[i] != 'fefefe') {
-        selectedColors.add(attrSelectedItems[i]);
-      }
-    }
-  }
-
-  ////Funktion wird nur benötigt wenn von Trainingpage zurück auf Menupage kommt
+  /// Funktion wird nur benötigt wenn von Trainingpage zurück auf Menupage kommt
   /////Selektierte Items und dazugehörig ausgewählte Farben sind im Übergabearray von trainingPage im Format item_itemcolor abgespeichert
   ///Funktion nimmt die Strings auseinander und füllt sie in die entsprechenden Arrays selectedItems und selectedItemcolors ab
   ///Ist das Gegenstück von organizeItemPerColor()
@@ -1484,11 +1333,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
           value:
               4294967295, //hex ffffff mit opacity 100%, weiss, berechnung: int.parse('0xffffffff')
           label: '',
-          selected:
-              selectedBackgroundcolors.contains(4294967295) ||
-              selectedBackgroundcolors
-                  .isEmpty, //wenn nur weiss ausgewählt ist, wird Array leer an Trainingspage
-          // übergeben und kommmt somit auch leer wieder von Trainingspage zurück (siehe organizeBackgroundcolor)
+          selected: selectedBackgroundcolors.contains(4294967295),
           decorations: MultiSelectItemDecorations(
             decoration: BoxDecoration(
               color: Color.fromRGBO(233, 233, 233, 1),
@@ -1706,10 +1551,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     secChangeBackgrcolor = widget.secChangeBackgrcolor;
     gleichesItemNacheinander = widget.gleicheNacheinanderOk;
 
-    initializeSelectedColors(
-      selectedItems,
-    ); //selectedColors = selectedItems ohne fefefe-Werte
-
     initializeItemsPerColorToItemAndColor(
       selectedNumbersPerColor,
       'number',
@@ -1744,8 +1585,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   ///Einstellungen zurücksetzen
   void reset() {
     setState(() {
-      changeKey();
       initPage();
+      changeKey();
 
       //Zurück nach ganz oben scrollen
       _scrollController.animateTo(
@@ -1764,22 +1605,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
 
   // This method is rerun every time setState is called
   @override
-  Widget build(BuildContext context2) {
-    /*rateMyApp.init().then((_) {
-      if (rateMyApp.shouldOpenDialog) {
-        rateMyApp.showRateDialog(
-          context,
-          title: 'bewertenTitel'.tr,
-          message: 'bewertenText'.tr,
-          rateButton: 'bewertenJetzt'.tr,
-          noButton: 'bewertenNein'.tr,
-          laterButton: 'bewertenSpaeter'.tr,
-          onDismissed: () =>
-              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
-        );
-      }
-    });*/
-
+  Widget build(BuildContext context) {
     return PopScope(
       canPop:
           false, //damit swipe back(ios) bzw. Back Button (android) deaktiviert
@@ -1932,7 +1758,14 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       child: TextFormField(
                         key: ValueKey(keyInt),
                         initialValue: nr_individual,
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal:
+                              true, //damit bei ios das decimalpad geöffnet wird
+                        ),
+                        inputFormatters: [
+                          // Erlaubt nur Zahlen (0-9) und das Komma (,), keine Leerzeichen
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                        ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${'zB'.tr} 10,20,30',
@@ -2016,7 +1849,13 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       child: TextFormField(
                         key: ValueKey(keyInt),
                         initialValue: nr_skip,
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          // Erlaubt nur Zahlen (0-9) und das Komma (,) – keine Leerzeichen!
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                        ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${'zB'.tr} 2,4',

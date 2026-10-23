@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math'; //Für Random-Generator
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'custom_icons_icons.dart';
@@ -1274,7 +1273,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   /// Wechsel von page2 to page1
   void changeToPage1() {
-    _timer.cancel();
+    dispose();
 
     Navigator.push(
       context,
@@ -1414,7 +1413,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           } else {
             //sollte eigentlich nicht vorkommen
             //programm beenden / messagebox zeigen
-            _timer.cancel();
+
+            dispose();
             showDialog(
               context: context,
               builder: (_) => alertDialogFinish(),
@@ -1655,5 +1655,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         ...tempList,
       ];
     }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Stoppt den Timer
+    super.dispose();
   }
 }

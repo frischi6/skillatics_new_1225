@@ -1,11 +1,11 @@
 import 'dart:async'; //damit Timer gebraucht werden kann
 import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; //für FilteringTextInputFormatter
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
 import 'package:skillatics/start.dart';
 import 'custom_icons_icons.dart';
-import 'stroop_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
 import 'trainingPage.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -2065,7 +2065,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: TextFormField(
                         key: ValueKey(keyInt),
                         initialValue: nr_individual,
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          // Erlaubt nur Zahlen (0-9) und das Komma (,) – keine Leerzeichen!
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                        ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${'zB'.tr} 10,20,30',
@@ -2149,7 +2155,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: TextFormField(
                         key: ValueKey(keyInt),
                         initialValue: nr_skip,
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          // Erlaubt nur Zahlen (0-9) und das Komma (,) – keine Leerzeichen!
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                        ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${'zB'.tr} 2,4',
