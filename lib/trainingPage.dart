@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math'; //Für Random-Generator
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skillatics/helper.dart';
 import 'custom_icons_icons.dart';
 import 'menuPage.dart';
 import 'number_zero_to_fifty_icons.dart';
@@ -108,9 +109,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   int iconnumber = -1;
   int iconcolor = -1;
-
-  String rundeSg = 'rundeSg'.tr;
-  String rundePl = 'rundePl'.tr;
 
   int currentSecsCD = 0;
   int currentMinsCD = 0;
@@ -259,7 +257,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            '$anzRoundsDone/$anzRounds2 ${getRundeSgPl()}',
+                            '$anzRoundsDone/$anzRounds2 ${AppHelper.getRundeSgPl(anzRounds2)}',
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),
@@ -1223,40 +1221,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     }
   }
 
-  /// AlertDialog das bei Ende von Übung erscheint
-  Widget alertDialogFinish() {
-    anzRoundsDone--;
-    return AlertDialog(
-      //ähnlich wie modalWindow
-      content: Text('trainingEnde'.tr),
-      actions: [
-        TextButton(
-          onPressed: changeToPage1,
-          child: Text(
-            'hauptmenü'.tr,
-            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
-          ),
-        ),
-        TextButton(
-          onPressed: changeToPage2,
-          child: Text(
-            'neustart'.tr,
-            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Damit Anzeige in Fusszeile korrekt mit 1 Runde bzw >1 Runden
-  String getRundeSgPl() {
-    if (anzRounds2 == 1) {
-      return rundeSg;
-    } else {
-      return rundePl;
-    }
-  }
-
   /// Methode, die alle Variablen etc wieder in den anfangszustand bringt, damit page2 nochmals von null aus abgespielt werden kann
   /// timer wird absichtlich nicht verändert da nicht nötig
   /// wird nur für Neustart aus Footer benutzt, an Ende von Training wird changeToPage2 benutzt
@@ -1417,7 +1381,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             dispose();
             showDialog(
               context: context,
-              builder: (_) => alertDialogFinish(),
+              builder: (_) => AppHelper.alertDialogFinish(
+                context,
+                () => changeToPage1(),
+                () => neustart(),
+              ),
               barrierDismissible: false,
             );
             //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
@@ -1432,7 +1400,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               _timer.cancel();
               showDialog(
                 context: context,
-                builder: (_) => alertDialogFinish(),
+                builder: (_) => AppHelper.alertDialogFinish(
+                  context,
+                  () => changeToPage1(),
+                  () => neustart(),
+                ),
                 barrierDismissible: false,
               );
               //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));

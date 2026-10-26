@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
+import 'package:skillatics/helper.dart';
 import 'package:skillatics/menuOptodrum.dart';
 import 'package:skillatics/number_zero_to_fifty_icons.dart';
 import 'package:skillatics/stroop__english_icons.dart';
@@ -99,8 +100,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   int minsLengthRestCD = 1;
 
   double thicknessVerticalDividerFooter = 0.5;
-  String rundeSg = 'rundeSg'.tr;
-  String rundePl = 'rundePl'.tr;
 
   @override
   void initState() {
@@ -895,7 +894,11 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         //dispose();
         showDialog(
           context: context,
-          builder: (_) => alertDialogFinish(),
+          builder: (_) => AppHelper.alertDialogFinish(
+            context,
+            () => changeToMenupage(),
+            () => neustart(),
+          ),
           barrierDismissible: false,
         );
         return;
@@ -1004,42 +1007,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     _controller.forward();
   }
 
-  /// Damit Anzeige in Fusszeile korrekt mit 1 Runde bzw >1 Runden
-  String getRundeSgPl() {
-    if (anzRounds2 == 1) {
-      return rundeSg;
-    } else {
-      return rundePl;
-    }
-  }
-
-  /// AlertDialog das am Ende der Übung erscheint
-  Widget alertDialogFinish() {
-    return AlertDialog(
-      //ähnlich wie modalWindow
-      content: Text('trainingEnde'.tr),
-      actions: [
-        TextButton(
-          onPressed: changeToMenupage,
-          child: Text(
-            'hauptmenü'.tr,
-            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Schließt den Dialog
-            neustart(); // Startet neu
-          },
-          child: Text(
-            'neustart'.tr,
-            style: const TextStyle(color: Color.fromARGB(177, 0, 0, 0)),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -1120,7 +1087,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            '$anzRoundsDone/$anzRounds2 ${getRundeSgPl()}',
+                            '$anzRoundsDone/$anzRounds2 ${AppHelper.getRundeSgPl(anzRounds2)}',
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),

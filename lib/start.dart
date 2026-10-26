@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skillatics/helper.dart';
 import 'menuPage.dart';
 import 'menuOptodrum.dart';
 
@@ -13,28 +14,6 @@ class StartingPage extends StatelessWidget {
   int anzRounds = 5;
   bool isElemProSeiteEinmalig = false;
   bool isStroopActive = false;
-
-  void _showSkillaticsInfos(BuildContext context) {
-    showDialog(context: context, builder: (_) => skillaticsDialog());
-  }
-
-  Widget skillaticsDialog() {
-    return const AlertDialog(
-      content: SizedBox(
-        height: 140,
-        child: Center(
-          child: Column(
-            children: [
-              Text('\nSkillatics GmbH\n'),
-              Text('+41 79 663 48 52'),
-              Text('info@skillatics.ch'),
-              Text('www.skillatics.ch'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,37 +58,55 @@ class StartingPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MyHomePage(
-                      title: 'Kognition',
-                      currentCountry:
-                          "GB", //aktuelle Flagge die oben rechts erscheint
-                      listSelectedColors: [],
-                      listSelectedArrowsPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze arrowcolor selektiert  aus benutzerfreundlichkeit
-                      listSelectedNumbersPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze numbercolor selektiert aus benutzerfreundlichkeit
-                      listSelectedShapesPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze shapecolor selektiert aus benutzerfreundlichkeit
-                      listSelectedAlphabetlettersPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze alphabetlettercolor selektiert aus benutzerfreundlichkeit
-                      listSelectedBackgroundcolors: [
-                        4294967295,
-                      ], //per default weiss als Hintergrundfarbe selektiert aus Benutzerfreundlichkeit
-                      listSelectedStroopcolors:
-                          [], //per default stroop nicht aktiv
-                      anzColorsOnPage: anzColorsOnPage,
-                      secChangeColor: secChangeColor,
-                      secLengthRound: secLengthRound,
-                      secLengthRest: secLengthRest,
-                      anzRounds: anzRounds,
-                      isElemProSeiteEinmalig: isElemProSeiteEinmalig,
-                      nr_individual: '',
-                      nr_from: '',
-                      nr_to: '',
-                      nr_skip: '',
+                      title: AppHelper.getDefaultKognitiv('title'),
+                      currentCountry: AppHelper.getDefaultKognitiv(
+                        'currentCountry',
+                      ),
+                      listSelectedColors: AppHelper.getDefaultKognitiv(
+                        'listSelectedColors',
+                      ),
+                      listSelectedArrowsPerColor: AppHelper.getDefaultKognitiv(
+                        'listSelectedArrowsPerColor',
+                      ),
+                      listSelectedNumbersPerColor: AppHelper.getDefaultKognitiv(
+                        'listSelectedNumbersPerColor',
+                      ),
+                      listSelectedShapesPerColor: AppHelper.getDefaultKognitiv(
+                        'listSelectedShapesPerColor',
+                      ),
+                      listSelectedAlphabetlettersPerColor:
+                          AppHelper.getDefaultKognitiv(
+                            'listSelectedAlphabetlettersPerColor',
+                          ),
+                      listSelectedBackgroundcolors:
+                          AppHelper.getDefaultKognitiv(
+                            'listSelectedBackgroundcolors',
+                          ),
+                      listSelectedStroopcolors: AppHelper.getDefaultKognitiv(
+                        'listSelectedStroopcolors',
+                      ),
+                      anzColorsOnPage: AppHelper.getDefaultKognitiv(
+                        'anzColorsOnPage',
+                      ),
+                      secChangeColor: AppHelper.getDefaultKognitiv(
+                        'secChangeColor',
+                      ),
+                      secLengthRound: AppHelper.getDefaultKognitiv(
+                        'secLengthRound',
+                      ),
+                      secLengthRest: AppHelper.getDefaultKognitiv(
+                        'secLengthRest',
+                      ),
+                      anzRounds: AppHelper.getDefaultKognitiv('anzRounds'),
+                      isElemProSeiteEinmalig: AppHelper.getDefaultKognitiv(
+                        'isElemProSeiteEinmalig',
+                      ),
+                      nr_individual: AppHelper.getDefaultKognitiv(
+                        'nr_individual',
+                      ),
+                      nr_from: AppHelper.getDefaultKognitiv('nr_from'),
+                      nr_to: AppHelper.getDefaultKognitiv('nr_to'),
+                      nr_skip: AppHelper.getDefaultKognitiv('nr_skip'),
                     ),
                   ),
                 );
@@ -127,37 +124,53 @@ class StartingPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MenuOptodrum(
-                      title: 'Optodrum',
-                      currentCountry:
-                          "GB", //aktuelle Flagge die oben rechts erscheint
-                      listSelectedArrowsPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze arrowcolor selektiert  aus benutzerfreundlichkeit
-                      listSelectedNumbersPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze numbercolor selektiert aus benutzerfreundlichkeit
-                      listSelectedShapesPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze shapecolor selektiert aus benutzerfreundlichkeit
-                      listSelectedAlphabetlettersPerColor: [
-                        '_4278190080',
-                      ], //per default schwarze alphabetlettercolor selektiert aus benutzerfreundlichkeit
-                      listSelectedBackgroundcolors: [
-                        4294967295,
-                      ], //per default weiss als Hintergrundfarbe selektiert aus Benutzerfreundlichkeit
-                      listSelectedStroopcolors:
-                          [], //per default stroop nicht aktiv
-                      secLengthRound: secLengthRound,
-                      secLengthRest: secLengthRest,
-                      anzRounds: anzRounds,
-                      nr_individual: '',
-                      nr_from: '',
-                      nr_to: '',
-                      nr_skip: '',
-                      speedlevel: 5,
-                      secChangeBackgrcolor: 2,
-                      moveDirection: 'east',
-                      gleicheNacheinanderOk: true,
+                      title: AppHelper.getDefaultOptodrum('title'),
+                      currentCountry: AppHelper.getDefaultOptodrum(
+                        'currentCountry',
+                      ),
+                      listSelectedArrowsPerColor: AppHelper.getDefaultOptodrum(
+                        'listSelectedArrowsPerColor',
+                      ),
+                      listSelectedNumbersPerColor: AppHelper.getDefaultOptodrum(
+                        'listSelectedNumbersPerColor',
+                      ),
+                      listSelectedShapesPerColor: AppHelper.getDefaultOptodrum(
+                        'listSelectedShapesPerColor',
+                      ),
+                      listSelectedAlphabetlettersPerColor:
+                          AppHelper.getDefaultOptodrum(
+                            'listSelectedAlphabetlettersPerColor',
+                          ),
+                      listSelectedBackgroundcolors:
+                          AppHelper.getDefaultOptodrum(
+                            'listSelectedBackgroundcolors',
+                          ),
+                      listSelectedStroopcolors: AppHelper.getDefaultOptodrum(
+                        'listSelectedStroopcolors',
+                      ),
+                      secLengthRound: AppHelper.getDefaultOptodrum(
+                        'secLengthRound',
+                      ),
+                      secLengthRest: AppHelper.getDefaultOptodrum(
+                        'secLengthRest',
+                      ),
+                      anzRounds: AppHelper.getDefaultOptodrum('anzRounds'),
+                      nr_individual: AppHelper.getDefaultOptodrum(
+                        'nr_individual',
+                      ),
+                      nr_from: AppHelper.getDefaultOptodrum('nr_from'),
+                      nr_to: AppHelper.getDefaultOptodrum('nr_to'),
+                      nr_skip: AppHelper.getDefaultOptodrum('nr_skip'),
+                      speedlevel: AppHelper.getDefaultOptodrum('speedlevel'),
+                      secChangeBackgrcolor: AppHelper.getDefaultOptodrum(
+                        'secChangeBackgrcolor',
+                      ),
+                      moveDirection: AppHelper.getDefaultOptodrum(
+                        'moveDirection',
+                      ),
+                      gleicheNacheinanderOk: AppHelper.getDefaultOptodrum(
+                        'gleicheNacheinanderOk',
+                      ),
                     ),
                   ),
                 );
@@ -167,7 +180,7 @@ class StartingPage extends StatelessWidget {
             SizedBox(
               height: 47,
               child: TextButton(
-                onPressed: () => _showSkillaticsInfos(context),
+                onPressed: () => AppHelper.showSkillaticsInfos(context),
                 child: Image.asset(
                   'assets/skillatics_neon_ausgeschnitten.png',
                   height: 50, // Feste Höhe für das Bild (optional)

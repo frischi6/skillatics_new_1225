@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; //für FilteringTextInputFormatter
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
+import 'package:skillatics/helper.dart';
 import 'package:skillatics/start.dart';
 import 'custom_icons_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
@@ -144,20 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
     //appStoreIdentifier: diese hat man noch nicht wenn noch nicht in store
   );*/
 
-  /// erzeugt Emoji mit Flagge mit entsprechendem Wert currentCountry
-  String countryFlag() {
-    //https://stackoverflow.com/questions/56999448/display-country-flag-character-in-flutter
-    int flagOffset = 0x1F1E6;
-    int asciiOffset = 0x41;
-
-    int firstChar = currentCountry.codeUnitAt(0) - asciiOffset + flagOffset;
-    int secondChar = currentCountry.codeUnitAt(1) - asciiOffset + flagOffset;
-
-    String emoji =
-        String.fromCharCode(firstChar) + String.fromCharCode(secondChar);
-    return emoji;
-  }
-
   ///Ändert Key damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
   ///Default-Values werden so auch automatisch wieder gesetzt
   void changeKey() {
@@ -224,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     } else {
       //Wechsel möglich
-      showDialog(context: context, builder: (_) => alertDialogCD());
+      showDialog(context: context, builder: (_) => AppHelper.alertDialogCD());
 
       Timer(const Duration(seconds: 3), () {
         Navigator.push(
@@ -524,35 +511,6 @@ class _MyHomePageState extends State<MyHomePage> {
       selectedAlphabetletters = selectedItems;
       selectedAlphabetlettercolors = selectedItemcolors;
     }
-  }
-
-  /// Returnt einen AlertDialog, damit der User Zeit hat auf Position zu gehen
-  Widget alertDialogCD() {
-    return AlertDialog(
-      content: Center(heightFactor: 1.2, child: Text('bereit'.tr)),
-    );
-  }
-
-  void _showSkillaticsInfos() {
-    showDialog(context: context, builder: (_) => skillaticsDialog());
-  }
-
-  Widget skillaticsDialog() {
-    return const AlertDialog(
-      content: SizedBox(
-        height: 140,
-        child: Center(
-          child: Column(
-            children: [
-              Text('\nSkillatics GmbH\n'),
-              Text('+41 79 663 48 52'),
-              Text('info@skillatics.ch'),
-              Text('www.skillatics.ch'),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   /// returnt ein MultiSelectContainer, in dem alle Farben ausgewählt werden können
@@ -1807,11 +1765,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState(); //nach diesem aufruf wird automatisch build() ausgeführt
-    initPage();
-  }
 
-  ///Übergabeparameter übernehmen und Einstellungen initialisieren
-  void initPage() {
+    //Hier nicht Default-Werte aus AppHelper nehmen damit gewählte Einstellungen
+    //  auch nach Rückkehr von Trainingspage noch so drin sind wie für Training ausgewählt
     currentCountry = widget.currentCountry;
     selectedItems = widget.listSelectedColors;
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
@@ -1833,6 +1789,11 @@ class _MyHomePageState extends State<MyHomePage> {
     nr_to = widget.nr_to;
     nr_skip = widget.nr_skip;
 
+    organizePage();
+  }
+
+  ///Übergabeparameter übernehmen und Einstellungen initialisieren
+  void organizePage() {
     initializeSelectedColors(
       selectedItems,
     ); //selectedColors = selectedItems ohne fefefe-Werte
@@ -1871,8 +1832,45 @@ class _MyHomePageState extends State<MyHomePage> {
   ///Einstellungen zurücksetzen
   void reset() {
     setState(() {
+      //Hier können nicht widget-Values als Default genommen werden weil wenn bereits
+      //  eine Trainingsrunde absolviert wurde, werden über widget die bereits
+      //  erfassten Einstellungen zurückgegeben
+      currentCountry = AppHelper.getDefaultKognitiv('currentCountry');
+      selectedItems = AppHelper.getDefaultKognitiv('listSelectedColors');
+      selectedArrowsPerColor = AppHelper.getDefaultKognitiv(
+        'listSelectedArrowsPerColor',
+      );
+      selectedNumbersPerColor = AppHelper.getDefaultKognitiv(
+        'listSelectedNumbersPerColor',
+      );
+      selectedShapesPerColor = AppHelper.getDefaultKognitiv(
+        'listSelectedShapesPerColor',
+      );
+      selectedAlphabetlettersPerColor = AppHelper.getDefaultKognitiv(
+        'listSelectedAlphabetlettersPerColor',
+      );
+      selectedBackgroundcolors = AppHelper.getDefaultKognitiv(
+        'listSelectedBackgroundcolors',
+      );
+      stroopTextcolor = AppHelper.getDefaultKognitiv(
+        'listSelectedStroopcolors',
+      );
+
+      anzColorsOnPage = AppHelper.getDefaultKognitiv('anzColorsOnPage');
+      secChangeColor = AppHelper.getDefaultKognitiv('secChangeColor');
+      secLengthRound = AppHelper.getDefaultKognitiv('secLengthRound');
+      secLengthRest = AppHelper.getDefaultKognitiv('secLengthRest');
+      anzRounds = AppHelper.getDefaultKognitiv('anzRounds');
+      isElemProSeiteEinmalig = AppHelper.getDefaultKognitiv(
+        'isElemProSeiteEinmalig',
+      );
+      nr_individual = AppHelper.getDefaultKognitiv('nr_individual');
+      nr_from = AppHelper.getDefaultKognitiv('nr_from');
+      nr_to = AppHelper.getDefaultKognitiv('nr_to');
+      nr_skip = AppHelper.getDefaultKognitiv('nr_skip');
+
+      organizePage();
       changeKey();
-      initPage();
 
       //Zurück nach ganz oben scrollen
       _scrollController.animateTo(
@@ -1946,7 +1944,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 changeKey();
               },
-              child: Text(countryFlag(), style: TextStyle(fontSize: 20)),
+              child: Text(
+                AppHelper.countryFlag(currentCountry),
+                style: TextStyle(fontSize: 20),
+              ),
             ),
           ],
           automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
@@ -2520,7 +2521,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   height: 47,
                   child: TextButton(
-                    onPressed: _showSkillaticsInfos,
+                    onPressed: () => AppHelper.showSkillaticsInfos(context),
                     child: Image.asset(
                       ('assets/skillatics_schwarzWeiss_transparent.png'),
                     ),

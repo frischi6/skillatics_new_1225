@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; //für FilteringTextInputFormatter
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart'; //Für Translation
+import 'package:skillatics/helper.dart';
 import 'package:skillatics/start.dart';
 import 'custom_icons_icons.dart';
 import 'trainingOptodrum.dart';
@@ -134,20 +135,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   int secChangeBackgrcolor = 2;
   bool gleichesItemNacheinander = false;
 
-  /// Erzeugt Emoji mit Flagge mit entsprechendem Wert currentCountry
-  String countryFlag() {
-    //https://stackoverflow.com/questions/56999448/display-country-flag-character-in-flutter
-    int flagOffset = 0x1F1E6;
-    int asciiOffset = 0x41;
-
-    int firstChar = currentCountry.codeUnitAt(0) - asciiOffset + flagOffset;
-    int secondChar = currentCountry.codeUnitAt(1) - asciiOffset + flagOffset;
-
-    String emoji =
-        String.fromCharCode(firstChar) + String.fromCharCode(secondChar);
-    return emoji;
-  }
-
   ///Ändert Key damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
   ///Default-Values werden so auch automatisch wieder gesetzt
   void changeKey() {
@@ -199,7 +186,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
       });
     } else {
       //Wechsel möglich
-      showDialog(context: context, builder: (_) => alertDialogCD());
+      showDialog(context: context, builder: (_) => AppHelper.alertDialogCD());
 
       Timer(const Duration(seconds: 3), () {
         Navigator.push(
@@ -461,35 +448,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
       selectedAlphabetletters = selectedItems;
       selectedAlphabetlettercolors = selectedItemcolors;
     }
-  }
-
-  /// Returnt einen AlertDialog, damit der User Zeit hat auf Position zu gehen
-  Widget alertDialogCD() {
-    return AlertDialog(
-      content: Center(heightFactor: 1.2, child: Text('bereit'.tr)),
-    );
-  }
-
-  void _showSkillaticsInfos() {
-    showDialog(context: context, builder: (_) => skillaticsDialog());
-  }
-
-  Widget skillaticsDialog() {
-    return const AlertDialog(
-      content: SizedBox(
-        height: 140,
-        child: Center(
-          child: Column(
-            children: [
-              Text('\nSkillatics GmbH\n'),
-              Text('+41 79 663 48 52'),
-              Text('info@skillatics.ch'),
-              Text('www.skillatics.ch'),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   /// returnt ein MultiSelectContainer, in dem alle Pfeile ausgewählt werden können
@@ -1525,11 +1483,10 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   @override
   void initState() {
     super.initState(); //nach diesem aufruf wird automatisch build() ausgeführt
-    initPage();
-  }
 
-  ///Übergabeparameter übernehmen und Einstellungen initialisieren
-  void initPage() {
+    //Variablen initialisieren
+    //Hier nicht Default-Werte aus AppHelper nehmen damit gewählte Einstellungen
+    //  auch nach Rückkehr von Trainingspage noch so drin sind wie für Training ausgewählt
     currentCountry = widget.currentCountry;
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     selectedNumbersPerColor = widget.listSelectedNumbersPerColor;
@@ -1551,6 +1508,11 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     secChangeBackgrcolor = widget.secChangeBackgrcolor;
     gleichesItemNacheinander = widget.gleicheNacheinanderOk;
 
+    organizePage();
+  }
+
+  ///Einstellungen initialisieren
+  void organizePage() {
     initializeItemsPerColorToItemAndColor(
       selectedNumbersPerColor,
       'number',
@@ -1585,7 +1547,46 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   ///Einstellungen zurücksetzen
   void reset() {
     setState(() {
-      initPage();
+      //Hier können nicht widget-Values als Default genommen werden weil wenn bereits
+      //  eine Trainingsrunde absolviert wurde, werden über widget die bereits
+      //  erfassten Einstellungen zurückgegeben
+      currentCountry = AppHelper.getDefaultOptodrum('currentCountry');
+      selectedArrowsPerColor = AppHelper.getDefaultOptodrum(
+        'listSelectedArrowsPerColor',
+      );
+      selectedNumbersPerColor = AppHelper.getDefaultOptodrum(
+        'listSelectedNumbersPerColor',
+      );
+      selectedShapesPerColor = AppHelper.getDefaultOptodrum(
+        'listSelectedNumbersPerColor',
+      );
+      selectedAlphabetlettersPerColor = AppHelper.getDefaultOptodrum(
+        'listSelectedAlphabetlettersPerColor',
+      );
+      selectedBackgroundcolors = AppHelper.getDefaultOptodrum(
+        'listSelectedBackgroundcolors',
+      );
+      stroopTextcolor = AppHelper.getDefaultOptodrum(
+        'listSelectedStroopcolors',
+      );
+
+      secLengthRound = AppHelper.getDefaultOptodrum('secLengthRound');
+      secLengthRest = AppHelper.getDefaultOptodrum('secLengthRest');
+      anzRounds = AppHelper.getDefaultOptodrum('anzRounds');
+      nr_individual = AppHelper.getDefaultOptodrum('nr_individual');
+      nr_from = AppHelper.getDefaultOptodrum('nr_from');
+      nr_to = AppHelper.getDefaultOptodrum('nr_to');
+      nr_skip = AppHelper.getDefaultOptodrum('nr_skip');
+      selectedSpeedlevel = AppHelper.getDefaultOptodrum('speedlevel');
+      secChangeBackgrcolor = AppHelper.getDefaultOptodrum(
+        'secChangeBackgrcolor',
+      );
+      selectedMovedirection = AppHelper.getDefaultOptodrum('moveDirection');
+      gleichesItemNacheinander = AppHelper.getDefaultOptodrum(
+        'gleicheNacheinanderOk',
+      );
+
+      organizePage();
       changeKey();
 
       //Zurück nach ganz oben scrollen
@@ -1651,7 +1652,10 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                 }
                 changeKey();
               },
-              child: Text(countryFlag(), style: TextStyle(fontSize: 20)),
+              child: Text(
+                AppHelper.countryFlag(currentCountry),
+                style: TextStyle(fontSize: 20),
+              ),
             ),
           ],
           automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
@@ -2274,7 +2278,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                 SizedBox(
                   height: 47,
                   child: TextButton(
-                    onPressed: _showSkillaticsInfos,
+                    onPressed: () => AppHelper.showSkillaticsInfos(context),
                     child: Image.asset(
                       ('assets/skillatics_schwarzWeiss_transparent.png'),
                     ),
