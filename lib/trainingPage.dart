@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math'; //Für Random-Generator
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skillatics/formen_icons_icons.dart';
 import 'package:skillatics/helper.dart';
 import 'custom_icons_icons.dart';
 import 'menuPage.dart';
@@ -530,6 +531,66 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       } else if (arrowDirection.contains('quadrat_')) {
         listToFillContainersIcon[index] = Icon(
           CustomIcons.square,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('halbkreisrechts_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.halbkreis_filled_rechts,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('stern_')) {
+        listToFillContainersIcon[index] = Icon(
+          Icons.star,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('chevronlinks_')) {
+        listToFillContainersIcon[index] = Icon(
+          Icons.chevron_left,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('plus_')) {
+        listToFillContainersIcon[index] = Icon(
+          Icons.add,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('drehpfeilrechts_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.halbkreispfeil_rechts,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('drehpfeillinks_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.halbkreispfeil_links,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('liniewaagrecht_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.linie_waagerechte_zickzack,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('liniesenkrecht_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.linie_senkrecht_zickzack,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('liniediagonaldown_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.linie_diagonal_fallend_zickzack,
+          color: Color(getColorcodeByItemPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('liniediagonalup_')) {
+        listToFillContainersIcon[index] = Icon(
+          FormenIcons.linie_diagonal_steigend_zickzack,
           color: Color(getColorcodeByItemPerColor(arrowDirection)),
           size: sizeIcon,
         );

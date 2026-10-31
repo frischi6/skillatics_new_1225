@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; //für FilteringTextInputFormatter
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
+import 'package:skillatics/formen_icons_icons.dart';
 import 'package:skillatics/helper.dart';
 import 'package:skillatics/start.dart';
 import 'custom_icons_icons.dart';
@@ -1028,6 +1029,63 @@ class _MyHomePageState extends State<MyHomePage> {
               'kreis', //muss deutsch sein weil circle 6 buchstaben lang ist und länge 6 ist für color reserviert (hex-werte haben länge 6, siehe organizeElementsColors)
           child: const Icon(CustomIcons.circle_empty),
           selected: selectedShapes.contains('kreis'),
+        ),
+        MultiSelectCard(
+          value: 'halbkreisrechts',
+          child: SizedBox(
+            // SizedBox entspricht der Standard-Icon-Größe der anderen Cards, damit wegen size nicht Border schrumpft
+            width: 24,
+            height: 24,
+            //Halbkreis outlined auf fluttericon.com nicht möglich irgendwie deshalb
+            // Buchstabe D nehmen, Size muss aber angepasst werden damit im Verhältnis zu restlichen Formen
+            child: Center(child: const Icon(CustomIcons.d, size: 17.0)),
+          ),
+          selected: selectedShapes.contains('halbkreisrechts'),
+        ),
+        MultiSelectCard(
+          value: 'stern',
+          child: const Icon(Icons.star_border),
+          selected: selectedShapes.contains('stern'),
+        ),
+        MultiSelectCard(
+          value: 'chevronlinks',
+          child: const Icon(Icons.chevron_left),
+          selected: selectedShapes.contains('chevronlinks'),
+        ),
+        MultiSelectCard(
+          value: 'plus',
+          child: const Icon(Icons.add),
+          selected: selectedShapes.contains('plus'),
+        ),
+        MultiSelectCard(
+          value: 'drehpfeilrechts',
+          child: const Icon(FormenIcons.halbkreispfeil_rechts),
+          selected: selectedShapes.contains('drehpfeilrechts'),
+        ),
+        MultiSelectCard(
+          value: 'drehpfeillinks',
+          child: const Icon(FormenIcons.halbkreispfeil_links),
+          selected: selectedShapes.contains('drehpfeillinks'),
+        ),
+        MultiSelectCard(
+          value: 'liniewaagrecht',
+          child: const Icon(FormenIcons.linie_waagerechte_zickzack),
+          selected: selectedShapes.contains('liniewaagrecht'),
+        ),
+        MultiSelectCard(
+          value: 'liniesenkrecht',
+          child: const Icon(FormenIcons.linie_senkrecht_zickzack),
+          selected: selectedShapes.contains('liniesenkrecht'),
+        ),
+        MultiSelectCard(
+          value: 'liniediagonaldown',
+          child: const Icon(FormenIcons.linie_diagonal_fallend_zickzack),
+          selected: selectedShapes.contains('liniediagonaldown'),
+        ),
+        MultiSelectCard(
+          value: 'liniediagonalup',
+          child: const Icon(FormenIcons.linie_diagonal_steigend_zickzack),
+          selected: selectedShapes.contains('liniediagonalup'),
         ),
       ],
       onChange: (allSelectedItems, selectedItem) {

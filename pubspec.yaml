@@ -112,6 +112,10 @@ flutter:
     - family: StroopIcons_English
       fonts:
         - asset: fonts/Stroop_English.ttf
-  #
+
+    - family: FormenIcons
+      fonts:
+        - asset: fonts/FormenIcons.ttf
+    
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

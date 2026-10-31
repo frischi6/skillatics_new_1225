@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
+import 'package:skillatics/formen_icons_icons.dart';
 import 'package:skillatics/helper.dart';
 import 'package:skillatics/menuOptodrum.dart';
 import 'package:skillatics/number_zero_to_fifty_icons.dart';
@@ -60,7 +61,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   Random random = Random();
 
   static const double iconSize =
-      60; // Einheitliche Grösse (Höhe) aller Standard-Icons
+      90; // Einheitliche Grösse (Höhe) aller Standard-Icons
   static const double iconSpacing = 30; // Exakter Abstand zwischen den Icons
   static double speed =
       75; // Geschwindigkeit in Pixel pro Sekunde, wird anhand des gewählten Speedlevels gesetzt
@@ -396,6 +397,66 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     } else if (icon_color.contains('quadrat_')) {
       _addIconConfig(
         CustomIcons.square,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('halbkreisrechts_')) {
+      _addIconConfig(
+        FormenIcons.halbkreis_filled_rechts,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('stern_')) {
+      _addIconConfig(
+        Icons.star,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('chevronlinks_')) {
+      _addIconConfig(
+        Icons.chevron_left,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('plus_')) {
+      _addIconConfig(
+        Icons.add,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('drehpfeilrechts_')) {
+      _addIconConfig(
+        FormenIcons.halbkreispfeil_rechts,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('drehpfeillinks_')) {
+      _addIconConfig(
+        FormenIcons.halbkreispfeil_links,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('liniewaagrecht_')) {
+      _addIconConfig(
+        FormenIcons.linie_waagerechte_zickzack,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('liniesenkrecht_')) {
+      _addIconConfig(
+        FormenIcons.linie_senkrecht_zickzack,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('liniediagonaldown_')) {
+      _addIconConfig(
+        FormenIcons.linie_diagonal_fallend_zickzack,
+        Color(getColorcodeByItemPerColor(icon_color)),
+        sizeIcon,
+      );
+    } else if (icon_color.contains('liniediagonalup_')) {
+      _addIconConfig(
+        FormenIcons.linie_diagonal_steigend_zickzack,
         Color(getColorcodeByItemPerColor(icon_color)),
         sizeIcon,
       );
