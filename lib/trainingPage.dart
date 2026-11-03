@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math'; //Für Random-Generator
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; //Für Metronom-Sound
 import 'package:get/get.dart';
 import 'package:skillatics/formen_icons_icons.dart';
 import 'package:skillatics/helper.dart';
@@ -32,6 +33,8 @@ class RandomColorPage2 extends StatefulWidget {
     required this.nr_from,
     required this.nr_to,
     required this.nr_skip,
+    required this.metronomAktiv,
+    required this.metronomBPM,
   });
 
   var listSelectedColors;
@@ -54,6 +57,8 @@ class RandomColorPage2 extends StatefulWidget {
   nr_from,
   nr_to,
   nr_skip; //wird in trainingpage.dart nicht gebraucht, aber muss wieder an menupage zurückgegeben werden
+  bool metronomAktiv;
+  int metronomBPM;
 
   @override
   _RandomColorPage2 createState() => _RandomColorPage2();
@@ -131,6 +136,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var listToFillContainersIconDuplicate = [];
   var listToFillContainersHexDuplicate = [];
 
+  /* Metronom */
+  int metronomBPM = 120;
+  bool metronomAktiv = true;
+  Timer? _timerMetronom;
+  bool metronomPositionLeft = true;
+
   @override
   void initState() {
     _initializeSettinvariables();
@@ -139,6 +150,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _initializeListSelectedArrows();
     init_new();
     initOptionEinmalig();
+    initMetronom();
+
     //organizeRound();
     _timer = Timer.periodic(
       const Duration(seconds: 1),
@@ -163,86 +176,178 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           body: Column(
             children: [
               Expanded(
-                flex: listHeight4Container[0],
-                child: Container(
-                  //height: MediaQuery.of(context).size.height * (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color:
-                        //wenn Icon in Container und Backgroundcolors selektiert
-                        //dann Backgroundcolor wählen
-                        //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                        (listToFillContainersHex[0] ==
-                                int.parse('0xfffefefe')) &&
-                            (listWithSelectedBackgroundcolorsToFill.isNotEmpty)
-                        ? Color(listWithSelectedBackgroundcolorsToFill[0])
-                        : Color(listToFillContainersHex[0]),
-                    border: const Border(
-                      bottom: BorderSide(color: Colors.black),
-                    ),
-                  ),
-                  child: FittedBox(
-                    //FittedBox führt dazu, dass sich die Grösse der Icons dem vorhandenen Platz im parent anpasst
-                    fit: BoxFit.contain,
-                    child: restText == ''
-                        ? listToFillContainersIcon[0]
-                        : Align(
-                            alignment: Alignment.center,
-                            //Die Anzeige "Pause" wird im ersten Container gemacht
-                            child: Text(
-                              restText,
-                              style: TextStyle(
-                                color: Color(colorRestText),
-                                fontSize: fontsizeRestText,
-                                fontWeight: FontWeight.bold,
+                child: Stack(
+                  children: [
+                    // Die bestehenden Container in einer Column (Positioned.fill ist wichtig,
+                    // damit die Expanded-Widgets innerhalb des Stacks korrekt funktionieren)
+                    Positioned.fill(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: listHeight4Container[0],
+                            child: Container(
+                              //height: MediaQuery.of(context).size.height * (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color:
+                                    //wenn Icon in Container und Backgroundcolors selektiert
+                                    //dann Backgroundcolor wählen
+                                    //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                                    (listToFillContainersHex[0] ==
+                                            int.parse('0xfffefefe')) &&
+                                        (listWithSelectedBackgroundcolorsToFill
+                                            .isNotEmpty)
+                                    ? Color(
+                                        listWithSelectedBackgroundcolorsToFill[0],
+                                      )
+                                    : Color(listToFillContainersHex[0]),
+                                border: const Border(
+                                  bottom: BorderSide(color: Colors.black),
+                                ),
+                              ),
+                              child: FittedBox(
+                                //FittedBox führt dazu, dass sich die Grösse der Icons dem vorhandenen Platz im parent anpasst
+                                fit: BoxFit.contain,
+                                child: restText == ''
+                                    ? listToFillContainersIcon[0]
+                                    : Align(
+                                        alignment: Alignment.center,
+                                        //Die Anzeige "Pause" wird im ersten Container gemacht
+                                        child: Text(
+                                          restText,
+                                          style: TextStyle(
+                                            color: Color(colorRestText),
+                                            fontSize: fontsizeRestText,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                               ),
                             ),
                           ),
-                  ),
+
+                          //1. Container nicht in loop weil dort noch Text angezeigt wird in Pause
+                          for (
+                            int i = 1;
+                            i < 12;
+                            i++
+                          ) //11 hardcodiert weil 12 das maximum
+                            if (listHeight4Container[i] > 0)
+                              Expanded(
+                                flex: listHeight4Container[i],
+                                child: Container(
+                                  //height: MediaQuery.of(context).size.height * (listHeight4Container[1]),
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    //wenn Icon in Container und Backgroundcolors selektiert
+                                    //dann Backgroundcolor wählen
+                                    //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                                    color: listToFillContainersHex.length > i
+                                        ? (listToFillContainersHex[i] ==
+                                                      int.parse(
+                                                        '0xfffefefe',
+                                                      )) &&
+                                                  (listWithSelectedBackgroundcolorsToFill
+                                                          .length >
+                                                      i)
+                                              ? Color(
+                                                  listWithSelectedBackgroundcolorsToFill[i],
+                                                )
+                                              : Color(
+                                                  listToFillContainersHex[i],
+                                                )
+                                        : Color(
+                                            listToFillContainersHex[0],
+                                          ), //fallback
+                                    border: const Border(
+                                      bottom: BorderSide(color: Colors.black),
+                                    ),
+                                  ),
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: listToFillContainersIcon.length > i
+                                        ? listToFillContainersIcon[i]
+                                        : listToFillContainersIcon[0],
+                                  ),
+                                ),
+                              ),
+                        ],
+                      ),
+                    ), // DER BUTTON: Unabhängige Ebene in der linken unteren Ecke (über den Containern)
+                    if (metronomAktiv)
+                      Positioned(
+                        //Metronom unten links in der Ecke positionieren ausser wenn Movedirection
+                        //  durch die untere linke Ecke geht dann rechts positionieren
+                        left: metronomPositionLeft ? 6 : null,
+                        right: metronomPositionLeft ? null : 6,
+                        bottom: 6,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            /* Optodrum Start*/
+                            IconButton(
+                              icon: const Icon(
+                                Icons.add,
+                                color: Color.fromRGBO(
+                                  75,
+                                  77,
+                                  70,
+                                  1,
+                                ), //dunkelgrau damit auf allen hintergrundfarben möglichst gut sichtbar
+                              ),
+                              onPressed: () => _changeBpm(5),
+                              padding: EdgeInsets.all(
+                                4,
+                              ), // Verringert den Innenabstand zum Rand
+                              constraints:
+                                  const BoxConstraints(), // Entfernt die feste Standard-Mindestgröße
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(
+                                  side: BorderSide(
+                                    color: Color.fromRGBO(75, 77, 70, 1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '$metronomBPM bpm',
+                              style: const TextStyle(
+                                color: Color.fromRGBO(75, 77, 70, 1),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove,
+                                color: Color.fromRGBO(75, 77, 70, 1),
+                              ),
+                              onPressed: () => _changeBpm(-5),
+                              padding: EdgeInsets.all(
+                                4,
+                              ), // Verringert den Innenabstand zum Rand
+                              constraints:
+                                  const BoxConstraints(), // Entfernt die feste Standard-Mindestgröße
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(
+                                  side: BorderSide(
+                                    color: Color.fromRGBO(75, 77, 70, 1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
               ),
 
-              //1. Container nicht in loop weil dort noch Text angezeigt wird in Pause
-              for (int i = 1; i < 11; i++) //11 hardcodiert weil 12 das maximum
-                if (listHeight4Container[i] > 0)
-                  Expanded(
-                    flex: listHeight4Container[i],
-                    child: Container(
-                      //height: MediaQuery.of(context).size.height * (listHeight4Container[1]),
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        //wenn Icon in Container und Backgroundcolors selektiert
-                        //dann Backgroundcolor wählen
-                        //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
-                        color: listToFillContainersHex.length > i
-                            ? (listToFillContainersHex[i] ==
-                                          int.parse('0xfffefefe')) &&
-                                      (listWithSelectedBackgroundcolorsToFill
-                                              .length >
-                                          i)
-                                  ? Color(
-                                      listWithSelectedBackgroundcolorsToFill[i],
-                                    )
-                                  : Color(listToFillContainersHex[i])
-                            : Color(listToFillContainersHex[0]), //fallback
-                        border: const Border(
-                          bottom: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: listToFillContainersIcon.length > i
-                            ? listToFillContainersIcon[i]
-                            : listToFillContainersIcon[0],
-                      ),
-                    ),
-                  ),
-
               //footer
-              Expanded(
-                flex: footerPercentage,
+              Container(
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: Container(
                   //height: MediaQuery.of(context).size.height * (footerPercentage),
                   width: MediaQuery.of(context).size.width,
@@ -1324,6 +1429,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           nr_from: widget.nr_from,
           nr_to: widget.nr_to,
           nr_skip: widget.nr_skip,
+          metronomAktiv: widget.metronomAktiv,
+          metronomBPM: widget.metronomBPM,
         ),
       ),
     );
@@ -1356,6 +1463,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           nr_from: widget.nr_from,
           nr_to: widget.nr_to,
           nr_skip: widget.nr_skip,
+          metronomAktiv: metronomAktiv,
+          metronomBPM: metronomBPM,
         ),
       ),
     );
@@ -1385,6 +1494,43 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     }
 
     changeRound(true);
+  }
+
+  ///Einstellungen Metronom übernehmen und Timer starten
+  void initMetronom() {
+    metronomAktiv = widget.metronomAktiv;
+    metronomBPM = widget
+        .metronomBPM; //muss ausserhalb von if sein damit korrekt an Menupage returnt wird
+    if (metronomAktiv) {
+      _startMetronomTimer();
+    }
+  }
+
+  ///Timer für Metronom starten
+  void _startMetronomTimer() {
+    _timerMetronom?.cancel();
+    // Intervall in Millisekunden berechnen: (60 Sekunden / BPM) * 1000
+    int intervalMs = (60000 / metronomBPM).round();
+
+    _timerMetronom = Timer.periodic(Duration(milliseconds: intervalMs), (
+      timer,
+    ) {
+      // Spielt den systemeigenen Klick-Ton ab
+      SystemSound.play(SystemSoundType.click);
+    });
+  }
+
+  ///Metronom BPM anpassen
+  void _changeBpm(int delta) {
+    setState(() {
+      metronomBPM = (metronomBPM + delta).clamp(
+        30,
+        240,
+      ); // Grenzen: 30 bis 240 BPM
+    });
+
+    //Intervall sofort anpassen
+    _startMetronomTimer();
   }
 
   //wird all sekunde von timemanagement aufgerufen
@@ -1487,6 +1633,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   }
 
   void changeRound(bool isInitRound) {
+    if (isInitRound) {
+      if (metronomAktiv) {
+        _startMetronomTimer();
+      }
+    }
+
     if (!isInitRound) {
       //verhindern dass über seitenwechsel identischen kombinationen vorkommen und es aussieht als würde die app stillstehen
       firstHexLastRound = listToFillContainersHex[0];
@@ -1603,6 +1755,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         color: Colors.black,
       );
     }
+
+    if (metronomAktiv) {
+      _timerMetronom?.cancel();
+    }
   }
 
   //wird jede sekunde durch timer aufgerufen
@@ -1693,6 +1849,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   @override
   void dispose() {
     _timer.cancel(); // Stoppt den Timer
+    _timerMetronom?.cancel();
     super.dispose();
   }
 }

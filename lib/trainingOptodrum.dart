@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; //Für Metronom-Sound
 import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
@@ -23,9 +24,12 @@ class TrainingOptodrum extends StatefulWidget {
   final int secLengthRound, secLengthRest, anzRounds;
   final String currentCountry;
   final String nr_individual, nr_from, nr_to, nr_skip;
-  final String movedirection; // Die im Menü gewählte Bewegungsrichtung
+  final String
+  movedirection; // Die im Menü gewählte Bewegungsrichtung der Icons
   final int speedlevel;
   final bool gleicheItemsNacheinanderOk;
+  final bool metronomAktiv;
+  final int metronomBPM;
 
   const TrainingOptodrum({
     super.key,
@@ -49,6 +53,8 @@ class TrainingOptodrum extends StatefulWidget {
     required this.secChangeBackgrcolor,
     required this.allItemsByColor,
     required this.gleicheItemsNacheinanderOk,
+    required this.metronomAktiv,
+    required this.metronomBPM,
   });
 
   @override
@@ -102,10 +108,17 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
   double thicknessVerticalDividerFooter = 0.5;
 
+  /* Metronom */
+  int metronomBPM = 120;
+  bool metronomAktiv = true;
+  Timer? _timerMetronom;
+  bool metronomPositionLeft = true;
+
   @override
   void initState() {
     super.initState();
     initPage();
+    initMetronom();
 
     //Timer für Zeit-Zähler
     _timer = Timer.periodic(
@@ -162,6 +175,52 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
     currentTimeBackground = currentSecsCD + currentMinsCD * 60;
     lastChangeBackground = currentTimeBackground;
+  }
+
+  ///Einstellungen Metronom übernehmen und Timer starten
+  void initMetronom() {
+    metronomAktiv = widget.metronomAktiv;
+    metronomBPM = widget
+        .metronomBPM; //muss ausserhalb von if sein damit korrekt an Menupage returnt wird
+    if (metronomAktiv) {
+      switch (direction) {
+        case MovementDirection.bottomLeftToTopRight:
+          metronomPositionLeft = false;
+        case MovementDirection.topRightToBottomLeft:
+          metronomPositionLeft = false;
+        default:
+          metronomPositionLeft = true;
+      }
+
+      _startMetronomTimer();
+    }
+  }
+
+  ///Timer für Metronom starten
+  void _startMetronomTimer() {
+    _timerMetronom?.cancel();
+    // Intervall in Millisekunden berechnen: (60 Sekunden / BPM) * 1000
+    int intervalMs = (60000 / metronomBPM).round();
+
+    _timerMetronom = Timer.periodic(Duration(milliseconds: intervalMs), (
+      timer,
+    ) {
+      // Spielt den systemeigenen Klick-Ton ab
+      SystemSound.play(SystemSoundType.click);
+    });
+  }
+
+  ///Metronom BPM anpassen
+  void _changeBpm(int delta) {
+    setState(() {
+      metronomBPM = (metronomBPM + delta).clamp(
+        30,
+        240,
+      ); // Grenzen: 30 bis 240 BPM
+    });
+
+    //Intervall sofort anpassen
+    _startMetronomTimer();
   }
 
   //Wandelt den String der Movementdirection in ein enum
@@ -972,12 +1031,18 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
         currentMinsCD = minsLengthRoundCD;
         currentSecsCD = secsLengthRoundCD;
         anzRoundsDone++;
+        if (metronomAktiv) {
+          _startMetronomTimer();
+        }
       } else {
         //Wechsel von Round zu Rest
         isBreak = true;
         _controller.stop();
         currentMinsCD = minsLengthRestCD;
         currentSecsCD = secsLengthRestCD;
+        if (metronomAktiv) {
+          _timerMetronom?.cancel();
+        }
       }
     } else {
       //wenn nicht 00:01 dann einfach runterzählen
@@ -1043,6 +1108,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
           secChangeBackgrcolor: secChangeBackground,
           moveDirection: widget.movedirection,
           gleicheNacheinanderOk: widget.gleicheItemsNacheinanderOk,
+          metronomAktiv: metronomAktiv,
+          metronomBPM: metronomBPM,
         ),
       ),
     );
@@ -1050,6 +1117,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
   void neustart() {
     initPage();
+    initMetronom();
 
     //Timer killen
     _timer.cancel();
@@ -1078,58 +1146,121 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
           backgroundColor: Color(currentBackgroundcolor),
           body: Column(
             children: [
-              if (!isBreak)
-                Expanded(
-                  flex: 95,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      _animationHeight = constraints.maxHeight;
-                      _animationWidth = constraints.maxWidth;
+              Expanded(
+                flex: 95,
+                child: Stack(
+                  children: [
+                    if (!isBreak)
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          _animationHeight = constraints.maxHeight;
+                          _animationWidth = constraints.maxWidth;
 
-                      return ClipRect(
-                        child: Stack(
-                          children: [
-                            for (final flowIcon in _flowIcons)
-                              Positioned(
-                                left: flowIcon.x,
-                                top: flowIcon.y,
-                                child: SizedBox(
-                                  width: flowIcon.width,
-                                  height: flowIcon.renderSize,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    onTap: () => _removeIcon(flowIcon),
-                                    child: Icon(
-                                      flowIcon.iconData,
-                                      size: flowIcon.renderSize,
-                                      color: flowIcon.color,
+                          return ClipRect(
+                            child: Stack(
+                              children: [
+                                for (final flowIcon in _flowIcons)
+                                  Positioned(
+                                    left: flowIcon.x,
+                                    top: flowIcon.y,
+                                    child: SizedBox(
+                                      width: flowIcon.width,
+                                      height: flowIcon.renderSize,
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () => _removeIcon(flowIcon),
+                                        child: Icon(
+                                          flowIcon.iconData,
+                                          size: flowIcon.renderSize,
+                                          color: flowIcon.color,
+                                        ),
+                                      ),
                                     ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    if (isBreak)
+                      Container(
+                        decoration: BoxDecoration(color: Colors.black),
+                        alignment: Alignment.center,
+                        //Die Anzeige "Pause" wird im ersten Container gemacht
+                        child: Text(
+                          'pause'.tr,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                    if (metronomAktiv)
+                      Positioned(
+                        //Metronom unten links in der Ecke positionieren ausser wenn Movedirection
+                        //  durch die untere linke Ecke geht dann rechts positionieren
+                        left: metronomPositionLeft ? 6 : null,
+                        right: metronomPositionLeft ? null : 6,
+                        bottom: 6,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            /* Optodrum Start*/
+                            IconButton(
+                              icon: const Icon(
+                                Icons.add,
+                                color: Color.fromRGBO(75, 77, 70, 1),
+                              ),
+                              onPressed: () => _changeBpm(5),
+                              padding: EdgeInsets.all(
+                                4,
+                              ), // Verringert den Innenabstand zum Rand
+                              constraints:
+                                  const BoxConstraints(), // Entfernt die feste Standard-Mindestgröße
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(
+                                  side: BorderSide(
+                                    color: Color.fromRGBO(75, 77, 70, 1),
+                                    width: 1,
                                   ),
                                 ),
                               ),
+                            ),
+                            Text(
+                              '$metronomBPM bpm',
+                              style: const TextStyle(
+                                color: Color.fromRGBO(75, 77, 70, 1),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove,
+                                color: Color.fromRGBO(75, 77, 70, 1),
+                              ),
+                              onPressed: () => _changeBpm(-5),
+                              padding: EdgeInsets.all(
+                                4,
+                              ), // Verringert den Innenabstand zum Rand
+                              constraints:
+                                  const BoxConstraints(), // Entfernt die feste Standard-Mindestgröße
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(
+                                  side: BorderSide(
+                                    color: Color.fromRGBO(75, 77, 70, 1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      );
-                    },
-                  ),
-                ),
-              if (isBreak)
-                Expanded(
-                  flex: 95,
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.black),
-                    alignment: Alignment.center,
-                    //Die Anzeige "Pause" wird im ersten Container gemacht
-                    child: Text(
-                      'pause'.tr,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 80,
-                        fontWeight: FontWeight.bold,
                       ),
-                    ),
-                  ),
+                  ],
                 ),
+              ),
+
               //footer
               Expanded(
                 flex: 5,
@@ -1215,6 +1346,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   void dispose() {
     _timer.cancel(); // Stoppt den Timer
     _controller.dispose();
+    _timerMetronom?.cancel();
     super.dispose();
   }
 }

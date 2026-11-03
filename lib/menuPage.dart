@@ -35,6 +35,8 @@ class MyHomePage extends StatefulWidget {
     required this.nr_from,
     required this.nr_to,
     required this.nr_skip,
+    required this.metronomAktiv,
+    required this.metronomBPM,
   });
 
   final String title;
@@ -53,6 +55,8 @@ class MyHomePage extends StatefulWidget {
   int anzRounds;
   bool isElemProSeiteEinmalig;
   String nr_individual, nr_from, nr_to, nr_skip;
+  bool metronomAktiv;
+  int metronomBPM;
 
   @override
   _MyHomePageState createState() => _MyHomePageState(); //ruft automatisch initState() auf
@@ -135,6 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
       MultiSelectController(deSelectPerpetualSelectedItems: true);
   //Damit nach Zurücksetzen der Einstellungen direkt wieder nach oben gescrollt werden kann
   final ScrollController _scrollController = ScrollController();
+
+  /* Metronom */
+  int metronomBPM = 60;
+  bool isMetronomAktiv = false;
 
   //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
@@ -239,6 +247,8 @@ class _MyHomePageState extends State<MyHomePage> {
               nr_from: nr_from,
               nr_to: nr_to,
               nr_skip: nr_skip,
+              metronomAktiv: isMetronomAktiv,
+              metronomBPM: metronomBPM,
             ),
           ),
         );
@@ -1847,6 +1857,9 @@ class _MyHomePageState extends State<MyHomePage> {
     nr_to = widget.nr_to;
     nr_skip = widget.nr_skip;
 
+    isMetronomAktiv = widget.metronomAktiv;
+    metronomBPM = widget.metronomBPM;
+
     organizePage();
   }
 
@@ -1926,6 +1939,9 @@ class _MyHomePageState extends State<MyHomePage> {
       nr_from = AppHelper.getDefaultKognitiv('nr_from');
       nr_to = AppHelper.getDefaultKognitiv('nr_to');
       nr_skip = AppHelper.getDefaultKognitiv('nr_skip');
+
+      isMetronomAktiv = AppHelper.getDefaultOptodrum('metronomAktiv');
+      metronomBPM = AppHelper.getDefaultOptodrum('metronomBPM');
 
       organizePage();
       changeKey();
@@ -2312,7 +2328,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   indent: 30,
                   endIndent: 30,
                 ),
-                //Dropdown - wie viele Farben aufs Mal angezeigt werden
+                //Applescroll - wie viele Farben aufs Mal angezeigt werden
                 SizedBox(height: 12),
                 Text(
                   'selAnzElem'.tr,
@@ -2390,6 +2406,61 @@ class _MyHomePageState extends State<MyHomePage> {
                   indent: 30,
                   endIndent: 30,
                 ),
+
+                /* Metronom Start */
+                SizedBox(height: 12),
+                Text(
+                  'metronomTempo'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    NumberPicker(
+                      value: metronomBPM,
+                      minValue: 30,
+                      maxValue: 240,
+                      step: 1,
+                      itemHeight: 30,
+                      selectedTextStyle: TextStyle(fontSize: 22),
+                      textStyle: TextStyle(fontSize: 13),
+                      onChanged: (value) => setState(() => metronomBPM = value),
+                    ),
+                    Text('bpm'),
+                  ],
+                ),
+
+                //Checkbox - ob Metronom aktiv-> wenn nicht, wird es auf Trainingspage gar nicht erst angezeigt
+                Center(
+                  child: Transform.scale(
+                    scale: 0.8,
+                    child: Row(
+                      mainAxisSize: MainAxisSize
+                          .min, // Macht die Row nur so breit wie nötig
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: isMetronomAktiv,
+                          onChanged: (value) =>
+                              setState(() => isMetronomAktiv = value ?? false),
+                        ),
+                        Text('aktiv'.tr, style: TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                /* Metronom Ende */
 
                 //Applescroll - Dauer eines Durchlaufs
                 SizedBox(height: 12),

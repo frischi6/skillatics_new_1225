@@ -55,6 +55,10 @@ class AppHelper {
         return '';
       case 'nr_skip':
         return '';
+      case 'metronomAktiv':
+        return false;
+      case 'metronomBPM':
+        return 60;
     }
   }
 
@@ -109,6 +113,10 @@ class AppHelper {
         return 'east';
       case 'gleicheNacheinanderOk':
         return true;
+      case 'metronomAktiv':
+        return false;
+      case 'metronomBPM':
+        return 60;
       default:
         return 2;
     }

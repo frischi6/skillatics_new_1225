@@ -107,6 +107,10 @@ class StartingPage extends StatelessWidget {
                       nr_from: AppHelper.getDefaultKognitiv('nr_from'),
                       nr_to: AppHelper.getDefaultKognitiv('nr_to'),
                       nr_skip: AppHelper.getDefaultKognitiv('nr_skip'),
+                      metronomAktiv: AppHelper.getDefaultKognitiv(
+                        'metronomAktiv',
+                      ),
+                      metronomBPM: AppHelper.getDefaultKognitiv('metronomBPM'),
                     ),
                   ),
                 );
@@ -171,6 +175,10 @@ class StartingPage extends StatelessWidget {
                       gleicheNacheinanderOk: AppHelper.getDefaultOptodrum(
                         'gleicheNacheinanderOk',
                       ),
+                      metronomAktiv: AppHelper.getDefaultOptodrum(
+                        'metronomAktiv',
+                      ),
+                      metronomBPM: AppHelper.getDefaultOptodrum('metronomBPM'),
                     ),
                   ),
                 );

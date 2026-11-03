@@ -33,6 +33,8 @@ class MenuOptodrum extends StatefulWidget {
     required this.speedlevel,
     required this.secChangeBackgrcolor,
     required this.gleicheNacheinanderOk,
+    required this.metronomAktiv,
+    required this.metronomBPM,
   });
 
   final String title;
@@ -51,6 +53,8 @@ class MenuOptodrum extends StatefulWidget {
   String nr_individual, nr_from, nr_to, nr_skip;
   int secChangeBackgrcolor;
   bool gleicheNacheinanderOk;
+  bool metronomAktiv;
+  int metronomBPM;
 
   @override
   _MenuOptodrumState createState() => _MenuOptodrumState(); //ruft automatisch initState() auf
@@ -136,6 +140,10 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
   int secChangeBackgrcolor = 2;
   bool gleichesItemNacheinander = false;
 
+  /* Metronom */
+  int metronomBPM = 60;
+  bool isMetronomAktiv = false;
+
   ///Ändert Key damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
   ///Default-Values werden so auch automatisch wieder gesetzt
   void changeKey() {
@@ -215,6 +223,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
               secChangeBackgrcolor: secChangeBackgrcolor,
               allItemsByColor: alleSelectedItems,
               gleicheItemsNacheinanderOk: gleichesItemNacheinander,
+              metronomAktiv: isMetronomAktiv,
+              metronomBPM: metronomBPM,
             ),
           ),
         );
@@ -1565,6 +1575,8 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     selectedMovedirection = widget.moveDirection;
     secChangeBackgrcolor = widget.secChangeBackgrcolor;
     gleichesItemNacheinander = widget.gleicheNacheinanderOk;
+    isMetronomAktiv = widget.metronomAktiv;
+    metronomBPM = widget.metronomBPM;
 
     organizePage();
   }
@@ -1643,6 +1655,9 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
       gleichesItemNacheinander = AppHelper.getDefaultOptodrum(
         'gleicheNacheinanderOk',
       );
+
+      isMetronomAktiv = AppHelper.getDefaultOptodrum('metronomAktiv');
+      metronomBPM = AppHelper.getDefaultOptodrum('metronomBPM');
 
       organizePage();
       changeKey();
@@ -2103,7 +2118,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   indent: 30,
                   endIndent: 30,
                 ),
-
                 //Applescroll - Hintergrundfarbwechsel nach wie vielen Sekunden
                 SizedBox(height: 12),
                 Text(
@@ -2147,6 +2161,61 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                   indent: 30,
                   endIndent: 30,
                 ),
+
+                /* Metronom Start */
+                SizedBox(height: 12),
+                Text(
+                  'metronomTempo'.tr,
+                  style: TextStyle(fontSize: fontsizeMenutitle),
+                  textAlign: TextAlign.center,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    NumberPicker(
+                      value: metronomBPM,
+                      minValue: 30,
+                      maxValue: 240,
+                      step: 1,
+                      itemHeight: 30,
+                      selectedTextStyle: TextStyle(fontSize: 22),
+                      textStyle: TextStyle(fontSize: 13),
+                      onChanged: (value) => setState(() => metronomBPM = value),
+                    ),
+                    Text('bpm'),
+                  ],
+                ),
+
+                //Checkbox - ob Metronom aktiv-> wenn nicht, wird es auf Trainingspage gar nicht erst angezeigt
+                Center(
+                  child: Transform.scale(
+                    scale: 0.8,
+                    child: Row(
+                      mainAxisSize: MainAxisSize
+                          .min, // Macht die Row nur so breit wie nötig
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: isMetronomAktiv,
+                          onChanged: (value) =>
+                              setState(() => isMetronomAktiv = value ?? false),
+                        ),
+                        Text('aktiv'.tr, style: TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+
+                Divider(
+                  color: Colors.black,
+                  height: 15,
+                  indent: 30,
+                  endIndent: 30,
+                ),
+
+                /* Metronom Ende */
 
                 //Applescroll - Dauer eines Durchlaufs
                 SizedBox(height: 12),

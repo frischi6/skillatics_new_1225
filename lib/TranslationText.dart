@@ -80,6 +80,8 @@ class TranslationText extends Translations {
       'gleicheNacheinander': 'Gleiche Elemente nacheinader möglich',
       'Ja': 'Ja',
       'Nein': 'Nein',
+      'metronomTempo': 'Tempo des Metronoms?',
+      'aktiv': 'Aktiv',
     },
     'en_US': {
       'fehlerColorsNull': 'Items still need to be selected.',
@@ -154,6 +156,8 @@ class TranslationText extends Translations {
       'gleicheNacheinander': 'Same elements can appear consecutively',
       'Ja': 'Yes',
       'Nein': 'No',
+      'metronomTempo': 'The metronome\'s tempo?',
+      'aktiv': 'Active',
     },
   };
 }
