@@ -347,7 +347,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
               //footer
               Container(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height:
+                    //Damit Footer nicht abgeschnitten in Querformat
+                    MediaQuery.orientationOf(context) == Orientation.landscape
+                    ? MediaQuery.of(context).size.height * 0.1
+                    : MediaQuery.of(context).size.height * 0.05,
                 child: Container(
                   //height: MediaQuery.of(context).size.height * (footerPercentage),
                   width: MediaQuery.of(context).size.width,

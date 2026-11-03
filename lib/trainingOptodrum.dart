@@ -1263,7 +1263,10 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
               //footer
               Expanded(
-                flex: 5,
+                flex: MediaQuery.orientationOf(context) == Orientation.landscape
+                    //Damit Footer nicht abgeschnitten in Querformat
+                    ? 10
+                    : 5,
                 child: Container(
                   //height: MediaQuery.of(context).size.height * (footerPercentage),
                   width: MediaQuery.of(context).size.width,
