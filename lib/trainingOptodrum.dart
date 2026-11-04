@@ -1082,6 +1082,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 
   void changeToMenupage() {
+    dispose();
     Navigator.push(
       context,
       MaterialPageRoute(

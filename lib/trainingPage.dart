@@ -1407,7 +1407,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   /// Wechsel von page2 to page1
   void changeToPage1() {
-    _timer.cancel();
+    dispose();
 
     Navigator.push(
       context,
