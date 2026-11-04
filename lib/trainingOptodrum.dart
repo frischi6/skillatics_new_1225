@@ -1082,7 +1082,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   }
 
   void changeToMenupage() {
-    dispose();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -1138,6 +1137,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     return PopScope(
       canPop:
           false, //damit swipe back(ios) bzw. Back Button (android) deaktiviert
@@ -1268,17 +1268,14 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
                     ? 10
                     : 5,
                 child: Container(
-                  //height: MediaQuery.of(context).size.height * (footerPercentage),
-                  width: MediaQuery.of(context).size.width,
+                  width: screenWidth,
                   color: Colors.grey.shade700,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       SizedBox(
                         width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
+                            (screenWidth - thicknessVerticalDividerFooter) / 4,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
@@ -1289,9 +1286,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
                       ),
                       SizedBox(
                         width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
+                            (screenWidth - thicknessVerticalDividerFooter) / 4,
                         child: Center(
                           child: Text(
                             '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
@@ -1306,9 +1301,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
                       ),
                       SizedBox(
                         width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
+                            (screenWidth - thicknessVerticalDividerFooter) / 4,
                         child: TextButton(
                           autofocus: false,
                           onPressed: changeToMenupage,
@@ -1321,9 +1314,7 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
                       ),
                       SizedBox(
                         width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
+                            (screenWidth - thicknessVerticalDividerFooter) / 4,
                         child: TextButton(
                           autofocus: false,
                           onPressed: neustart,
@@ -1348,8 +1339,9 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   @override
   void dispose() {
     _timer.cancel(); // Stoppt den Timer
-    _controller.dispose();
     _timerMetronom?.cancel();
+    _controller.stop();
+    _controller.dispose();
     super.dispose();
   }
 }

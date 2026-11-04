@@ -148,9 +148,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _initializeListHeight4Containers();
     _initializeListWithAllHex();
     _initializeListSelectedArrows();
+    initMetronom();
     init_new();
     initOptionEinmalig();
-    initMetronom();
 
     //organizeRound();
     _timer = Timer.periodic(
@@ -186,7 +186,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                           Expanded(
                             flex: listHeight4Container[0],
                             child: Container(
-                              //height: MediaQuery.of(context).size.height * (listHeight4Container[0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
                               width: MediaQuery.of(context).size.width,
                               padding: const EdgeInsets.all(10.0),
                               decoration: BoxDecoration(
@@ -1401,13 +1400,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _initializeListWithAllHex();
     _initializeListSelectedArrows();
     _initializeResetVariables();
+    initMetronom();
     init_new();
     initOptionEinmalig();
   }
 
   /// Wechsel von page2 to page1
   void changeToPage1() {
-    dispose();
+    _timer.cancel();
 
     Navigator.push(
       context,
@@ -1588,14 +1588,13 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           } else {
             //sollte eigentlich nicht vorkommen
             //programm beenden / messagebox zeigen
-
-            dispose();
+            _timer.cancel();
             showDialog(
               context: context,
               builder: (_) => AppHelper.alertDialogFinish(
                 context,
                 () => changeToPage1(),
-                () => neustart(),
+                () => changeToPage2(),
               ),
               barrierDismissible: false,
             );
@@ -1608,13 +1607,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
             if (anzRoundsDone > anzRounds2) {
               //programm beenden / messagebox zeigen
+              anzRoundsDone--; //damit nicht Runde 3/2 steht zB.
               _timer.cancel();
               showDialog(
                 context: context,
                 builder: (_) => AppHelper.alertDialogFinish(
                   context,
                   () => changeToPage1(),
-                  () => neustart(),
+                  () => changeToPage2(),
                 ),
                 barrierDismissible: false,
               );
