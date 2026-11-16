@@ -1245,13 +1245,15 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         .metronomBPM; //muss ausserhalb von if sein damit korrekt an Menupage returnt wird
     if (metronomAktiv) {
       _initAudio();
-      _startMetronomTimer();
     }
   }
 
   /// Audio-Session (Kategorie playback = ignoriert den Stummschalter) und Klick-Player einmalig einrichten
   Future<void> _initAudio() async {
-    if (_clickPlayer != null) return; // nur einmal initialisieren
+    if (_clickPlayer != null) {
+      if (_audioReady && metronomAktiv) _startMetronomTimer();
+      return;
+    }
     final player = AudioPlayer();
     _clickPlayer = player;
     try {
@@ -1270,30 +1272,51 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       await session.setActive(true);
       await player.setAsset('assets/click.wav');
       _audioReady = true;
+
+      // Erst JETZT den Timer starten, nachdem Audio bereit ist
+      if (mounted && metronomAktiv && !isRest) {
+        _startMetronomTimer();
+      }
     } catch (e) {
       debugPrint('Audio-Init fehlgeschlagen: $e');
     }
   }
 
   ///Klick abspielen
-  void _playClick() {
+  Future<void> _playClick() async {
     final player = _clickPlayer;
     if (!_audioReady || player == null) return;
-    player.seek(Duration.zero);
-    player.play(); // bewusst nicht awaiten
+    await player.pause();
+    await player.seek(Duration.zero);
+    player.play();
   }
 
   ///Timer für Metronom starten (driftfrei: jeder Schlag wird relativ zur Startzeit berechnet)
   void _startMetronomTimer() {
     _timerMetronom?.cancel();
+    if (!metronomAktiv || !_audioReady) return;
+
     final intervalUs = (60000000 / metronomBPM).round();
     final sw = Stopwatch()..start();
     var beat = 0;
 
+    // Ersten Klick direkt zum Start abspielen
+    _playClick();
+
     void scheduleNext() {
       beat++;
-      final delay = Duration(microseconds: intervalUs * beat) - sw.elapsed;
-      _timerMetronom = Timer(delay.isNegative ? Duration.zero : delay, () {
+      var delay = Duration(microseconds: intervalUs * beat) - sw.elapsed;
+
+      // Falls der Thread kurz hing und delay negativ wurde:
+      // Nicht sofort "aufholen" (Doppelklick), sondern ab jetzt neu takten
+      if (delay.isNegative) {
+        sw.reset();
+        beat = 1;
+        delay = Duration(microseconds: intervalUs);
+      }
+
+      _timerMetronom = Timer(delay, () {
+        if (!mounted || !metronomAktiv || isRest) return;
         _playClick();
         scheduleNext();
       });
@@ -1414,7 +1437,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   void changeRound(bool isInitRound) {
     if (isInitRound) {
-      if (metronomAktiv) {
+      if (metronomAktiv && _audioReady) {
         _startMetronomTimer();
       }
     }
