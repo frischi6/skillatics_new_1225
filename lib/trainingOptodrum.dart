@@ -1311,71 +1311,58 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
               ),
 
               //footer
-              Expanded(
-                flex: MediaQuery.orientationOf(context) == Orientation.landscape
-                    //Damit Footer nicht abgeschnitten in Querformat
-                    ? 10
-                    : 5,
-                child: Container(
-                  width: screenWidth,
-                  color: Colors.grey.shade700,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                        width:
-                            (screenWidth - thicknessVerticalDividerFooter) / 4,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '$anzRoundsDone/$anzRounds2 ${AppHelper.getRundeSgPl(anzRounds2)}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+              Container(
+                height:
+                    MediaQuery.orientationOf(context) == Orientation.landscape
+                    ? MediaQuery.of(context).size.height * 0.1
+                    : MediaQuery.of(context).size.height * 0.05,
+                width: double.infinity,
+                color: Colors.grey.shade700,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '$anzRoundsDone/$anzRounds2 ${AppHelper.getRundeSgPl(anzRounds2)}',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      SizedBox(
-                        width:
-                            (screenWidth - thicknessVerticalDividerFooter) / 4,
-                        child: Center(
-                          child: Text(
-                            '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      const VerticalDivider(
-                        color: Colors.black,
-                        thickness: 0.5,
-                        width: 0.5,
-                      ),
-                      SizedBox(
-                        width:
-                            (screenWidth - thicknessVerticalDividerFooter) / 4,
-                        child: TextButton(
-                          autofocus: false,
-                          onPressed: changeToMenupage,
-                          onLongPress: changeToMenupage,
-                          child: Text(
-                            'hauptmenü'.tr,
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                    ),
+                    const VerticalDivider(
+                      color: Colors.black,
+                      thickness: 0.5,
+                      width: 0.5,
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        autofocus: false,
+                        onPressed: changeToMenupage,
+                        child: Text(
+                          'hauptmenü'.tr,
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
-                      SizedBox(
-                        width:
-                            (screenWidth - thicknessVerticalDividerFooter) / 4,
-                        child: TextButton(
-                          autofocus: false,
-                          onPressed: neustart,
-                          onLongPress: neustart,
-                          child: Text(
-                            'neustart'.tr,
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        autofocus: false,
+                        onPressed: neustart,
+                        child: Text(
+                          'neustart'.tr,
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],

@@ -174,10 +174,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   int currentSecsCD = 0;
   int currentMinsCD = 0;
 
-  int footerPercentage = 5;
   int bodyPercentage =
-      95; //Gegenstück zu footerPercentage-> dieser Platz muss aufgeteilt werden um Farben anzuzeigen
-  double thicknessVerticalDividerFooter = 0.5;
+      95; //Rest ist Footer-> dieser Platz muss aufgeteilt werden um Farben anzuzeigen
 
   int lastRoundFirstColor =
       0; //hält erste farbe der letzten runde fest damit nicht nach change genau gleiche anordnung ist und es so aussieht als würde das programm stocken
@@ -415,77 +413,56 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               //footer
               Container(
                 height:
-                    //Damit Footer nicht abgeschnitten in Querformat
                     MediaQuery.orientationOf(context) == Orientation.landscape
                     ? MediaQuery.of(context).size.height * 0.1
                     : MediaQuery.of(context).size.height * 0.05,
-                child: Container(
-                  //height: MediaQuery.of(context).size.height * (footerPercentage),
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.grey.shade700,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                        width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '$anzRoundsDone/$anzRounds2 ${AppHelper.getRundeSgPl(anzRounds2)}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                width: double.infinity,
+                color: Colors.grey.shade700,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '$anzRoundsDone/$anzRounds2 ${AppHelper.getRundeSgPl(anzRounds2)}',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      SizedBox(
-                        width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
-                        child: Center(
-                          child: Text(
-                            '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          '${currentMinsCD.toString().padLeft(2, '0')}:${currentSecsCD.toString().padLeft(2, '0')}',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      const VerticalDivider(
-                        color: Colors.black,
-                        thickness: 0.5,
-                        width: 0.5,
-                      ),
-                      SizedBox(
-                        width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
-                        child: TextButton(
-                          autofocus: false,
-                          onPressed: changeToPage1,
-                          child: Text(
-                            'hauptmenü'.tr,
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                    ),
+                    const VerticalDivider(
+                      color: Colors.black,
+                      thickness: 0.5,
+                      width: 0.5,
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        autofocus: false,
+                        onPressed: changeToPage1,
+                        child: Text(
+                          'hauptmenü'.tr,
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
-                      SizedBox(
-                        width:
-                            (MediaQuery.of(context).size.width -
-                                thicknessVerticalDividerFooter) /
-                            4,
-                        child: TextButton(
-                          autofocus: false,
-                          onPressed: neustart,
-                          child: Text(
-                            'neustart'.tr,
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        autofocus: false,
+                        onPressed: neustart,
+                        child: Text(
+                          'neustart'.tr,
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
