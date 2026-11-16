@@ -1684,7 +1684,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
               ),
             ),
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => StartingPage()),
               );
