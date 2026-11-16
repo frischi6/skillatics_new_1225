@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math'; //Für Random-Generator
+import 'package:audio_session/audio_session.dart'; //Für Metronom-Sound (Audio-Session)
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; //Für Metronom-Sound
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart'; //Für Metronom-Sound (Player)
 import 'package:skillatics/formen_icons_icons.dart';
 import 'package:skillatics/helper.dart';
 import 'custom_icons_icons.dart';
@@ -141,6 +142,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   bool metronomAktiv = true;
   Timer? _timerMetronom;
   bool metronomPositionLeft = true;
+  AudioPlayer? _clickPlayer; //spielt den Klick aus assets/click.wav
+  bool _audioReady = false;
 
   @override
   void initState() {
@@ -1506,22 +1509,62 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     metronomBPM = widget
         .metronomBPM; //muss ausserhalb von if sein damit korrekt an Menupage returnt wird
     if (metronomAktiv) {
+      _initAudio();
       _startMetronomTimer();
     }
   }
 
-  ///Timer für Metronom starten
+  /// Audio-Session (Kategorie playback = ignoriert den Stummschalter) und Klick-Player einmalig einrichten
+  Future<void> _initAudio() async {
+    if (_clickPlayer != null) return; // nur einmal initialisieren
+    final player = AudioPlayer();
+    _clickPlayer = player;
+    try {
+      final session = await AudioSession.instance;
+      await session.configure(
+        const AudioSessionConfiguration(
+          avAudioSessionCategory: AVAudioSessionCategory.playback,
+          avAudioSessionCategoryOptions:
+              AVAudioSessionCategoryOptions.mixWithOthers,
+          androidAudioAttributes: AndroidAudioAttributes(
+            contentType: AndroidAudioContentType.sonification,
+            usage: AndroidAudioUsage.media,
+          ),
+        ),
+      );
+      await session.setActive(true);
+      await player.setAsset('assets/click.wav');
+      _audioReady = true;
+    } catch (e) {
+      debugPrint('Audio-Init fehlgeschlagen: $e');
+    }
+  }
+
+  ///Klick abspielen
+  void _playClick() {
+    final player = _clickPlayer;
+    if (!_audioReady || player == null) return;
+    player.seek(Duration.zero);
+    player.play(); // bewusst nicht awaiten
+  }
+
+  ///Timer für Metronom starten (driftfrei: jeder Schlag wird relativ zur Startzeit berechnet)
   void _startMetronomTimer() {
     _timerMetronom?.cancel();
-    // Intervall in Millisekunden berechnen: (60 Sekunden / BPM) * 1000
-    int intervalMs = (60000 / metronomBPM).round();
+    final intervalUs = (60000000 / metronomBPM).round();
+    final sw = Stopwatch()..start();
+    var beat = 0;
 
-    _timerMetronom = Timer.periodic(Duration(milliseconds: intervalMs), (
-      timer,
-    ) {
-      // Spielt den systemeigenen Klick-Ton ab
-      SystemSound.play(SystemSoundType.click);
-    });
+    void scheduleNext() {
+      beat++;
+      final delay = Duration(microseconds: intervalUs * beat) - sw.elapsed;
+      _timerMetronom = Timer(delay.isNegative ? Duration.zero : delay, () {
+        _playClick();
+        scheduleNext();
+      });
+    }
+
+    scheduleNext();
   }
 
   ///Metronom BPM anpassen
@@ -1854,6 +1897,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   void dispose() {
     _timer.cancel(); // Stoppt den Timer
     _timerMetronom?.cancel();
+    _clickPlayer?.dispose(); // Audio-Player freigeben
+    _clickPlayer =
+        null; // verhindert doppeltes dispose (changeToPage1 ruft dispose() manuell auf)
+    _audioReady = false;
     super.dispose();
   }
 }

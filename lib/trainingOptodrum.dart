@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; //Für Metronom-Sound
 import 'package:get/get.dart';
 import 'dart:math'; // Für Random-Generator
 import 'package:skillatics/custom_icons_icons.dart';
@@ -11,6 +10,8 @@ import 'package:skillatics/menuOptodrum.dart';
 import 'package:skillatics/number_zero_to_fifty_icons.dart';
 import 'package:skillatics/stroop__english_icons.dart';
 import 'package:skillatics/stroop_icons.dart';
+import 'package:audio_session/audio_session.dart'; //Für Metronom-Sound (Audio-Session)
+import 'package:just_audio/just_audio.dart'; //Für Metronom-Sound (Player)
 
 class TrainingOptodrum extends StatefulWidget {
   final List<dynamic> listSelectedArrowsPerColor, listSelectedNumbersPerColor;
@@ -113,6 +114,8 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
   bool metronomAktiv = true;
   Timer? _timerMetronom;
   bool metronomPositionLeft = true;
+  AudioPlayer? _clickPlayer; //spielt den Klick aus assets/click.wav
+  bool _audioReady = false;
 
   @override
   void initState() {
@@ -192,22 +195,62 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
           metronomPositionLeft = true;
       }
 
+      _initAudio();
       _startMetronomTimer();
     }
   }
 
-  ///Timer für Metronom starten
+  /// Audio-Session (Kategorie playback = ignoriert den Stummschalter) und Klick-Player einmalig einrichten
+  Future<void> _initAudio() async {
+    if (_clickPlayer != null) return; // nur einmal initialisieren
+    final player = AudioPlayer();
+    _clickPlayer = player;
+    try {
+      final session = await AudioSession.instance;
+      await session.configure(
+        const AudioSessionConfiguration(
+          avAudioSessionCategory: AVAudioSessionCategory.playback,
+          avAudioSessionCategoryOptions:
+              AVAudioSessionCategoryOptions.mixWithOthers,
+          androidAudioAttributes: AndroidAudioAttributes(
+            contentType: AndroidAudioContentType.sonification,
+            usage: AndroidAudioUsage.media,
+          ),
+        ),
+      );
+      await session.setActive(true);
+      await player.setAsset('assets/click.wav');
+      _audioReady = true;
+    } catch (e) {
+      debugPrint('Audio-Init fehlgeschlagen: $e');
+    }
+  }
+
+  ///Klick abspielen
+  void _playClick() {
+    final player = _clickPlayer;
+    if (!_audioReady || player == null) return;
+    player.seek(Duration.zero);
+    player.play(); // bewusst nicht awaiten
+  }
+
+  ///Timer für Metronom starten (driftfrei: jeder Schlag wird relativ zur Startzeit berechnet)
   void _startMetronomTimer() {
     _timerMetronom?.cancel();
-    // Intervall in Millisekunden berechnen: (60 Sekunden / BPM) * 1000
-    int intervalMs = (60000 / metronomBPM).round();
+    final intervalUs = (60000000 / metronomBPM).round();
+    final sw = Stopwatch()..start();
+    var beat = 0;
 
-    _timerMetronom = Timer.periodic(Duration(milliseconds: intervalMs), (
-      timer,
-    ) {
-      // Spielt den systemeigenen Klick-Ton ab
-      SystemSound.play(SystemSoundType.click);
-    });
+    void scheduleNext() {
+      beat++;
+      final delay = Duration(microseconds: intervalUs * beat) - sw.elapsed;
+      _timerMetronom = Timer(delay.isNegative ? Duration.zero : delay, () {
+        _playClick();
+        scheduleNext();
+      });
+    }
+
+    scheduleNext();
   }
 
   ///Metronom BPM anpassen
@@ -1343,6 +1386,10 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
     _timerMetronom?.cancel();
     _controller.stop();
     _controller.dispose();
+    _clickPlayer?.dispose(); // Audio-Player freigeben
+    _clickPlayer =
+        null; // verhindert doppeltes dispose (changeToPage1 ruft dispose() manuell auf)
+    _audioReady = false;
     super.dispose();
   }
 }
