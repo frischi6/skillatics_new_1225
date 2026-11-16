@@ -66,6 +66,60 @@ class RandomColorPage2 extends StatefulWidget {
 }
 
 class _RandomColorPage2 extends State<RandomColorPage2> {
+  static const List<IconData> _numberIconsList = [
+    NumberIcons.nr_0,
+    NumberIcons.nr_1,
+    NumberIcons.nr_2,
+    NumberIcons.nr_3,
+    NumberIcons.nr_4,
+    NumberIcons.nr_5,
+    NumberIcons.nr_6,
+    NumberIcons.nr_7,
+    NumberIcons.nr_8,
+    NumberIcons.nr_9,
+    NumberIcons.nr_10,
+    NumberIcons.nr_11,
+    NumberIcons.nr_12,
+    NumberIcons.nr_13,
+    NumberIcons.nr_14,
+    NumberIcons.nr_15,
+    NumberIcons.nr_16,
+    NumberIcons.nr_17,
+    NumberIcons.nr_18,
+    NumberIcons.nr_19,
+    NumberIcons.nr_20,
+    NumberIcons.nr_21,
+    NumberIcons.nr_22,
+    NumberIcons.nr_23,
+    NumberIcons.nr_24,
+    NumberIcons.nr_25,
+    NumberIcons.nr_26,
+    NumberIcons.nr_27,
+    NumberIcons.nr_28,
+    NumberIcons.nr_29,
+    NumberIcons.nr_30,
+    NumberIcons.nr_31,
+    NumberIcons.nr_32,
+    NumberIcons.nr_33,
+    NumberIcons.nr_34,
+    NumberIcons.nr_35,
+    NumberIcons.nr_36,
+    NumberIcons.nr_37,
+    NumberIcons.nr_38,
+    NumberIcons.nr_39,
+    NumberIcons.nr_40,
+    NumberIcons.nr_41,
+    NumberIcons.nr_42,
+    NumberIcons.nr_43,
+    NumberIcons.nr_44,
+    NumberIcons.nr_45,
+    NumberIcons.nr_46,
+    NumberIcons.nr_47,
+    NumberIcons.nr_48,
+    NumberIcons.nr_49,
+    NumberIcons.nr_50,
+  ];
+
   var start = DateTime.now().millisecondsSinceEpoch;
   var listWithSelectedColors = []; //gefüllt mit ColorsCheckbox-Elemente
   var listWithSelectedHex = []; //gefüllt mit Hex-Werten (int)
@@ -168,6 +222,19 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     setState(() {});
   }
 
+  /// Begrenzt den verfügbaren Platz prozentual und skaliert das Child per FittedBox
+  /// Gebraucht weil sonst zweistellige Zahlen abgeschnitten waren wenn anColorsOnPage2 < 4
+  /// (wegen FittedBox konnte nicht einfach iconsize angepasst werden)
+  Widget _buildContainerChild(Widget iconOrText) {
+    final double factor = anzColorsOnPage2 <= 3 ? 0.80 : 0.95;
+
+    return FractionallySizedBox(
+      widthFactor: factor,
+      heightFactor: factor,
+      child: FittedBox(fit: BoxFit.contain, child: iconOrText),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -208,10 +275,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                                   bottom: BorderSide(color: Colors.black),
                                 ),
                               ),
-                              child: FittedBox(
-                                //FittedBox führt dazu, dass sich die Grösse der Icons dem vorhandenen Platz im parent anpasst
-                                fit: BoxFit.contain,
-                                child: restText == ''
+                              child: _buildContainerChild(
+                                restText == ''
                                     ? listToFillContainersIcon[0]
                                     : Align(
                                         alignment: Alignment.center,
@@ -267,9 +332,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                                       bottom: BorderSide(color: Colors.black),
                                     ),
                                   ),
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: listToFillContainersIcon.length > i
+                                  child: _buildContainerChild(
+                                    listToFillContainersIcon.length > i
                                         ? listToFillContainersIcon[i]
                                         : listToFillContainersIcon[0],
                                   ),
@@ -300,7 +364,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                                 ), //dunkelgrau damit auf allen hintergrundfarben möglichst gut sichtbar
                               ),
                               onPressed: () => _changeBpm(5),
-                              padding: EdgeInsets.all(
+                              padding: const EdgeInsets.all(
                                 4,
                               ), // Verringert den Innenabstand zum Rand
                               constraints:
@@ -326,7 +390,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                                 color: Color.fromRGBO(75, 77, 70, 1),
                               ),
                               onPressed: () => _changeBpm(-5),
-                              padding: EdgeInsets.all(
+                              padding: const EdgeInsets.all(
                                 4,
                               ), // Verringert den Innenabstand zum Rand
                               constraints:
@@ -544,7 +608,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   /// füllt listToFillContainersIcon mit korrektem icon und farbe inkl ob arrow sichtbar ist oder selbe farbe hat wie hintergrund
   void addToListToFillContainersIcon(index, arrowDirection, arrowVisible) {
     if (index >= listToFillContainersIcon.length) {
-      listToFillContainersIcon.add(Icon(Icons.north));
+      listToFillContainersIcon.add(const Icon(Icons.north));
     }
 
     sizeIcon = 60.0; //grundsätzlich alle icons grösse 60
@@ -873,8 +937,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               )],
             ),
           ),
-
-          //size: sizeIconStroop,
         );
       } else if (arrowDirection == 'stroop_schwarz') {
         listToFillContainersIcon[index] = SizedBox(
@@ -887,7 +949,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop - 30,
           ),
         );
       } else if (arrowDirection == 'stroop_gelb') {
@@ -902,8 +963,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               )],
             ),
           ),
-
-          //size: sizeIconStroop,
         );
       } else if (arrowDirection == 'stroop_rot') {
         listToFillContainersIcon[index] = SizedBox(
@@ -916,7 +975,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_violett') {
@@ -930,7 +988,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop - 10,
           ),
         );
       } else if (arrowDirection == 'stroop_blau') {
@@ -944,7 +1001,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_gruen') {
@@ -958,7 +1014,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_white') {
@@ -972,7 +1027,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_black') {
@@ -986,7 +1040,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_yellow') {
@@ -1000,7 +1053,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop - 10,
           ),
         );
       } else if (arrowDirection == 'stroop_red') {
@@ -1014,7 +1066,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_violet') {
@@ -1028,7 +1079,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop - 5,
           ),
         );
       } else if (arrowDirection == 'stroop_blue') {
@@ -1042,7 +1092,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       } else if (arrowDirection == 'stroop_green') {
@@ -1056,7 +1105,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listWithStroopTextcolors.length,
               )],
             ),
-            //size: sizeIconStroop,
           ),
         );
       }
@@ -1069,8 +1117,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     }
   }
 
-  ///Macht dasselbe wie addToListToFillContainersIcon aber nur für die Numbers weil hier 50 if-Statements
-  /// gebraucht werden unds sonst in addToListToFillContainersIcon unübersichtlich wird
+  /// Erstellt die Zahlen-Icons (0 bis 50) und gleicht bei zweistelligen Zahlen die Breite aus
   void addNumberToListToFillContainersIcon(
     int index,
     String numberNumbercolor,
@@ -1083,313 +1130,27 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     //numbercolor aus number_numbercolor auslesen
     iconcolor = getColorcodeByItemPerColor(numberNumbercolor);
 
-    switch (iconnumber) {
-      case 0:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_0,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 1:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_1,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 2:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_2,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 3:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_3,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 4:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_4,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 5:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_5,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 6:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_6,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 7:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_7,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 8:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_8,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 9:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_9,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 10:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_10,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 11:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_11,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 12:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_12,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 13:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_13,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 14:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_14,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 15:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_15,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 16:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_16,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 17:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_17,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 18:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_18,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 19:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_19,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 20:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_20,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 21:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_21,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 22:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_22,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 23:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_23,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 24:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_24,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 25:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_25,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 26:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_26,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 27:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_27,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 28:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_28,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 29:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_29,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 30:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_30,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 31:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_31,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 32:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_32,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 33:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_33,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 34:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_34,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 35:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_35,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 36:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_36,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 37:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_37,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 38:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_38,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 39:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_39,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 40:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_40,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 41:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_41,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 42:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_42,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 43:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_43,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 44:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_44,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 45:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_45,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 46:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_46,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 47:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_47,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 48:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_48,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 49:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_49,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
-      case 50:
-        listToFillContainersIcon[index] = Icon(
-          NumberIcons.nr_50,
-          color: Color(iconcolor),
-          size: iconsize,
-        );
+    final IconData iconData = _numberIconsList[iconnumber];
+    final bool isTwoDigits = iconnumber >= 10;
+
+    if (!isTwoDigits) {
+      // Einstellig (0-9): passt exakt ins Quadrat
+      listToFillContainersIcon[index] = Icon(
+        iconData,
+        color: Color(iconcolor),
+        size: iconsize,
+      );
+    } else {
+      // Zweistellig (10-50): Glyphe ist breiter als hoch.
+      // Durch die SizedBox kennt FittedBox die echte Gesamtbreite und schneidet nichts ab.
+      listToFillContainersIcon[index] = SizedBox(
+        width: iconsize * 1.35,
+        height: iconsize,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Icon(iconData, color: Color(iconcolor), size: iconsize),
+        ),
+      );
     }
   }
 
@@ -1641,7 +1402,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               ),
               barrierDismissible: false,
             );
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
           }
 
         case 1:
@@ -1661,7 +1421,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 ),
                 barrierDismissible: false,
               );
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
             } else if (isRest) {
               //zeit neu setzen für wechsel auf rest
               currentMinsCD = minsLengthRestCD;
@@ -1736,7 +1495,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     if (listWithSelectedBackgroundcolors.isNotEmpty) {
       prepareBackgroundcolors();
     }
-
     //wegen diesem loop muss listToFillContainersHex/Icon nicht mehr von anfang an deckungsgleich sein, sondern wird hier deckungsgleich gemacht
     //	für jeden eintrag in listToFillContainersHex der ohne icon dargestellt wird sprich nur farbe, wird icon.north in der entsprechenden farbe hinzugefügt
     //		-> bestehendes icon in listToFillContainersIcon[x] wird nicht umgefärbt weil so nun isElemProSeiteEinmalig = true gehandelt werden kann, mit umfärben wäre einmaligkeit nicht gewährleistet
@@ -1747,7 +1505,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
     for (var llI = 0; llI < listToFillContainersHex.length; llI++) {
       if (listToFillContainersHex[llI] != int.parse('0xfffefefe')) {
-        //safr background kann hier noch auf fefefe gegangen werden?
         //arrow not visible
         addToListToFillContainersIcon(llI, null, false);
       } else {
@@ -1834,7 +1591,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     // VORAUSSETZUNG ALLG ist: das aaray listToFillContainersHex/Icon muss mindestens eine length() von anzColorsOnPage2 haben, damit das aaray sauber ausgelesen werden kann und kein nullpointer-error entsteht
     //			wenn isElemProSeiteEinmalig = true soll listToFillContainersIcon nur mit den effektiv ausgewählten icons übergeben werden ohne duplikate (damit shuffle durchgeführt werden darf)
     //			wenn isElemProSeiteEinmalig = false soll listToFillContainersIcon mit mind. so vielen icons gefüllt werden wie anzColorsOnPage2 damit mehrere gleiche pro seite mölglich-> genaue ausführung siehe anschliessend mit variabel "vergroessern"
-
     if (isElemProSeiteEinmalig2 == false) {
       int vergroessern = 2;
       int temp = 0;
