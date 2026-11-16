@@ -654,11 +654,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
       );
     } else {
       IconData? stroopIcon;
-      Color randomStroopColor = Color(
-        listWithStroopTextcolors[random.nextInt(
-          listWithStroopTextcolors.length,
-        )],
-      );
 
       if (icon_color == 'stroop_weiss') {
         stroopIcon = StroopIcons.stroop_weiss;
@@ -691,7 +686,17 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
       }
 
       if (stroopIcon != null) {
-        _addIconConfig(stroopIcon, randomStroopColor, sizeIcon, isStroop: true);
+        //Anders als bei Kognitiv kann nicht einfach Random genommen werden, weil bei
+        // Kognitiv jede Runde wieder aufgerufen wird und hier nur einmalig zu Beginn, deshalb
+        // hier jede Kombination zu List hinzufügen
+        for (int ll_i = 0; ll_i < listWithStroopTextcolors.length; ll_i++) {
+          _addIconConfig(
+            stroopIcon,
+            Color(listWithStroopTextcolors[ll_i]),
+            sizeIcon,
+            isStroop: true,
+          );
+        }
       }
     }
   }
