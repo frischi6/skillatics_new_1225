@@ -16,8 +16,6 @@ import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellun
 class MyHomePage extends StatefulWidget {
   MyHomePage({
     super.key,
-    required this.title,
-    required this.currentCountry,
     required this.listSelectedColors,
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbersPerColor,
@@ -39,8 +37,6 @@ class MyHomePage extends StatefulWidget {
     required this.metronomBPM,
   });
 
-  final String title;
-  String currentCountry;
   var listSelectedColors; //hier ist entweder der hex-code einer farbe drin, die ausgewählt wurde, oder wenn ein item (pfeil, zahl etc.) ausgewählt wurde für jedes item pro farbe der hex-code fefefe damit in trainingspage klar dass da ein item kommt und dieses sichtbar sein muss
   var listSelectedArrowsPerColor;
   var listSelectedNumbersPerColor;
@@ -66,8 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String hexxcode = '0xff';
   int theHexCode = 0;
   String textFehlermeldung = '';
-  bool isGerman = true;
-  String currentCountry = "GB"; //flagge die aktuell oben rechts angezeigt wird
+  String bartitle = '';
   int keyInt = 1;
   double fontsizeMenutitle = 19;
   double fontsizeItemtitle = 18;
@@ -227,7 +222,6 @@ class _MyHomePageState extends State<MyHomePage> {
           context,
           MaterialPageRoute(
             builder: (context) => RandomColorPage2(
-              title: widget.title,
               listSelectedColors: selectedItems,
               listSelectedArrowsPerColor: selectedArrowsPerColor,
               listSelectedNumbersPerColor: selectedNumbersPerColor,
@@ -240,7 +234,6 @@ class _MyHomePageState extends State<MyHomePage> {
               secLengthRound: secLengthRound,
               secLengthRest: secLengthRest,
               anzRounds: anzRounds,
-              currentCountry: currentCountry,
               isElemProSeiteEinmalig: isElemProSeiteEinmalig,
               listStroopText: stroopTexticons,
               listStroopTextcolors: stroopTextcolor,
@@ -402,7 +395,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (stroopTextcolor.isNotEmpty) {
       stroopTexticons = []; //reset
 
-      if (isGerman) {
+      if (Get.locale?.languageCode == 'de') {
         if (stroopTextcolor.contains(4293192685)) {
           stroopTexticons.add('stroop_weiss');
         }
@@ -1837,7 +1830,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     //Hier nicht Default-Werte aus AppHelper nehmen damit gewählte Einstellungen
     //  auch nach Rückkehr von Trainingspage noch so drin sind wie für Training ausgewählt
-    currentCountry = widget.currentCountry;
+    bartitle = 'cognition_title'.tr;
     selectedItems = widget.listSelectedColors;
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     selectedNumbersPerColor = widget.listSelectedNumbersPerColor;
@@ -1892,13 +1885,6 @@ class _MyHomePageState extends State<MyHomePage> {
     roundDisplayedMin = (secLengthRound / 60).floor();
     restDisplayedSec = secLengthRest % 60;
     restDisplayedMin = (secLengthRest / 60).floor();
-
-    //Boolean isGerman anhand von übergebenem Argument currentCountry setzen
-    if (currentCountry == 'GB') {
-      isGerman = true;
-    } else {
-      isGerman = false;
-    }
   }
 
   ///Einstellungen zurücksetzen
@@ -1907,7 +1893,6 @@ class _MyHomePageState extends State<MyHomePage> {
       //Hier können nicht widget-Values als Default genommen werden weil wenn bereits
       //  eine Trainingsrunde absolviert wurde, werden über widget die bereits
       //  erfassten Einstellungen zurückgegeben
-      currentCountry = AppHelper.getDefaultKognitiv('currentCountry');
       selectedItems = AppHelper.getDefaultKognitiv('listSelectedColors');
       selectedArrowsPerColor = AppHelper.getDefaultKognitiv(
         'listSelectedArrowsPerColor',
@@ -1980,7 +1965,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.title,
+            bartitle,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           centerTitle: true,
@@ -1999,32 +1984,6 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             icon: Icon(Icons.arrow_back_sharp),
           ),
-          actions: [
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(
-                  Color.fromRGBO(188, 250, 0, 1),
-                ),
-              ),
-              onPressed: () {
-                if (isGerman) {
-                  Get.updateLocale(Locale('en', 'US'));
-                  isGerman = false;
-                  currentCountry = "DE";
-                } else {
-                  //is English
-                  Get.updateLocale(Locale('de', 'DE'));
-                  isGerman = true;
-                  currentCountry = "GB";
-                }
-                changeKey();
-              },
-              child: Text(
-                AppHelper.countryFlag(currentCountry),
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ],
           automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
         ),
         body: SingleChildScrollView(

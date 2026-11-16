@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart'; // 1. IAP-Paket importieren
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skillatics/helper.dart';
@@ -28,16 +29,18 @@ class _StartingPageState extends State<StartingPage> {
 
   // Schlüssel für die lokale Speicherung der Freischaltung
   static const String _kPrefUnlocked = 'optodrum_unlocked';
+  static const String _kPrefLanguage = 'selected_language';
 
   @override
   void initState() {
     super.initState();
+    _loadSavedLanguage();
     _loadCachedUnlock();
 
     // Listener ZUERST registrieren, bevor irgendetwas gekauft/wiederhergestellt wird
     _purchaseSub = _inAppPurchase.purchaseStream.listen(
       _onPurchaseUpdate,
-      onError: (e) => _showSnack('Fehler beim Kauf: $e'),
+      onError: (e) => _showSnack('${'purchase_error'.tr}: $e'),
     );
 
     _initializeIAP();
@@ -47,6 +50,28 @@ class _StartingPageState extends State<StartingPage> {
   void dispose() {
     _purchaseSub?.cancel();
     super.dispose();
+  }
+
+  Future<void> _loadSavedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedLang = prefs.getString(_kPrefLanguage);
+    if (savedLang != null && mounted) {
+      final locale = savedLang == 'en'
+          ? const Locale('en', 'US')
+          : const Locale('de', 'DE');
+      Get.updateLocale(locale);
+      setState(() {});
+    }
+  }
+
+  Future<void> _changeLanguage(String langCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kPrefLanguage, langCode);
+    final locale = langCode == 'en'
+        ? const Locale('en', 'US')
+        : const Locale('de', 'DE');
+    Get.updateLocale(locale);
+    if (mounted) setState(() {});
   }
 
   // Gespeicherten Freischalt-Status laden (funktioniert auch offline)
@@ -101,7 +126,7 @@ class _StartingPageState extends State<StartingPage> {
             await _setUnlocked(true);
             break;
           case PurchaseStatus.error:
-            _showSnack('Kauf fehlgeschlagen. Bitte erneut versuchen.');
+            _showSnack('purchase_failed_msg'.tr);
             break;
           case PurchaseStatus.pending:
           case PurchaseStatus.canceled:
@@ -124,7 +149,7 @@ class _StartingPageState extends State<StartingPage> {
   // Den Bezahlvorgang für den Einmalkauf starten
   void _buyOptodrum() {
     if (_optodrumProduct == null) {
-      _showSnack('Produktinformationen konnten nicht geladen werden.');
+      _showSnack('product_load_error'.tr);
       return;
     }
 
@@ -146,20 +171,20 @@ class _StartingPageState extends State<StartingPage> {
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: const Color(0xFF161B1F),
-          title: const Text(
-            'Optodrum freischalten',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            'optodrum_dialog_title'.tr,
+            style: const TextStyle(color: Colors.white),
           ),
           content: Text(
-            'Schalte das erweiterte Feature "Optodrum" für einmalig ${_optodrumProduct?.price ?? '10.-'} frei.',
+            '${'optodrum_dialog_content'.tr} ${_optodrumProduct?.price ?? '10.-'}.',
             style: const TextStyle(color: Colors.white70),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Abbrechen',
-                style: TextStyle(color: Colors.grey),
+              child: Text(
+                'cancel'.tr,
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
             TextButton(
@@ -167,9 +192,9 @@ class _StartingPageState extends State<StartingPage> {
                 Navigator.pop(context);
                 _inAppPurchase.restorePurchases();
               },
-              child: const Text(
-                'Käufe wiederherstellen',
-                style: TextStyle(color: Colors.white70),
+              child: Text(
+                'restore_purchases'.tr,
+                style: const TextStyle(color: Colors.white70),
               ),
             ),
             ElevatedButton(
@@ -180,9 +205,9 @@ class _StartingPageState extends State<StartingPage> {
                 Navigator.pop(context);
                 _buyOptodrum();
               },
-              child: const Text(
-                'Jetzt kaufen',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                'buy_now'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -196,8 +221,6 @@ class _StartingPageState extends State<StartingPage> {
       context,
       MaterialPageRoute(
         builder: (context) => MenuOptodrum(
-          title: AppHelper.getDefaultOptodrum('title'),
-          currentCountry: AppHelper.getDefaultOptodrum('currentCountry'),
           listSelectedArrowsPerColor: AppHelper.getDefaultOptodrum(
             'listSelectedArrowsPerColor',
           ),
@@ -238,6 +261,66 @@ class _StartingPageState extends State<StartingPage> {
     );
   }
 
+  // Sprachumschalter Widget (DE | EN) im Neon-Dark-Design
+  Widget _buildLanguageSwitch(bool isEnglish) {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B1F),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildLangOption(
+            label: 'DE',
+            isSelected: !isEnglish,
+            onTap: () => _changeLanguage('de'),
+          ),
+          _buildLangOption(
+            label: 'EN',
+            isSelected: isEnglish,
+            onTap: () => _changeLanguage('en'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLangOption({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color.fromRGBO(188, 250, 0, 1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: isSelected
+                ? const Color.fromRGBO(15, 15, 36, 1)
+                : Colors.white60,
+          ),
+        ),
+      ),
+    );
+  }
+
   // Parameter für Randomcolor-Modus
   final int anzColorsOnPage = 2;
   final int secChangeColor = 5;
@@ -251,6 +334,7 @@ class _StartingPageState extends State<StartingPage> {
   Widget build(BuildContext context) {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isEnglish = Get.locale?.languageCode == 'en';
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(15, 15, 36, 1),
@@ -268,6 +352,15 @@ class _StartingPageState extends State<StartingPage> {
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(15, 15, 36, 1),
         elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0, top: 12.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: _buildLanguageSwitch(isEnglish),
+            ),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(2.0),
           child: Container(height: 2.0),
@@ -295,8 +388,8 @@ class _StartingPageState extends State<StartingPage> {
                         SizedBox(height: isPortrait ? 40 : 10),
                         // Erster Button: Kognition (bleibt unverändert)
                         CustomGlowButton(
-                          title: 'Kognition',
-                          subtitle: 'Kognitives Training',
+                          title: 'cognition_title'.tr,
+                          subtitle: 'cognition_subtitle'.tr,
                           icon: Icons.psychology,
                           glowColor: const Color(0xFF00E5FF),
                           onTap: () {
@@ -304,10 +397,6 @@ class _StartingPageState extends State<StartingPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MyHomePage(
-                                  title: AppHelper.getDefaultKognitiv('title'),
-                                  currentCountry: AppHelper.getDefaultKognitiv(
-                                    'currentCountry',
-                                  ),
                                   listSelectedColors:
                                       AppHelper.getDefaultKognitiv(
                                         'listSelectedColors',
@@ -379,12 +468,12 @@ class _StartingPageState extends State<StartingPage> {
                         const SizedBox(height: 26),
                         // Zweiter Button: Optodrum (Dynamisch mit Schloss oder freigeschaltet)
                         CustomGlowButton(
-                          title: 'Optodrum',
+                          title: 'optodrum_title'.tr,
                           subtitle: _isLoadingProduct
-                              ? 'Lade Status...'
+                              ? 'loading_status'.tr
                               : (_isOptodrumUnlocked
-                                    ? 'Blickverfolgung (Freigeschaltet)'
-                                    : 'Blickverfolgung (NEU, ${_optodrumProduct?.price ?? "10.-"})'),
+                                    ? 'optodrum_unlocked_sub'.tr
+                                    : '${'optodrum_new_sub'.tr} (${_optodrumProduct?.price ?? "10.-"})'),
                           icon: Icons.visibility,
                           glowColor: _isOptodrumUnlocked
                               ? Colors.pinkAccent

@@ -9,10 +9,6 @@ class AppHelper {
   ///Default-Values für Menupage Kognitiv
   static dynamic getDefaultKognitiv(String varname) {
     switch (varname) {
-      case 'title':
-        return 'Kognition';
-      case 'currentCountry':
-        return "GB"; //aktuelle Flagge die oben rechts erscheint
       case 'listSelectedColors':
         return [];
       case 'listSelectedArrowsPerColor':
@@ -65,10 +61,6 @@ class AppHelper {
   ///Default-Values für Menupage Optodrum
   static dynamic getDefaultOptodrum(String varname) {
     switch (varname) {
-      case 'title':
-        return 'Optodrum';
-      case 'currentCountry':
-        return "GB"; // aktuelle Flagge die oben rechts erscheint
       case 'listSelectedArrowsPerColor':
         return [
           '_4278190080',

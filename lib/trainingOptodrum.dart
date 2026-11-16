@@ -23,7 +23,6 @@ class TrainingOptodrum extends StatefulWidget {
   final List<dynamic> listStroopText, listStroopTextcolors;
   final List<dynamic> listSelectedBackgroundcolors;
   final int secLengthRound, secLengthRest, anzRounds;
-  final String currentCountry;
   final String nr_individual, nr_from, nr_to, nr_skip;
   final String
   movedirection; // Die im Menü gewählte Bewegungsrichtung der Icons
@@ -42,7 +41,6 @@ class TrainingOptodrum extends StatefulWidget {
     required this.secLengthRound,
     required this.secLengthRest,
     required this.anzRounds,
-    required this.currentCountry,
     required this.listStroopText,
     required this.listStroopTextcolors,
     required this.nr_individual,
@@ -1159,8 +1157,6 @@ class _TrainingOptodrumState extends State<TrainingOptodrum>
       context,
       MaterialPageRoute(
         builder: (context) => MenuOptodrum(
-          title: 'Optodrum',
-          currentCountry: widget.currentCountry,
           //listSelectedColors: widget.listSelectedColors,
           listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
           listSelectedNumbersPerColor: widget.listSelectedNumbersPerColor,

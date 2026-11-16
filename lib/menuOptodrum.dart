@@ -14,7 +14,6 @@ import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellun
 class MenuOptodrum extends StatefulWidget {
   MenuOptodrum({
     super.key,
-    required this.title,
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbersPerColor,
     required this.listSelectedShapesPerColor,
@@ -24,7 +23,6 @@ class MenuOptodrum extends StatefulWidget {
     required this.secLengthRound,
     required this.secLengthRest,
     required this.anzRounds,
-    required this.currentCountry,
     required this.nr_individual,
     required this.nr_from,
     required this.nr_to,
@@ -37,8 +35,6 @@ class MenuOptodrum extends StatefulWidget {
     required this.metronomBPM,
   });
 
-  final String title;
-  String currentCountry;
   var listSelectedArrowsPerColor;
   var listSelectedNumbersPerColor;
   var listSelectedShapesPerColor;
@@ -61,11 +57,10 @@ class MenuOptodrum extends StatefulWidget {
 }
 
 class _MenuOptodrumState extends State<MenuOptodrum> {
+  String bartitle = '';
   String hexxcode = '0xff';
   int theHexCode = 0;
   String textFehlermeldung = '';
-  bool isGerman = true;
-  String currentCountry = "GB"; //flagge die aktuell oben rechts angezeigt wird
   int keyInt = 1;
   double fontsizeMenutitle = 19;
   double fontsizeItemtitle = 18;
@@ -211,7 +206,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
               secLengthRound: secLengthRound,
               secLengthRest: secLengthRest,
               anzRounds: anzRounds,
-              currentCountry: currentCountry,
               listStroopText: stroopTexticons,
               listStroopTextcolors: stroopTextcolor,
               nr_individual: nr_individual,
@@ -361,7 +355,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     if (stroopTextcolor.isNotEmpty) {
       stroopTexticons = []; //reset
 
-      if (isGerman) {
+      if (Get.locale?.languageCode == 'de') {
         if (stroopTextcolor.contains(4293192685)) {
           stroopTexticons.add('stroop_weiss');
         }
@@ -1555,7 +1549,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     //Variablen initialisieren
     //Hier nicht Default-Werte aus AppHelper nehmen damit gewählte Einstellungen
     //  auch nach Rückkehr von Trainingspage noch so drin sind wie für Training ausgewählt
-    currentCountry = widget.currentCountry;
+    bartitle = 'optodrum_title'.tr;
     selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     selectedNumbersPerColor = widget.listSelectedNumbersPerColor;
     selectedShapesPerColor = widget.listSelectedShapesPerColor;
@@ -1605,13 +1599,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
     roundDisplayedMin = (secLengthRound / 60).floor();
     restDisplayedSec = secLengthRest % 60;
     restDisplayedMin = (secLengthRest / 60).floor();
-
-    //Boolean isGerman anhand von übergebenem Argument currentCountry setzen
-    if (currentCountry == 'GB') {
-      isGerman = true;
-    } else {
-      isGerman = false;
-    }
   }
 
   ///Einstellungen zurücksetzen
@@ -1620,7 +1607,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
       //Hier können nicht widget-Values als Default genommen werden weil wenn bereits
       //  eine Trainingsrunde absolviert wurde, werden über widget die bereits
       //  erfassten Einstellungen zurückgegeben
-      currentCountry = AppHelper.getDefaultOptodrum('currentCountry');
       selectedArrowsPerColor = AppHelper.getDefaultOptodrum(
         'listSelectedArrowsPerColor',
       );
@@ -1686,7 +1672,7 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.title,
+            bartitle,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           centerTitle: true,
@@ -1705,32 +1691,6 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
             },
             icon: Icon(Icons.arrow_back_sharp),
           ),
-          actions: [
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(
-                  Color.fromRGBO(188, 250, 0, 1),
-                ),
-              ),
-              onPressed: () {
-                if (isGerman) {
-                  Get.updateLocale(Locale('en', 'US'));
-                  isGerman = false;
-                  currentCountry = "DE";
-                } else {
-                  //is English
-                  Get.updateLocale(Locale('de', 'DE'));
-                  isGerman = true;
-                  currentCountry = "GB";
-                }
-                changeKey();
-              },
-              child: Text(
-                AppHelper.countryFlag(currentCountry),
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ],
           automaticallyImplyLeading: false, //damit kein zurück-Pfeil oben links
         ),
         body: SingleChildScrollView(

@@ -82,6 +82,23 @@ class TranslationText extends Translations {
       'Nein': 'Nein',
       'metronomTempo': 'Tempo des Metronoms?',
       'aktiv': 'Aktiv',
+
+      'cognition_title': 'Kognition',
+      'cognition_subtitle': 'Kognitives Training',
+      'optodrum_title': 'Optodrum',
+      'loading_status': 'Lade Status...',
+      'optodrum_unlocked_sub': 'Blickverfolgung (Freigeschaltet)',
+      'optodrum_new_sub': 'Blickverfolgung (NEU',
+      'optodrum_dialog_title': 'Optodrum freischalten',
+      'optodrum_dialog_content':
+          'Schalte das erweiterte Feature "Optodrum" für einmalig',
+      'cancel': 'Abbrechen',
+      'restore_purchases': 'Käufe wiederherstellen',
+      'buy_now': 'Jetzt kaufen',
+      'purchase_error': 'Fehler beim Kauf',
+      'purchase_failed_msg': 'Kauf fehlgeschlagen. Bitte erneut versuchen.',
+      'product_load_error':
+          'Produktinformationen konnten nicht geladen werden.',
     },
     'en_US': {
       'fehlerColorsNull': 'Items still need to be selected.',
@@ -158,6 +175,22 @@ class TranslationText extends Translations {
       'Nein': 'No',
       'metronomTempo': 'The metronome\'s tempo?',
       'aktiv': 'Active',
+
+      'cognition_title': 'Cognition',
+      'cognition_subtitle': 'Cognitive Training',
+      'optodrum_title': 'Optodrum',
+      'loading_status': 'Loading status...',
+      'optodrum_unlocked_sub': 'Eye Tracking (Unlocked)',
+      'optodrum_new_sub': 'Eye Tracking (NEW',
+      'optodrum_dialog_title': 'Unlock Optodrum',
+      'optodrum_dialog_content':
+          'Unlock the advanced "Optodrum" feature for a one-time payment of',
+      'cancel': 'Cancel',
+      'restore_purchases': 'Restore purchases',
+      'buy_now': 'Buy now',
+      'purchase_error': 'Purchase error',
+      'purchase_failed_msg': 'Purchase failed. Please try again.',
+      'product_load_error': 'Could not load product information.',
     },
   };
 }

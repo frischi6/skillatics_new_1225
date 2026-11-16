@@ -15,7 +15,6 @@ import 'stroop_icons.dart';
 class RandomColorPage2 extends StatefulWidget {
   RandomColorPage2({
     super.key,
-    required this.title,
     required this.listSelectedColors,
     required this.listSelectedArrowsPerColor,
     required this.listSelectedNumbersPerColor,
@@ -27,7 +26,6 @@ class RandomColorPage2 extends StatefulWidget {
     required this.secLengthRound,
     required this.secLengthRest,
     required this.anzRounds,
-    required this.currentCountry,
     required this.isElemProSeiteEinmalig,
     required this.listStroopText,
     required this.listStroopTextcolors,
@@ -39,7 +37,6 @@ class RandomColorPage2 extends StatefulWidget {
     required this.metronomBPM,
   });
 
-  var title;
   var listSelectedColors;
   var listSelectedArrowsPerColor;
   var listSelectedNumbersPerColor;
@@ -54,7 +51,6 @@ class RandomColorPage2 extends StatefulWidget {
   int secLengthRest;
   int anzRounds;
   bool isElemProSeiteEinmalig;
-  String currentCountry;
   String
   nr_individual,
   nr_from,
@@ -1153,8 +1149,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       context,
       MaterialPageRoute(
         builder: (context) => MyHomePage(
-          title: widget.title,
-          currentCountry: widget.currentCountry,
           listSelectedColors: widget.listSelectedColors,
           listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
           listSelectedNumbersPerColor: widget.listSelectedNumbersPerColor,
@@ -1187,7 +1181,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       context,
       MaterialPageRoute(
         builder: (context) => RandomColorPage2(
-          title: widget.title,
           listSelectedColors: listWithSelectedColors,
           listSelectedArrowsPerColor: listWithSelectedArrowsPerColor,
           listSelectedNumbersPerColor: listWithSelectedNumbersPerColor,
@@ -1200,7 +1193,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           secLengthRound: secLengthRound2,
           secLengthRest: secLengthRest2,
           anzRounds: anzRounds2,
-          currentCountry: widget.currentCountry,
           isElemProSeiteEinmalig: isElemProSeiteEinmalig2,
           listStroopText: listWithStroopText,
           listStroopTextcolors: listWithStroopTextcolors,
