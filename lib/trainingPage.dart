@@ -210,13 +210,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     initOptionEinmalig();
 
     //organizeRound();
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer timer) => setState(() {
-        //timemanagement();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if (!mounted)
+        return; // Verhindert Updates, wenn die Seite bereits verlassen wurde
+
+      setState(() {
         timemanagement_new();
-      }),
-    );
+      });
+    });
 
     super.initState();
     setState(() {});
@@ -463,7 +464,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         child: TextButton(
                           autofocus: false,
                           onPressed: changeToPage1,
-                          onLongPress: changeToPage1,
                           child: Text(
                             'hauptmenü'.tr,
                             style: const TextStyle(color: Colors.black),
@@ -478,7 +478,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                         child: TextButton(
                           autofocus: false,
                           onPressed: neustart,
-                          onLongPress: neustart,
                           child: Text(
                             'neustart'.tr,
                             style: const TextStyle(color: Colors.black),
@@ -1171,9 +1170,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   /// Wechsel von page2 to page1
   void changeToPage1() {
-    dispose();
-
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => MyHomePage(
@@ -1207,7 +1204,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   /// neustart der page2
   /// wird nach alertDialogFinish aufgerufen weil neustart() nicht funktioniert
   void changeToPage2() {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => RandomColorPage2(
