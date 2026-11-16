@@ -227,6 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
           context,
           MaterialPageRoute(
             builder: (context) => RandomColorPage2(
+              title: widget.title,
               listSelectedColors: selectedItems,
               listSelectedArrowsPerColor: selectedArrowsPerColor,
               listSelectedNumbersPerColor: selectedNumbersPerColor,
