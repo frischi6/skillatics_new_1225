@@ -1795,14 +1795,11 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       child: TextFormField(
                         key: ValueKey(keyInt),
                         initialValue: nr_individual,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal:
-                              true, //damit bei ios das decimalpad geöffnet wird
-                        ),
+                        keyboardType:
+                            TextInputType.text, //Type Text damit Komma möglich
                         inputFormatters: [
-                          // Erlaubt nur Zahlen (0-9) und das Komma (,), keine Leerzeichen
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
-                        ],
+                        ], // Erlaubt nur Zahlen (0-9) und das Komma (,)
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${'zB'.tr} 10,20,30',
@@ -1886,13 +1883,11 @@ class _MenuOptodrumState extends State<MenuOptodrum> {
                       child: TextFormField(
                         key: ValueKey(keyInt),
                         initialValue: nr_skip,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
+                        keyboardType:
+                            TextInputType.text, //Type Text damit Komma möglich
                         inputFormatters: [
-                          // Erlaubt nur Zahlen (0-9) und das Komma (,) – keine Leerzeichen!
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
-                        ],
+                        ], // Erlaubt nur Zahlen (0-9) und das Komma (,)
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${'zB'.tr} 2,4',
